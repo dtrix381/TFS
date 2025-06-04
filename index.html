@@ -4,27 +4,33 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>𝗧𝗲𝗮𝗺𝗙𝘂𝗹𝗹𝗦𝗲𝗻𝗱𝗦𝗹𝗼𝘁𝘀</title>
+  <link rel="stylesheet" href="styles.css"> <!-- Link to your global styles -->
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Akaya+Kanadaka&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@700&display=swap" rel="stylesheet">
+
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap');
 
     body {
       font-family: 'Orbitron', sans-serif;
-      background: url('background.jpg') no-repeat center center fixed;
       background-size: cover;
-      background-color: black;
+      background-color: #1D4781;
       color: white;
       margin: 0;
       padding: 0;
       min-height: 100vh;
       text-shadow: 1px 1px 2px #000;
       height: 100%; 
+      overflow-x: hidden;
     }
 
     @media (max-width: 768px) {
       body {
         background: url('background.jpg') no-repeat;
         background-size: auto 100vh;
-        background-color: black;
+        background-color: #1D4781;
         background-repeat: repeat-y;
         animation: backgroundLoop 15s linear infinite;
 	height: 100%; 
@@ -53,414 +59,1146 @@ html, body {
   justify-content: flex-start; /* Align content at the top */
 }
 
-.container {
-  max-width: 900px;
-  margin: 30px auto; /* Gives some space from the top */
-  padding: 20px;
-  background-color: rgba(0, 0, 0, 0.65);
-  border: 2px solid gold;
-  border-radius: 10px;
+main, .content {
+    padding-bottom: 150px; /* Make this a bit more than the footer height */
+}
+
+header {
+  background-color: #0E1327;
+  padding: clamp(0.3rem, 1vw, 0.8rem); /* smaller padding */
+  color: white;
+  font-family: Arial, sans-serif;
+  border-bottom: 2px solid black;
+  width: 98.3vw;
+}
+
+/* Flex container */
+.header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: nowrap; /* Ensures elements stay on one line */
+  gap: clamp(0.5rem, 2vw, 1.5rem);
+}
+
+/* Left */
+.header-left h1 {
+    font-size: clamp(2.25rem, 4vw, 2rem);
+    margin: 0;
+    text-align: center;
+    font-family: 'Akaya Kanadaka', cursive;
+    color: #fff;
+    animation: bearGrowl 2s ease-in-out infinite, bearShake 1.5s ease-in-out infinite;
+}
+
+/* Center nav */
+.header-center {
+  display: flex;
+  gap: clamp(1rem, 2vw, 2rem);
+  flex: 1;
+  justify-content: center;
+  flex-wrap: nowrap; /* Prevents wrapping */
+}
+
+.header-center a {
+  text-decoration: none;
+  color: #c81f7e;
+  font-weight: bold;
+  font-size: clamp(0.9rem, 2.5vw, 1.2rem);
+}
+
+/* Right nav container */
+.header-right {
+  display: flex;
+  gap: clamp(0.5rem, 1.5vw, 1rem);
+  flex-wrap: nowrap; /* Prevents wrapping */
+  justify-content: flex-end;
+  font-weight: bold;
+}
+
+/* Buy Now button with pre-hover animation */
+.header-right .button {
+  background-color: green;
+  border: 2px solid black;
+  padding: clamp(0.3rem, 1vw, 0.6rem) clamp(0.6rem, 2vw, 1.2rem);
+  text-decoration: none;
+  color: white;
+  font-weight: bold;
+  font-size: clamp(1rem, 2.5vw, 1rem);
+  border-radius: 5px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  animation: pulse 2s infinite ease-in-out;
+}
+
+/* Hover animation */
+.header-right .button:hover {
+  background-color: black;
+  color: white;
+  transform: scale(1.05);
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.4);
+}
+
+/* Pulse animation (before hover) */
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.02); }
+  100% { transform: scale(1); }
+}
+
+/* Optional: Shine effect on hover */
+.header-right .button::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -75%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    120deg,
+    rgba(255, 255, 255, 0.3),
+    rgba(255, 255, 255, 0)
+  );
+  transform: skewX(-25deg);
+}
+
+/* Trigger shine on hover */
+.header-right .button:hover::before {
+  left: 125%;
+  transition: left 0.7s ease;
+}
+
+
+
+
+/* Menu button */
+.menu-button {
+  display: none;
+  font-size: 2rem;
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+}
+
+  .mobile-menu {
+    display: none;
+}
+
+
+
+/* Mobile tweaks */
+@media (max-width: 768px) {
+
+  /* Hide center and right sections inside header */
+  .header-center,
+  .header-right {
+    display: none;
+  }
+
+body.menu-open {
+  overflow: hidden; /* Prevent scrolling */
+}
+
+  /* Show menu button */
+  .menu-button {
+    display: block;
+    font-size: 0.9rem;
+    background: #151830;
+    border: 1px solid #fff;
+    padding: 0.5rem 0.75rem;
+    border-radius: 6px;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s ease-in-out;
+    z-index: 1001;
+  }
+
+.mobile-menu {
+  position: fixed;
+  top: 58px;
+  left: 0;
+  right: 0;
+  bottom: auto; /* Don’t stretch to bottom */
+  max-height: none;
+  height: calc(100vh - 58px); /* fills from below header to bottom */
+  background-color: #f2ca96;
+  color: black;
+  z-index: 1000;
+  flex-direction: column;
+  align-items: flex-start; 
+  gap: 2rem;
+  padding: clamp(1rem, 4vw, 2rem);
+  overflow-y: auto;
+  display: none;
+}
+
+
+
+  .mobile-menu a {
+  font-size: clamp(1rem, 2.5vw, 1.2rem);
+  text-decoration: none;
+  top: 58px;
+  color: black;
+  width: 100%;
+  position: relative;
+  padding-bottom: clamp(0.5rem, 1vw, 1rem);
+}
+
+  .mobile-menu.show {
+    display: flex;
+  }
+
+/* Disable ::after for links inside .mobile-menu-bottom */
+.mobile-menu-bottom a::after {
+  content: none;
+}
+
+/* Keep the ::after effect for other links inside .mobile-menu */
+.mobile-menu a:not(.mobile-menu-bottom a)::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 2px;
+  width: 100%;
+  background-color: #db9840;
+}
+
+
+  /* Header-left centered on mobile */
+  .header-left {
+    margin: 0 auto;
+  }
+
+.mobile-menu-bottom {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* ✅ Horizontally center children */
+  justify-content: center; /* ✅ Vertically center if needed */
+  gap: 1rem;
+  margin-top: auto;
+  padding-bottom: 22rem; /* add some space from screen bottom */
+  width: 100%; /* ✅ Ensure full width for horizontal centering */
+}
+
+.buy-button {
+  background-color: #1ceb1c;
+  color: #151830;
+  padding: clamp(0.5rem, 1vw, 1rem) clamp(1rem, 3vw, 2rem);
+  border: none;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: clamp(0.9rem, 1.2vw, 1.1rem);
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  text-align: center; /* Center the button text */
+  display: inline-block; /* Makes the button fit content */
+  width: auto; /* Adjusts the width to the content */
+  max-width: 250px; /* Set a max width if needed */
+  margin: 0 auto; /* Centers the button horizontally */
+}
+
+
+  .buy-button:hover {
+    background-color: #e6b800;
+  }
+}
+
+.tfs-section {
+  display: flex;
+  align-items: flex-start; /* align content to the top */
+  justify-content: space-between;
+  padding: 0 7vw;
+  height: 80vh;
+  box-sizing: border-box;
+  margin-left: 25px;
+  margin-top: -55px;
+}
+
+.tfs-text {
+  flex: 1;
+  padding-right: 2rem;
+  color: white;
+  font-size: clamp(0.5rem, 2vw, 2rem);
+  line-height: 1.6;
+  font-family: 'Akaya Kanadaka', cursive;
+  margin-top: clamp(-4rem, -8vw, -8rem);
+}
+
+.tfs-image {
+  flex: 1;
+  display: flex;
+  justify-content: center;    
+  align-items: flex-start;
+  margin-top: clamp(-10rem, -5vw, -2.5rem);    
+}
+
+.tfs-image img {
+  width: 100%;
+  max-width: 700px;
+  height: auto;
+  object-fit: contain;
+}
+
+.tfs-title {
+  font-size: clamp(3rem, 6vw, 5rem);
+  font-weight: bold;
+  margin-bottom: 1rem;
+  font-family: 'Akaya Kanadaka', cursive;
+  color: white;
+}
+
+
+.welcome-container {
+  background-color: white;
+  padding: 2px 4px
+  border-radius: 6px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-top: 0.5rem;
+  margin-bottom: 1.5rem;
+  border: 0.5px solid black;
+  font-size: 0.8rem;
+  display: inline-block;
+}
+
+
+.welcome-text {
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  color: #151830;
+}
+
+.copy-container {
+  display: flex;
+  align-items: center;
+  margin-right: 0.2rem;
+}
+
+.copy-container input {
+  padding: 8px 15px;
+  font-size: 1.3rem;
+  flex-grow: 1;
+  border-radius: 8px;
+  border: 1px white;
+}
+
+.copy-button {
+  background-color: #fcd228;
+  color: #151830;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  border: 1px solid black;
+}
+
+.copy-button:hover {
+  background-color: #e6b800;
+}
+
+/* Mobile version - Adjustments for small screen sizes */
+@media screen and (max-width: 768px) {
+  .tfs-section {
+    display: flex;
+    flex-direction: column; /* Stack elements vertically on mobile */
+    padding: 0 5vw; /* Adjust padding for mobile */
+    height: auto; /* Let the section grow naturally on mobile */
+    align-items: center;        /* Center children horizontally */
+    text-align: center;         /* Inherit centering for children */
+  }
+
+  .tfs-text {
+    margin-top: 0; /* Remove negative margin on mobile */
+    text-align: center; /* Center text */
+    font-size: clamp(0.8rem, 2vw, 2rem);
+    width: 100%;
+  }
+
+  .tfs-image {
+    margin-top: clamp(-45rem, -20vw, -13rem);
+    padding-top: clamp(10px, 5vw, 40px);
+    width: 100%; /* Ensure image takes up the full width */
+    justify-content: center; /* Center the image */
+    align-items: flex-start; /* Align the image at the top */
+    order: -1; /* Make sure the image comes first */
+  }
+
+  .tfs-image img {
+    width: 100%; /* Ensure image takes up the full width */
+    max-width: 500px; /* Set a max width */
+    height: auto;
+    object-fit: contain; /* Keep the aspect ratio intact */
+  }
+
+.tfs-title {
+  font-size: clamp(2.5rem, 8vw, 4rem);
+  text-align: center;
+  margin: 0 auto;
+  width: 80%;
+  box-sizing: border-box; /* Make sure padding doesn't cause overflow */
+  color: white;
+}
+
+
+  .welcome-container {
+    font-size: clamp(0.8rem, 2.5vw, 1.25rem);
+    padding: clamp(1px, 0.5vw, 3px) clamp(2px, 1vw, 6px);
+    margin-bottom: 1.5rem;
+}
+
+  .welcome-text {
+    font-size: 1.5rem; /* Adjust launch text size */
+  }
+
+  .copy-button {
+    padding: 4px 10px; /* Adjust button padding */
+    font-size: 0.8rem; /* Adjust button font size */
+  }
+}
+
+.marquee-container {
+  width: 101vw;
+  background: #021649;
+  padding: 1rem 0rem;
+  box-sizing: border-box;
+  position: relative;
+  border-top: #DBB35C;
+  border-bottom: #DBB35C;
   box-shadow: 0 0 15px gold;
 }
 
-    input[type="text"], input[type="number"] {
-      padding: 10px;
-      margin: 5px;
-      border-radius: 5px;
-      border: 1px solid #aaa;
-      font-size: 16px;
-      background-color: #222;
-      color: #fff;
-      width: 160px;
-    }
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee-scroll 60s linear infinite;
+}
 
-    button {
-      padding: 10px 20px;
-      margin: 5px;
-      background-color: crimson;
-      color: white;
-      font-weight: bold;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      transition: 0.3s ease;
-      box-shadow: 0 0 10px crimson;
-    }
+.marquee-content {
+  display: flex;
+  white-space: nowrap;
+  gap: 2rem;
+}
 
-    button:hover {
-      background-color: gold;
-      color: black;
-      box-shadow: 0 0 12px gold;
-    }
+.marquee-content span {
+  margin-right: 2.5rem;
+  display: inline-flex;
+  align-items: center;
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 700;
+  color: #ffd700;
+  font-size: 1.3rem;
+  transition: transform 0.2s;
+}
 
-    ul {
-      list-style: none;
-      padding: 0;
-      color: #ccc;
-    }
+.marquee-content span:hover {
+  transform: scale(1.1);
+}
 
-    .bracket {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 20px;
-      margin-top: 20px;
-    }
+.marquee-content a {
+  color: #ffd700;
+  text-decoration: none;
+}
 
-    .match {
-      width: 100%;
-      border: 2px solid #444;
-      border-radius: 10px;
-      padding: 15px;
-      background-color: rgba(0, 0, 0, 0.7);
-      box-shadow: 0 0 10px #000;
-      position: relative;
-      transition: transform 0.3s;
-    }
+.marquee-content img {
+  margin-right: 0.5rem;
+  border-radius: 4px;
+}
 
-    .match:hover {
-      transform: scale(1.01);
-      box-shadow: 0 0 20px gold;
-    }
+@keyframes marquee-scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
 
-    .bracket-code {
-      position: absolute;
-      left: -45px;
-      top: 15px;
-      font-weight: bold;
-      color: crimson;
-      font-size: 20px;
-    }
 
-    .winner {
-      margin-top: 10px;
-      font-weight: bold;
-      color: lime;
-      font-size: 18px;
-      text-shadow: 0 0 5px lime;
-    }
 
-    .hidden {
-      display: none;
-    }
+.socials-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 60px 20px;
+  background: transparent;
+  color: white;
+  text-align: center;
+}
 
-    .player-section {
-      margin: 10px 0;
-      padding: 8px;
-      border-bottom: 1px solid #555;
-    }
+.socials-title {
+  font-size: clamp(2.5rem, 6vw, 4rem);
+  font-weight: 800;
+  margin-bottom: 1rem;
+  color: #FFD700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-family: 'Bebas Neue', 'Oswald', 'Arial Black', sans-serif;
+  display: inline-block;
+  padding-bottom: 0.3rem;
 
-    .totalX {
-      margin-left: 10px;
-      color: gold;
-      font-weight: bold;
-    }
+  /* Purple outline using multiple text shadows */
+  text-shadow:
+    -1px -1px 0 #00ff95,
+     1px -1px 0 #00ff95,
+    -1px  1px 0 #00ff95,
+     1px  1px 0 #00ff95,
+     0 0 8px #00ff95,
+     0 0 12px #8000ff; /* Optional inner glow */
+}
 
-    @media (max-width: 768px) {
-      .container {
-        padding: 10px;
-      }
 
-      input[type="text"], input[type="number"] {
-        width: 100%;
-      }
+/* Flip Card Container */
+.social-flip-card {
+  background: transparent;
+  width: 200px;
+  height: 260px;
+  perspective: 1000px;
+  margin: 2rem;
+  display: inline-block;
+}
 
-      .match {
-        padding: 10px;
-      }
+/* Inner wrapper */
+.social-flip-card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.8s;
+  transform-style: preserve-3d;
+}
 
-/* Slot name style */
-.slot-name {
-  color: #1f35d7; /* electric cyan */
+/* Flip on hover */
+.social-flip-card:hover .social-flip-card-inner {
+  transform: rotateY(180deg);
+}
+
+/* Front & Back faces */
+.social-flip-card-front,
+.social-flip-card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  border-radius: 1rem;
+  box-shadow: 0 0 15px rgba(0,255,106,0.3);
+  background-color: #1a1a1a;
+  color: white;
+  padding: 1rem;
+  text-align: center;
+}
+
+/* Front face */
+.social-flip-card-front {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Back face */
+.social-flip-card-back {
+  transform: rotateY(180deg);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Avatar image */
+.social-flip-card img.avatar {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  border: 2px solid limegreen;
+  object-fit: cover;
+  margin-bottom: 1rem;
+}
+
+/* Social title */
+.social-flip-card h3 {
+  margin: 0.3rem 0;
+  font-size: 2rem;
+  color: #00ff95;
+}
+
+/* Link */
+.social-flip-card a {
+  color: #b84467;
+  text-decoration: none;
+  margin-top: 0.5rem;
   font-weight: bold;
-  text-shadow: 0 0 5px #00ffff, 0 0 10px #00ffff;
 }
 
-/* Buy Amount style */
-.buy-amount {
-  color: #ff6f61; /* coral red */
+
+/* Divider line */
+.section-divider {
+  border: none;
+  border-top: 2px solid black;
+  width: 100%;
+  margin: 60px 0 30px;
+}
+
+/* MEMES Section */
+.reels-section {
+  text-align: center;
+  padding: 20px;
+}
+
+.reels-title {
+  font-size: clamp(2.5rem, 6vw, 4rem);
+  font-weight: 800;
+  margin-bottom: 1rem;
+  color: #FFD700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-family: 'Bebas Neue', 'Oswald', 'Arial Black', sans-serif;
+  display: inline-block;
+  padding-bottom: 0.3rem;
+
+  /* Purple outline using multiple text shadows */
+  text-shadow:
+    -1px -1px 0 #00ff95,
+     1px -1px 0 #00ff95,
+    -1px  1px 0 #00ff95,
+     1px  1px 0 #00ff95,
+     0 0 8px #00ff95,
+     0 0 12px #8000ff; /* Optional inner glow */
+}
+
+
+
+.reels-container {
+  width: 102vw;
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+  background: #021649;
+  border: 2px solid #12ffff;
+  box-sizing: border-box;
+  padding: 15px 0; /* More vertical space */
+  display: flex;
+  flex-direction: column;
+  gap: 20px; /* spacing between top and bottom rows */
+}
+
+.reels {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.reels-track {
+  display: flex;
+  animation: scroll-left 30s linear infinite;
+}
+
+.reels.bottom .reels-track {
+  animation: scroll-right 30s linear infinite;
+}
+
+.reels-item {
+  width: 240px;
+  padding: 5px;
+  color: #e1a033;
+  border-radius: 26px;
+  cursor: pointer;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.reels-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 1px solid #12ffff;
+
+}
+
+.reels-item:hover {
+  color: #00ff95;
+}
+
+/* Tooltip */
+.reels-item::after {
+  content: 'Watch ▶';
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  background: green;
+  color: #fff;
+  padding: 5px 10px;
+  border-radius: 18px;
+  opacity: 0;
+  white-space: nowrap;
+  pointer-events: none;
+  transition: 0.3s ease;
+  font-size: 12px;
   font-weight: bold;
-  text-shadow: 0 0 5px #ff6f61, 0 0 10px #ff6f61;
 }
 
-/* Total Pay style (same color as Buy Amount) */
-.total-pay {
-  color: #ff6f61; /* coral red */
-  font-weight: bold;
-  text-shadow: 0 0 5px #ff6f61, 0 0 10px #ff6f61;
+.reels-item:hover::after {
+  opacity: 1;
 }
 
-/* Total X style */
-.total-x {
-  color: #ffd700; /* rich gold */
-  font-weight: bold;
-  text-shadow: 0 0 5px #ffd700, 0 0 10px #ffcc00;
-  animation: glowX 1.5s ease-in-out infinite alternate;
+/* Pause on hover */
+.reels:hover .reels-track {
+  animation-play-state: paused;
 }
 
-@keyframes glowX {
-  from {
-    text-shadow: 0 0 5px #ffd700, 0 0 10px #ffcc00;
-  }
-  to {
-    text-shadow: 0 0 10px #ffd700, 0 0 20px #ffcc00;
-  }
+@keyframes scroll-left {
+  0%   { transform: translate3d(0, 0, 0); }
+  100% { transform: translate3d(-50%, 0, 0); }
 }
 
-/* Adjust input field for Slot Name to reflect font color changes */
-input[type="text"]#slot {
-  color: #00ffff; /* electric cyan */
-  font-weight: bold;
-  text-shadow: 0 0 5px #00ffff, 0 0 10px #00ffff;
+@keyframes scroll-right {
+  0%   { transform: translate3d(-50%, 0, 0); }
+  100% { transform: translate3d(0%, 0, 0); }
 }
 
-  </style>
+
+    </style>
+
 </head>
 <body>
-  <div class="container">
-    <h1>🎰 𝗧𝗲𝗮𝗺𝗙𝘂𝗹𝗹𝗦𝗲𝗻𝗱𝗦𝗹𝗼𝘁𝘀 𝗧𝗼𝘂𝗿𝗻𝗮𝗺𝗲𝗻𝘁 🎲</h1>
-    <div style="text-align:center; margin-bottom: 15px;">
-      <input type="text" id="kickUsername" placeholder="Kick Username" />
-      <input type="text" id="slot" placeholder="Slot" />
-      <button onclick="addPlayer()">Add Player</button>
-    </div>
-    <h2>🎮 Players Pool</h2>
-    <ul id="playersList"></ul>
-    <div style="text-align:center;">
-      <button onclick="startTournament()">Start Tournament</button>
-    </div>
-    <div id="bracketContainer"></div>
-    <h2 id="champion" class="hidden">🏆 Champion: <span id="championName"></span></h2>
+<main style="padding-bottom: 150px;"> 
+	
+<div id="age-popup" class="popup-overlay">
+  <div class="popup-box">
+    <h2>🔞 Age Check Required</h2>
+    <p>
+      This site features <strong>casino-themed content, simulated gambling, and mature material.</strong><br>
+      You must be <strong>18 years or older</strong> to continue.
+    </p>
+    <label class="checkbox-label">
+      <input type="checkbox" id="age-check">
+      <span>I confirm that I am at least 18 years old</span>
+    </label>
+    <button id="proceed-button" disabled>Enter Site</button>
   </div>
+</div>
 
-  <script>
-    let players = [];
-    let rounds = [];
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const popup = document.getElementById("age-popup");
+    const checkbox = document.getElementById("age-check");
+    const proceedButton = document.getElementById("proceed-button");
 
-    function addPlayer() {
-      const kickUsername = document.getElementById("kickUsername").value.trim();
-      const slot = document.getElementById("slot").value.trim();
-      const playersList = document.getElementById("playersList");
+    // Get today's date in YYYY-MM-DD format
+    const today = new Date().toISOString().split('T')[0];
+    const lastShown = localStorage.getItem("ageVerifiedDate");
 
-      if (!kickUsername || !slot) return alert("Please fill in both Kick Username and Slot.");
-
-      if (players.length >= 8) {
-        alert("You can only add 8 players.");
-        return;
-      }
-
-      players.push({ kickUsername, slot });
-      const li = document.createElement("li");
-      li.textContent = `${kickUsername} (${slot})`;
-      playersList.appendChild(li);
-
-      document.getElementById("kickUsername").value = "";
-      document.getElementById("slot").value = "";
+    if (lastShown === today) {
+        popup.style.display = "none"; // Already verified today
+    } else {
+        popup.style.display = "flex"; // Show popup
     }
 
-    function startTournament() {
-      if (players.length !== 8) {
-        alert("Exactly 8 players are required to start the tournament.");
-        return;
-      }
+    checkbox.addEventListener("change", function () {
+        proceedButton.disabled = !this.checked;
+    });
 
-      shuffle(players);
-      rounds = [];
+    proceedButton.addEventListener("click", function () {
+        localStorage.setItem("ageVerifiedDate", today);
+        popup.style.display = "none";
+    });
+});
+</script>
 
-      rounds[0] = [
-        [players[0], players[7]], // 1A
-        [players[3], players[4]], // 1B
-        [players[2], players[5]], // 1C
-        [players[1], players[6]], // 1D
-      ];
+  <header>
+    <div class="header-container">
+      
+      <!-- Left -->
+      <div class="header-left">
+        <h1>TeamFullSend</h1>
+      </div>
+      
+	<!-- Menu button (only visible on mobile) -->
+    <button class="menu-button" aria-label="Toggle Menu">☰</button>
 
-      generateBracket();
-    }
+      <div class="header-center">
+        <a href="#socials">Social Links</a>
+        <a href="#reels">Reels</a>
+      </div>
+      
+      <!-- Right -->
+      <div class="header-right">
+        <a href="https://kick.com/teamfullsendslots" target="_blank" rel="noopener noreferrer" class="button">Live on KICK</a>
+      </div>
 
-    function shuffle(array) {
-      for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
-      }
-    }
+    </div>
 
-    function generateBracket() {
-      const bracketContainer = document.getElementById("bracketContainer");
-      bracketContainer.innerHTML = "";
 
-      rounds.forEach((round, roundIndex) => {
-        const roundDiv = document.createElement("div");
-        roundDiv.classList.add("bracket");
-        roundDiv.innerHTML = `<h2>Round ${roundIndex + 1}</h2>`;
-        bracketContainer.appendChild(roundDiv);
+  </header>
 
-        round.forEach((match, matchIndex) => {
-          let code = `${roundIndex + 1}${String.fromCharCode(65 + matchIndex)}`;
-          let player1 = match[0] || { kickUsername: "TBD", slot: "" };
-          let player2 = match[1] || { kickUsername: "TBD", slot: "" };
+<button id="menu-toggle" class="menu-button2">☰</button>
 
-          const matchDiv = document.createElement("div");
-          matchDiv.className = "match";
+<div class="fixed-buttons">
+  <div class="button-wrapper"><a href="/Tournament/" data-tooltip="Tournament"><span>Tournament</span></a></div>
+  <div class="button-wrapper"><a href="/Guess%the%Balance/" data-tooltip="Guess the Balance"><span>Guess the Balance</span></a></div>
+  <div class="button-wrapper"><a href="/Giveaways/" data-tooltip="Giveaways"><span>Giveaways</span></a></div>
+  <div class="button-wrapper"><a href="/Casino%Links/" data-tooltip="Casino Links"><span>Casino Links</span></a></div>
+</div>
 
-          const storedData = match[2];
-          if (storedData && storedData.winner) {
-            matchDiv.innerHTML = `
-              <span class="bracket-code">${code}</span>
-              <div>
-                <strong>${player1.kickUsername}</strong> (${player1.slot})<br>
-                Buy Amount = $${storedData.p1.buyAmount} |
-                Total Pay = $${storedData.p1.totalPay} |
-                Total X: ${storedData.p1.totalX}x
-              </div>
-              <div>
-                <strong>${player2.kickUsername}</strong> (${player2.slot})<br>
-                Buy Amount = $${storedData.p2.buyAmount} |
-                Total Pay = $${storedData.p2.totalPay} |
-                Total X: ${storedData.p2.totalX}x
-              </div>
-              <div class="winner">Winner: ${storedData.winner.kickUsername}</div>
-            `;
-          } else {
-            matchDiv.innerHTML = `
-              <span class="bracket-code">${code}</span>
-              <div>
-                <strong>${player1.kickUsername}</strong> (${player1.slot})
-                <input type="number" class="buyAmount" placeholder="Buy Amount">
-                <input type="number" class="totalPay" placeholder="Total Pay">
-                <span class="totalX">Total X: 0</span>
-              </div>
-              <div>
-                <strong>${player2.kickUsername}</strong> (${player2.slot})
-                <input type="number" class="buyAmount" placeholder="Buy Amount">
-                <input type="number" class="totalPay" placeholder="Total Pay">
-                <span class="totalX">Total X: 0</span>
-              </div>
-              <button onclick="generateWinner(this, ${roundIndex}, ${matchIndex}, '${code}')">Generate Winner</button>
-            `;
-          }
+<script>
+const menuToggle = document.getElementById('menu-toggle');
+const buttons = document.querySelector('.fixed-buttons');
+const wrappers = document.querySelectorAll('.button-wrapper');
 
-          roundDiv.appendChild(matchDiv);
+let menuVisible = true;
+
+menuToggle.addEventListener('click', () => {
+    if (menuVisible) {
+        // Hide with animation
+        buttons.classList.remove('showing');
+        buttons.classList.add('hiding');
+        setTimeout(() => {
+            buttons.style.display = 'none';
+        }, 400);
+    } else {
+        // Prepare hidden state first before showing
+        wrappers.forEach(wrapper => {
+            wrapper.style.opacity = 0;
+            wrapper.style.transform = 'scale(0.8)';
         });
-      });
 
-      addLiveTotalXListeners();
+        buttons.style.display = 'flex';
+
+        // Force reflow so the browser registers the styles above
+        void buttons.offsetWidth;
+
+        buttons.classList.remove('hiding');
+        buttons.classList.add('showing');
+
+        // After animation ends, clear inline styles to reset for next toggle
+        setTimeout(() => {
+            wrappers.forEach(wrapper => {
+                wrapper.style.opacity = '';
+                wrapper.style.transform = '';
+            });
+        }, 400);
     }
 
-    function addLiveTotalXListeners() {
-      document.querySelectorAll(".match").forEach(matchDiv => {
-        const playerDivs = matchDiv.querySelectorAll("div");
+    menuVisible = !menuVisible;
+});
 
-        playerDivs.forEach(playerDiv => {
-          const buyInput = playerDiv.querySelector(".buyAmount");
-          const payInput = playerDiv.querySelector(".totalPay");
-          const totalXSpan = playerDiv.querySelector(".totalX");
+</script>
 
-          if (buyInput && payInput && totalXSpan) {
-            const updateTotalX = () => {
-              const buy = parseFloat(buyInput.value);
-              const pay = parseFloat(payInput.value);
-              if (!isNaN(buy) && !isNaN(pay) && buy > 0) {
-                const totalX = (pay / buy).toFixed(2);
-                totalXSpan.textContent = `Total X: ${totalX}x`;
-              } else {
-                totalXSpan.textContent = "Total X: 0";
-              }
-            };
 
-            buyInput.addEventListener("input", updateTotalX);
-            payInput.addEventListener("input", updateTotalX);
-          }
-        });
-      });
-    }
 
-    function generateWinner(button, roundIndex, matchIndex, code) {
-      const matchDiv = button.parentElement;
-      const playersDivs = matchDiv.querySelectorAll("div");
-      let totalXs = [];
-      let winner = null;
-      let highestX = -1;
-      let inputs = [];
+<!-- Mobile full-screen menu (hidden by default) -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="/Tournament/"><span>Tournament</span></a>
+  <a href="/Guess%the%Balance/"><span>Guess the Balance</span></a>
+  <a href="/Giveaways/"><span>Giveaways</span></a>
+  <a href="/Casino%Links/"><span>Casino Links</span></a>
 
-      playersDivs.forEach(playerDiv => {
-        const buyAmount = parseFloat(playerDiv.querySelector(".buyAmount")?.value || 0);
-        const totalPay = parseFloat(playerDiv.querySelector(".totalPay")?.value || 0);
-        const totalX = (buyAmount > 0 && totalPay > 0) ? (totalPay / buyAmount).toFixed(2) : 0;
-        const name = playerDiv.querySelector("strong")?.innerText || "TBD";
-        const slot = playerDiv.innerHTML.match(/\((.*?)\)/)?.[1] || "";
+  <!-- Bottom section inside mobile menu -->
+  <div class="mobile-menu-bottom">
+    <a href="https://kick.com/teamfullsendslots" target="_blank" rel="noopener noreferrer" class="buy-button">Live on KICK</a>
+  </div>
+</div>
 
-        totalXs.push(parseFloat(totalX));
-        inputs.push({ buyAmount, totalPay, totalX });
+</main>
 
-        if (parseFloat(totalX) > highestX) {
-          highestX = totalX;
-          winner = { kickUsername: name, slot };
-        }
-      });
+<div class="tfs-section">
+  <div class="tfs-text">
+  <p class="tfs-title">TEAMFULLSEND</p>
+  <p>
+    🎰 Welcome to TeamfullsendSlots! Find us on KICK.COM- Giveaways every week CASH MONEY!
+  </p>
+    <!-- White container below with Launching Soon and COPY button -->
+    <div class="welcome-container">
+      <div class="copy-container">
+        <input type="text" value="kick.com/teamfullsendslots" id="copyText" readonly />
+        <button class="copy-button" onclick="copyText()">COPY</button>
+      </div>
+    </div>
 
-      const match = rounds[roundIndex][matchIndex];
-      match[2] = {
-        winner,
-        p1: inputs[0],
-        p2: inputs[1]
-      };
+</div>
+  <div class="hero-image">
+    <img src="assets/TFS2.png" alt="JAKI Bear" />
+  </div>
+</div>
 
-      if (roundIndex < 2) {
-        rounds[roundIndex + 1] = rounds[roundIndex + 1] || [];
-        let nextRound = rounds[roundIndex + 1];
-        if (nextRound.length > 0 && nextRound[nextRound.length - 1].length === 1) {
-          nextRound[nextRound.length - 1].push(winner);
-        } else {
-          nextRound.push([winner]);
-        }
-      } else if (code === "3A") {
-        document.getElementById("champion").classList.remove("hidden");
-        document.getElementById("championName").textContent = winner.kickUsername;
-      }
 
-      generateBracket();
-    }
-  </script>
-</body>
+<div class="marquee-container">
+  <div class="marquee-track" id="marqueeTrack">
+    <div class="marquee-content" id="marqueeText"></div>
+    <div class="marquee-content" id="marqueeClone"></div>
+  </div>
+</div>
 
-<style>
-footer {
-  width: 100%;
-  text-align: center;
-  margin-top: 30px;
-  padding: 1px 0;
-  background: rgba(34, 34, 34, 0.9);
-  color: #fff;
-  font-size: 14px !important;
-  border-top: 1px solid #00AEEF;
-  white-space: nowrap;
-  height: auto;
-  position: relative;
-  bottom: 0;
-  left: 0;
-  width: 100vw; /* Full viewport width */
-  min-width: 100%; /* Ensure no gaps */
-  margin-top: auto; /* Pushes footer to the bottom */
+
+<script>
+const socialLinks = `
+  <span><a href="https://kick.com/teamfullsendslots" target="_blank"><img src="assets/Kick2.png" width="30"> Watch Live on Kick</a></span>
+  <span><a href="https://discord.gg/8w2mTBY4nD" target="_blank"><img src="assets/Discord2.png" width="30"> Join Discord Server</a></span>
+  <span><a href="https://x.com/TeamFulSendSlot" target="_blank"><img src="assets/Twitter2.png" width="30"> Follow Twitter</a></span>
+  <span><a href="https://www.youtube.com/@TeamFullSendSlots01" target="_blank"><img src="assets/YouTube2.png" width="30"> Subscribe on YouTube</a></span>
+  <span><a href="https://www.instagram.com/teamfullsendslots01/" target="_blank"><img src="assets/Instagram.png" width="30"> Watch Reels on Instagram</a></span>
+  <span><a href="https://www.facebook.com/teamfullsendslots01" target="_blank"><img src="assets/Facebook.png" width="30"> Keep updated on Facebook</a></span>
+  <span><a href="https://www.twitch.tv/teamfullsendslots" target="_blank"><img src="assets/Twitch.png" width="30"> Watch Live on Twitch</a></span>
+`;
+
+const tfsTags = `
+  </span><span><img src="assets/Jess.png" width="30"></span></span><span><img src="assets/Jess.png" width="30"></span></span><span><img src="assets/Jess.png" width="30"></span><span><img src="assets/Jess.png" width="30"></span></span><span><img src="assets/Jess.png" width="30"></span>
+`;
+
+const cryptoTemplate = (btc, eth, sol, ltc, trx) => `
+  <span><img src="assets/BTC.png" width="30"> BTC: $${btc}</span>
+  <span><img src="assets/ETH.png" width="30"> ETH: $${eth}</span>
+  <span><img src="assets/SOL.png" width="30"> SOL: $${sol}</span>
+  <span><img src="assets/LTC.png" width="30"> LTC: $${ltc}</span>
+  <span><img src="assets/TRX.png" width="30"> TRX: $${trx}</span>
+`;
+
+async function fetchCryptoPrices() {
+  try {
+    const res = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana,litecoin,tron&vs_currencies=usd');
+    const data = await res.json();
+
+    return cryptoTemplate(
+      data.bitcoin.usd.toLocaleString(),
+      data.ethereum.usd.toLocaleString(),
+      data.solana.usd.toLocaleString(),
+      data.litecoin.usd.toLocaleString(),
+      data.tron.usd.toLocaleString()
+    );
+  } catch (err) {
+    console.error("Crypto price fetch failed", err);
+    return "<span>Error loading prices...</span>";
+  }
 }
 
+async function updateMarquee() {
+  const content = document.getElementById("marqueeText");
+  const clone = document.getElementById("marqueeClone");
+  const crypto = await fetchCryptoPrices();
 
- footer a {
-    	color: #00AEEF;
-    	text-decoration: none;
-    }
+  const fullContent = `${socialLinks}${tfsTags}${crypto}${tfsTags}`;
+  content.innerHTML = fullContent;
+  clone.innerHTML = fullContent;
+}
 
- footer a:hover {
-    	text-decoration: underline;
-    }
+window.addEventListener("load", () => {
+  updateMarquee();
+  setInterval(updateMarquee, 2 * 60 * 1000); // every 2 minutes
+});
+</script>
 
- footer p {
-    	margin: 0 5px; /* Adds a small space between elements */
-    	margin-left: 0;
-    }
-</style>
+
+<section id="socials">
+<div class="socials-container">
+  <h2 class="socials-title">SOCIAL ACCOUNTS</h2>
+</div>
+
+<div style="display: flex; flex-wrap: wrap; justify-content: center;">
+
+<!-- Kick -->
+<div class="social-flip-card">
+  <div class="social-flip-card-inner">
+    <div class="social-flip-card-front">
+      <img src="https://files.kick.com/images/user/31982/profile_image/conversion/8baf1452-e1c2-4f17-ab21-7dc201c80a40-fullsize.webp" class="avatar" alt="Kick">
+      <h3>Kick</h3>
+      <p><b>TeamfullsendSlots</b></p>
+    </div>
+    <div class="social-flip-card-back">
+      <h3>Followers: 1.3k</h3>
+      <a href="https://kick.com/teamfullsendslots" target="_blank">Watch Live</a>
+    </div>
+  </div>
+</div>
+
+<!-- Discord -->
+<div class="social-flip-card">
+  <div class="social-flip-card-inner">
+    <div class="social-flip-card-front">
+      <img src="assets/logo.png"  class="avatar" alt="Discord">
+      <h3>Discord</h3>
+      <p>TeamFullSendSlots's Server</p>
+    </div>
+    <div class="social-flip-card-back">
+      <h3>Members: 348</h3>
+      <a href="https://discord.gg/8w2mTBY4nD" target="_blank">Join Server</a>
+    </div>
+  </div>
+</div>
+
+<!-- Twitter -->
+<div class="social-flip-card">
+  <div class="social-flip-card-inner">
+    <div class="social-flip-card-front">
+      <img src="https://files.kick.com/images/user/31982/profile_image/conversion/8baf1452-e1c2-4f17-ab21-7dc201c80a40-fullsize.webp" class="avatar" alt="Twitter">
+      <h3>Twitter</h3>
+      <p>@TeamFullSendSlot</p>
+    </div>
+    <div class="social-flip-card-back">
+      <h3>Followers: 39</h3>
+      <a href="https://x.com/TeamFullSendSlot" target="_blank">Follow</a>
+    </div>
+  </div>
+</div>
+
+<!-- Instagram -->
+<div class="social-flip-card">
+  <div class="social-flip-card-inner">
+    <div class="social-flip-card-front">
+      <img src="assets/logo.png"  class="avatar" alt="Instagram">
+      <h3>Instagram</h3>
+      <p>teamfullsendslots01</p>
+    </div>
+    <div class="social-flip-card-back">
+      <h3>Followers: 14.8k</h3>
+      <a href="https://www.instagram.com/teamfullsendslots01/" target="_blank">Follow</a>
+    </div>
+  </div>
+</div>
+
+
+<!-- Facebook -->
+<div class="social-flip-card">
+  <div class="social-flip-card-inner">
+    <div class="social-flip-card-front">
+      <img src="assets/logo.png"  class="avatar" alt="Instagram">
+      <h3>Facebook</h3>
+      <p>Teamfullsend Slots</p>
+    </div>
+    <div class="social-flip-card-back">
+      <h3>Followers: 9.6k</h3>
+      <a href="https://www.facebook.com/teamfullsendslots01" target="_blank">Follow</a>
+    </div>
+  </div>
+</div>
+
+
+
+<hr class="section-divider" />
+
+
+<section id="reels">
+  <div class="reels-section">
+    <h2 class="reels-title">INSTAGRAM REELS</h2>
+
+<div class="reels-container">
+  <div class="reels top">
+    <div class="reels-track">
+      <div class="reels-item"><a href="https://www.instagram.com/reel/DKUFekAxVZt/" target="_blank"><img src="assets//reels/reels01.jpg" alt="Reel 1" /></a></div>
+      <div class="reels-item"><a href="https://www.instagram.com/reel/DKBPHd3TTHd/" target="_blank"><img src="assets//reels/reels02.jpg" alt="Reel 2" /></a></div>
+      <div class="reels-item"><a href="https://www.instagram.com/reel/DJ8TztIx5hF/" target="_blank"><img src="assets//reels/reels03.jpg" alt="Reel 3" /></a></div>
+      <div class="reels-item"><a href="https://www.instagram.com/reel/DJi2W3Cxh8Q/" target="_blank"><img src="assets//reels/reels07.jpg" alt="Reel 7" /></a></div>
+      <div class="reels-item"><a href="https://www.instagram.com/reel/DJQrrRWRper/" target="_blank"><img src="assets//reels/reels08.jpg" alt="Reel 8" /></a></div>
+      <div class="reels-item"><a href="https://www.instagram.com/reel/DISNPMVzWqT/" target="_blank"><img src="assets//reels/reels11.jpg" alt="Reel 11" /></a></div>
+      <div class="reels-item"><a href="https://www.instagram.com/reel/DH6AQORz46Q/" target="_blank"><img src="assets//reels/reels12.jpg" alt="Reel 12" /></a></div>
+      <div class="reels-item"><a href="https://www.instagram.com/reel/DG6nUrnTc98/" target="_blank"><img src="assets//reels/reels15.jpg" alt="Reel 15" /></a></div>
+      <div class="reels-item"><a href="https://www.instagram.com/reel/DGhoU-uxTzw/" target="_blank"><img src="assets//reels/reels16.jpg" alt="Reel 16" /></a></div>
+      <div class="reels-item"><a href="https://www.instagram.com/reel/DGaeN6rpcn-/" target="_blank"><img src="assets//reels/reels19.jpg" alt="Reel 19" /></a></div>
+      <div class="reels-item"><a href="https://www.instagram.com/reel/DGQINugppfl/" target="_blank"><img src="assets//reels/reels20.jpg" alt="Reel 20" /></a></div>
+
+      <div class="reels-item"><a href="https://www.instagram.com/reel/DKUFekAxVZt/" target="_blank"><img src="assets//reels/reels01.jpg" alt="Reel 1" /></a></div>
+      <div class="reels-item"><a href="https://www.instagram.com/reel/DKBPHd3TTHd/" target="_blank"><img src="assets//reels/reels02.jpg" alt="Reel 2" /></a></div>
+      <div class="reels-item"><a href="https://www.instagram.com/reel/DJ8TztIx5hF/" target="_blank"><img src="assets//reels/reels03.jpg" alt="Reel 3" /></a></div>
+      <div class="reels-item"><a href="https://www.instagram.com/reel/DJi2W3Cxh8Q/" target="_blank"><img src="assets//reels/reels07.jpg" alt="Reel 7" /></a></div>
+      <div class="reels-item"><a href="https://www.instagram.com/reel/DJQrrRWRper/" target="_blank"><img src="assets//reels/reels08.jpg" alt="Reel 8" /></a></div>
+      <div class="reels-item"><a href="https://www.instagram.com/reel/DISNPMVzWqT/" target="_blank"><img src="assets//reels/reels11.jpg" alt="Reel 11" /></a></div>
+      <div class="reels-item"><a href="https://www.instagram.com/reel/DH6AQORz46Q/" target="_blank"><img src="assets//reels/reels12.jpg" alt="Reel 12" /></a></div>
+      <div class="reels-item"><a href="https://www.instagram.com/reel/DG6nUrnTc98/" target="_blank"><img src="assets//reels/reels15.jpg" alt="Reel 15" /></a></div>
+      <div class="reels-item"><a href="https://www.instagram.com/reel/DGhoU-uxTzw/" target="_blank"><img src="assets//reels/reels16.jpg" alt="Reel 16" /></a></div>
+      <div class="reels-item"><a href="https://www.instagram.com/reel/DGaeN6rpcn-/" target="_blank"><img src="assets//reels/reels19.jpg" alt="Reel 19" /></a></div>
+      <div class="reels-item"><a href="https://www.instagram.com/reel/DGQINugppfl/" target="_blank"><img src="assets//reels/reels20.jpg" alt="Reel 20" /></a></div>
+    </div>
+  </div>
+  <div class="reels bottom">
+    <div class="reels-track">
+      <div class="reels-item"><a href="https://www.instagram.com/reel/C9UCl_uPyC-/" target="_blank"><img src="assets//reels/reels04.jpg" alt="Reel 4" /></a></div>
+      <div class="reels-item"><a href="https://www.instagram.com/reel/DB7DOqjPaOZ/" target="_blank"><img src="assets//reels/reels05.jpg" alt="Reel 5" /></a></div>
+      <div class="reels-item"><a href="https://www.instagram.com/reel/C6iPUSixXG7/" target="_blank"><img src="assets//reels/reels06.jpg" alt="Reel 6" /></a></div>
+      <div class="reels-item"><a href="https://www.instagram.com/reel/DI2tgD8zId7/" target="_blank"><img src="assets//reels/reels09.jpg" alt="Reel 9" /></a></div>
+      <div class="reels-item"><a href="https://www.instagram.com/reel/DG71zMfxstL/" target="_blank"><img src="assets//reels/reels10.jpg" alt="Reel 10" /></a></div>
+      <div class="reels-item"><a href="https://www.instagram.com/reel/DHu16DpRw84/" target="_blank"><img src="assets//reels/reels13.jpg" alt="Reel 13" /></a></div>
+      <div class="reels-item"><a href="https://www.instagram.com/reel/DG9piCUTeqS/" target="_blank"><img src="assets//reels/reels14.jpg" alt="Reel 14" /></a></div>
+      <div class="reels-item"><a href="https://www.instagram.com/reel/DGzowfYRcO2/" target="_blank"><img src="assets//reels/reels17.jpg" alt="Reel 17" /></a></div>
+      <div class="reels-item"><a href="https://www.instagram.com/reel/DGdCtcPJxiD/" target="_blank"><img src="assets//reels/reels18.jpg" alt="Reel 18" /></a></div>
+      <div class="reels-item"><a href="https://www.instagram.com/reel/DGWk_QiTVnI/" target="_blank"><img src="assets//reels/reels21.jpg" alt="Reel 21" /></a></div>
+      <div class="reels-item"><a href="https://www.instagram.com/reel/DGNMqN3TwMj/" target="_blank"><img src="assets//reels/reels22.jpg" alt="Reel 22" /></a></div>
+
+      <div class="reels-item"><a href="https://www.instagram.com/reel/C9UCl_uPyC-/" target="_blank"><img src="assets//reels/reels04.jpg" alt="Reel 4" /></a></div>
+      <div class="reels-item"><a href="https://www.instagram.com/reel/DB7DOqjPaOZ/" target="_blank"><img src="assets//reels/reels05.jpg" alt="Reel 5" /></a></div>
+      <div class="reels-item"><a href="https://www.instagram.com/reel/C6iPUSixXG7/" target="_blank"><img src="assets//reels/reels06.jpg" alt="Reel 6" /></a></div>
+      <div class="reels-item"><a href="https://www.instagram.com/reel/DI2tgD8zId7/" target="_blank"><img src="assets//reels/reels09.jpg" alt="Reel 9" /></a></div>
+      <div class="reels-item"><a href="https://www.instagram.com/reel/DG71zMfxstL/" target="_blank"><img src="assets//reels/reels10.jpg" alt="Reel 10" /></a></div>
+      <div class="reels-item"><a href="https://www.instagram.com/reel/DHu16DpRw84/" target="_blank"><img src="assets//reels/reels13.jpg" alt="Reel 13" /></a></div>
+      <div class="reels-item"><a href="https://www.instagram.com/reel/DG9piCUTeqS/" target="_blank"><img src="assets//reels/reels14.jpg" alt="Reel 14" /></a></div>
+      <div class="reels-item"><a href="https://www.instagram.com/reel/DGzowfYRcO2/" target="_blank"><img src="assets//reels/reels17.jpg" alt="Reel 17" /></a></div>
+      <div class="reels-item"><a href="https://www.instagram.com/reel/DGdCtcPJxiD/" target="_blank"><img src="assets//reels/reels18.jpg" alt="Reel 18" /></a></div>
+      <div class="reels-item"><a href="https://www.instagram.com/reel/DGWk_QiTVnI/" target="_blank"><img src="assets//reels/reels21.jpg" alt="Reel 21" /></a></div>
+      <div class="reels-item"><a href="https://www.instagram.com/reel/DGNMqN3TwMj/" target="_blank"><img src="assets//reels/reels22.jpg" alt="Reel 22" /></a></div>
+    </div>
+  </div>
+</div>
+
+<script>
+document.querySelectorAll('.marquee-item').forEach(item => {
+  item.addEventListener('click', () => {
+    const link = item.getAttribute('data-link');
+    if (link) window.open(link, '_blank');
+  });
+});
+</script>
+</section>
+
+<script>
+const menuButton = document.querySelector('.menu-button');
+const mobileMenu = document.getElementById('mobileMenu');
+
+menuButton.addEventListener('click', function () {
+  // Toggle the mobile menu visibility
+  mobileMenu.classList.toggle('show');
+  
+  // Toggle the body class to prevent scrolling
+  document.body.classList.toggle('menu-open');
+});
+
+// Close menu when a link is clicked (optional but good for UX)
+document.querySelectorAll('#mobileMenu a').forEach(link => {
+  link.addEventListener('click', () => {
+    mobileMenu.classList.remove('show');
+    document.body.classList.remove('menu-open');
+  });
+});
+
+</script>
+
+<script>
+
+function copyText() {
+  var copyText = document.getElementById("copyText");
+  copyText.select();
+  copyText.setSelectionRange(0, 99999); // For mobile devices
+  document.execCommand("copy");
+}
+
+</script>
+
+</body>
 
 <footer>
-	<p>&copy; 2025 𝐓𝐞𝐚𝐦𝐅𝐮𝐥𝐥𝐒𝐞𝐧𝐝𝐒𝐥𝐨𝐭𝐬.𝐜𝐨𝐦‌. All rights reserved.</p>
+  <p>&copy; 2025 <strong>TeamFullSendSlots.com</strong>. All rights reserved.</p>
+
+<div class="footer-legal">
+  <a href="/Policy/" target="_blank">Privacy & Terms</a>
+</div>
 </footer>
+
 
 </html>
