@@ -30,20 +30,13 @@
 
     @media (max-width: 768px) {
       body {
-        background: url('background.jpg') no-repeat;
-        background-size: auto 100vh;
+        background-size: cover;
         background-color: #1D4781;
-        background-repeat: repeat-y;
-        animation: backgroundLoop 15s linear infinite;
-	height: 100%; 
-      }
-
-      @keyframes backgroundLoop {
-        0% { background-position: 100% center; }
-        50% { background-position: 0% center; }
-        100% { background-position: 100% center; }
-      }
+        overflow-x: hidden;
+        margin: 0;
+        padding: 0;
     }
+}
 
 
 
