@@ -310,6 +310,20 @@ body.menu-open {
   }
 }
 
+
+@media only screen and (max-width: 768px) {
+  header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 9999;
+  }
+
+
+}
+
+
 .tfs-section {
   display: flex;
   align-items: flex-start; /* align content to the top */
@@ -337,13 +351,6 @@ body.menu-open {
   justify-content: center;    
   align-items: flex-start;
   margin-top: clamp(-10rem, -5vw, -2.5rem);    
-}
-
-.tfs-image img {
-  width: 100%;
-  max-width: 700px;
-  height: auto;
-  object-fit: contain;
 }
 
 .tfs-title {
@@ -405,65 +412,75 @@ body.menu-open {
   background-color: #e6b800;
 }
 
-/* Mobile version - Adjustments for small screen sizes */
-@media screen and (max-width: 768px) {
+@media (max-width: 768px) {
   .tfs-section {
-    display: flex;
-    flex-direction: column; /* Stack elements vertically on mobile */
-    padding: 0 5vw; /* Adjust padding for mobile */
-    height: auto; /* Let the section grow naturally on mobile */
-    align-items: center;        /* Center children horizontally */
-    text-align: center;         /* Inherit centering for children */
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 0 5vw;
+    height: auto;
+    margin-left: 0;
+    margin-top: -80px;
   }
 
   .tfs-text {
-    margin-top: 0; /* Remove negative margin on mobile */
-    text-align: center; /* Center text */
-    font-size: clamp(0.8rem, 2vw, 2rem);
-    width: 100%;
+    padding-right: 0;
+    text-align: center;
+    font-size: 1rem;
+    margin-top: 0;
   }
 
   .tfs-image {
-    margin-top: clamp(-45rem, -20vw, -13rem);
-    padding-top: clamp(10px, 5vw, 40px);
-    width: 100%; /* Ensure image takes up the full width */
-    justify-content: center; /* Center the image */
-    align-items: flex-start; /* Align the image at the top */
-    order: -1; /* Make sure the image comes first */
+    margin-top: 1rem;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
   }
 
   .tfs-image img {
-    width: 100%; /* Ensure image takes up the full width */
-    max-width: 500px; /* Set a max width */
+    width: 80%;
+    max-width: 300px;
     height: auto;
-    object-fit: contain; /* Keep the aspect ratio intact */
+    object-fit: contain;
+    display: block;
   }
 
-.tfs-title {
-  font-size: clamp(2.5rem, 8vw, 4rem);
-  text-align: center;
-  margin: 0 auto;
-  width: 80%;
-  box-sizing: border-box; /* Make sure padding doesn't cause overflow */
-  color: white;
-}
-
+  .tfs-title {
+    font-size: 2rem;
+  }
 
   .welcome-container {
-    font-size: clamp(0.8rem, 2.5vw, 1.25rem);
-    padding: clamp(1px, 0.5vw, 3px) clamp(2px, 1vw, 6px);
-    margin-bottom: 1.5rem;
-}
+    font-size: 0.7rem;
+    margin-bottom: 1rem;
+    padding: 4px 6px;
+    text-align: center;
+  }
 
   .welcome-text {
-    font-size: 1.5rem; /* Adjust launch text size */
+    font-size: 1.8rem;
+  }
+
+  .copy-container {
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: stretch;
+    width: 100%;
+  }
+
+  .copy-container input {
+    width: 91%;
+    font-size: 1rem;
+    padding: 10px;
+    background: green;
   }
 
   .copy-button {
-    padding: 4px 10px; /* Adjust button padding */
-    font-size: 0.8rem; /* Adjust button font size */
+    width: 100%;
+    font-size: 1rem;
+    padding: 10px;
   }
 }
+
 
 .marquee-container {
   width: 101vw;
@@ -516,6 +533,37 @@ body.menu-open {
 @keyframes marquee-scroll {
   0% { transform: translateX(0); }
   100% { transform: translateX(-50%); }
+}
+
+
+
+@media (max-width: 768px) {
+  .marquee-container {
+    width: 100vw;
+    padding: 0.7rem 0;
+    box-shadow: 0 0 8px gold;
+    overflow-x: hidden; /* Prevents horizontal scrolling due to overflows */
+  min-height: 3rem; /* ensures at least double height */
+  height: auto; /* lets container grow with content */
+}
+
+  .marquee-track {
+    animation-duration: 40s; /* Slightly faster scroll for smaller screens */
+  }
+
+  .marquee-content {
+    gap: 1.2rem; /* Reduce gap between items */
+  }
+
+  .marquee-content span {
+    font-size: 0.95rem; /* Smaller text for mobile */
+    margin-right: 1.2rem;
+  }
+
+  .marquee-content img {
+    max-width: 20px;
+    height: auto;
+  }
 }
 
 
@@ -632,6 +680,42 @@ body.menu-open {
   margin-top: 0.5rem;
   font-weight: bold;
 }
+
+
+@media (max-width: 768px) {
+
+  .social-flip-card {
+    width: 140px;
+    height: 200px;
+    margin: 2rem auto; /* center cards vertically with margin */
+    display: block; /* stack cards vertically */
+    padding-right: 1rem;
+  }
+
+.social-flip-card-front {
+    font-size: 0.9rem;
+}
+
+  .social-flip-card-inner {
+    transition: transform 0.6s; /* slightly faster flip on mobile */
+  }
+
+  .social-flip-card img.avatar {
+    width: 80px;
+    height: 80px;
+    margin-bottom: 0.8rem;
+  }
+
+  .social-flip-card h3 {
+    font-size: 1.5rem;
+  }
+
+  .social-flip-card a {
+    font-size: 1rem;
+    margin-top: 0.3rem;
+  }
+}
+
 
 
 /* Divider line */
@@ -928,8 +1012,8 @@ menuToggle.addEventListener('click', () => {
     </div>
 
 </div>
-  <div class="hero-image">
-    <img src="assets/TFS2.png" alt="JAKI Bear" />
+  <div class="tfs-image">
+    <img src="assets/TFS2.png" alt="TFS" />
   </div>
 </div>
 
