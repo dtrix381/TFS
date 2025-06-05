@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Privacy Policy & Terms of Use | TeamFullSendSlots</title>
+  <link rel="stylesheet" href="../styles.css" />
+  <link rel="icon" href="../assets/icon.png" type="image/png" />
+  <link rel="apple-touch-icon" href="../assets/icon.png">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron&display=swap" rel="stylesheet">
+
+
+  <style>
+    body {
+      font-family: 'Orbitron', sans-serif;
+      background-size: cover;
+      background-color: #1D4781;
+      color: white;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      text-shadow: 1px 1px 2px #000;
+      height: 100%; 
+      overflow-x: hidden;
+    }
+
+@media (max-width: 768px) {
+  body {
+    background-size: cover;
+    background-color: #1D4781;
+    overflow-x: hidden;
+    margin: 0;
+    padding: 0;
+  }
+}
+
+
+
+
+     h1, h2 {
+      text-align: center;
+      color: gold;
+      text-shadow: 2px 2px 4px #000;
+    }
+
+html, body {
+  height: 100%; /* Full height of the viewport */
+  margin: 0; /* Remove default margin */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start; /* Align content at the top */
+}
+
+main, .content {
+    padding-bottom: 150px; /* Make this a bit more than the footer height */
+}
+
+
+    .container {
+      max-width: 900px;
+      margin: 60px auto;
+      padding: 0 20px;
+    }
+
+    p, li {
+      font-size: 1rem;
+      line-height: 1.6;
+      color: #e0e0e0;
+    }
+
+    ul {
+      margin-left: 20px;
+    }
+
+    a {
+      color: #bb6eff;
+      text-decoration: underline;
+    }
+
+    .neon-box {
+      border: 2px solid #bb6eff;
+      border-radius: 12px;
+      padding: 30px;
+      box-shadow: 0 0 25px rgba(187, 110, 255, 0.5);
+      background: #1a1a1f;
+      margin-top: 20px;
+    }
+
+    hr {
+      margin: 40px 0;
+      border: none;
+      border-top: 1px solid #444;
+    }
+}
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="header-container">
+      
+      <!-- Left -->
+      <div class="header-left">
+        <h1>TeamFullSend</h1>
+      </div>
+      
+	<!-- Menu button (only visible on mobile) -->
+    <button class="menu-button" aria-label="Toggle Menu">☰</button>
+
+      <!-- Right -->
+      <div class="header-right">
+        <a href="https://kick.com/teamfullsendslots" target="_blank" rel="noopener noreferrer" class="button">Live on KICK</a>
+      </div>
+
+    </div>
+
+
+  </header>
+<button id="menu-toggle" class="menu-button2">☰</button>
+<div class="fixed-buttons">
+  <div class="button-wrapper"><a href="/Tournament/" data-tooltip="Tournament"><span>Tournament</span></a></div>
+  <div class="button-wrapper"><a href="/Guess-the-Balance/" data-tooltip="Guess the Balance"><span>Guess the Balance</span></a></div>
+  <div class="button-wrapper"><a href="/Giveaways/" data-tooltip="Giveaways"><span>Giveaways</span></a></div>
+  <div class="button-wrapper"><a href="/Casino-Links/" data-tooltip="Casino Links"><span>Casino Links</span></a></div>
+  <div class="button-wrapper"><a href="/" data-tooltip="Home"><span>Home Page</span></a></div>
+</div>
+
+<script>
+const menuToggle = document.getElementById('menu-toggle');
+const buttons = document.querySelector('.fixed-buttons');
+const wrappers = document.querySelectorAll('.button-wrapper');
+
+let menuVisible = true;
+
+menuToggle.addEventListener('click', () => {
+    if (menuVisible) {
+        // Hide with animation
+        buttons.classList.remove('showing');
+        buttons.classList.add('hiding');
+        setTimeout(() => {
+            buttons.style.display = 'none';
+        }, 400);
+    } else {
+        // Prepare hidden state first before showing
+        wrappers.forEach(wrapper => {
+            wrapper.style.opacity = 0;
+            wrapper.style.transform = 'scale(0.8)';
+        });
+
+        buttons.style.display = 'flex';
+
+        // Force reflow so the browser registers the styles above
+        void buttons.offsetWidth;
+
+        buttons.classList.remove('hiding');
+        buttons.classList.add('showing');
+
+        // After animation ends, clear inline styles to reset for next toggle
+        setTimeout(() => {
+            wrappers.forEach(wrapper => {
+                wrapper.style.opacity = '';
+                wrapper.style.transform = '';
+            });
+        }, 400);
+    }
+
+    menuVisible = !menuVisible;
+});
+
+</script>
+
+
+
+<!-- Mobile full-screen menu (hidden by default) -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="/Tournament/"><span>Tournament</span></a>
+  <a href="/Guess-the-Balance/"><span>Guess the Balance</span></a>
+  <a href="/Giveaways/"><span>Giveaways</span></a>
+  <a href="/Casino-Links/"><span>Casino Links</span></a>
+
+  <!-- Bottom section inside mobile menu -->
+  <div class="mobile-menu-bottom">
+    <a href="/" class="buy-button">Go back Home 🏠</a>
+  </div>
+</div>
+
+<script>
+  const mobileMenuButton = document.querySelector('.menu-button');
+  const mobileMenu = document.getElementById('mobileMenu');
+
+  mobileMenuButton.addEventListener('click', () => {
+    mobileMenu.classList.toggle('open');
+    document.body.classList.toggle('menu-open');
+  });
+</script>
+
+
+
+  <div class="container">
+    <div class="neon-box">
+      <h1>Privacy Policy</h1>
+      <p>Effective Date: June 3, 2025</p>
+      <p>This Privacy Policy outlines how we collect, use, and protect your personal information when using our website. By using this site, you consent to the data practices outlined below.</p>
+
+      <h2>1. Information We Collect</h2>
+      <ul>
+        <li>Website usage data (pages viewed, visit duration, etc.)</li>
+        <li>Browser/device information</li>
+        <li>IP address (used anonymously for analytics)</li>
+        <li>Optional account or social media integrations (e.g., Discord)</li>
+      </ul>
+
+      <h2>2. How We Use Your Information</h2>
+      <ul>
+        <li>To improve and customize your experience</li>
+        <li>To provide features like streamer alerts or giveaways</li>
+        <li>To monitor site functionality and prevent abuse</li>
+      </ul>
+
+      <h2>3. Cookies</h2>
+      <p>We use cookies to remember your settings such as age confirmation, login status, and theme preferences. You may disable cookies in your browser, but some features may be affected.</p>
+
+      <h2>4. Age Requirement</h2>
+      <p>This site is strictly for users aged <strong>18+</strong>. We do not knowingly collect data from minors.</p>
+
+      <h2>5. Data Security</h2>
+      <p>We implement reasonable security measures, but cannot guarantee complete protection. Use this site at your discretion.</p>
+
+      <h2>6. Changes to This Policy</h2>
+      <p>We may update this policy at any time. Any changes will be posted here with a revised effective date.</p>
+
+      <hr />
+
+      <h1>Terms of Use</h1>
+      <p>By accessing and using this website, you agree to comply with the following terms and conditions. If you do not agree, please do not use the site.</p>
+
+      <h2>1. Eligibility</h2>
+      <p>You must be at least <strong>18 years old</strong> to use this website. We do not allow users under this age to participate in any feature or section.</p>
+
+      <h2>2. Acceptable Use</h2>
+      <ul>
+        <li>Do not use this site for any illegal or unauthorized purpose.</li>
+        <li>Do not attempt to hack, disrupt, or abuse site features.</li>
+        <li>Do not impersonate other users or use automated bots.</li>
+      </ul>
+
+      <h2>3. Casino-Themed Content</h2>
+      <p>This site contains gambling-related themes and references for entertainment purposes only. We do not operate a real-money casino. Participation in giveaways or games is free and purely for entertainment.</p>
+
+      <h2>4. Third-Party Links</h2>
+      <p>We may include links or embedded content from third parties such as Kick.com, Discord, or Twitch. We are not responsible for their content or privacy practices.</p>
+
+      <h2>5. Limitation of Liability</h2>
+      <p>We are not responsible for any loss, injury, or damage resulting from use of this site. All use is at your own risk.</p>
+
+      <h2>6. Modifications</h2>
+      <p>We reserve the right to update these Terms at any time without notice. Continued use of the site means you accept the updated terms.</p>
+
+      <h2>7. Contact</h2>
+      <p>If you have questions regarding these Terms, please contact us.</p>
+
+
+    </div>
+  </div>
+</body>
+
+<footer>
+  <p>&copy; 2025 <strong>TeamFullSendSlots.com</strong>. All rights reserved.</p>
+
+</footer>
+
+</html>
