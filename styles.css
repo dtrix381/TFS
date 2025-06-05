@@ -150,21 +150,25 @@
 }
 
 .fixed-buttons.hiding .button-wrapper {
-    animation: fadeOut 0.4s forwards ease;
+    animation: fadeOut 0.5s forwards ease;
 }
 
 .fixed-buttons.showing .button-wrapper {
-    animation: fadeIn 0.4s forwards ease;
+    animation: fadeIn 0.5s forwards ease;
 }
 
 /* Stagger animation delays */
 .fixed-buttons.showing .button-wrapper:nth-child(1) { animation-delay: 0s; }
 .fixed-buttons.showing .button-wrapper:nth-child(2) { animation-delay: 0.1s; }
 .fixed-buttons.showing .button-wrapper:nth-child(3) { animation-delay: 0.2s; }
+.fixed-buttons.showing .button-wrapper:nth-child(4) { animation-delay: 0.3s; }
+.fixed-buttons.showing .button-wrapper:nth-child(5) { animation-delay: 0.4s; }
 
-.fixed-buttons.hiding .button-wrapper:nth-child(1) { animation-delay: 0.2s; }
-.fixed-buttons.hiding .button-wrapper:nth-child(2) { animation-delay: 0.1s; }
-.fixed-buttons.hiding .button-wrapper:nth-child(3) { animation-delay: 0s; }
+.fixed-buttons.hiding .button-wrapper:nth-child(1) { animation-delay: 0.4s; }
+.fixed-buttons.hiding .button-wrapper:nth-child(2) { animation-delay: 0.3s; }
+.fixed-buttons.hiding .button-wrapper:nth-child(3) { animation-delay: 0.2s; }
+.fixed-buttons.hiding .button-wrapper:nth-child(4) { animation-delay: 0.1s; }
+.fixed-buttons.hiding .button-wrapper:nth-child(5) { animation-delay: 0s; }
 
 @keyframes fadeIn {
     to {
@@ -326,5 +330,284 @@ footer a:hover {
   color: #111;
   box-shadow: 0 0 10px #ffde59;
 }
+
+
+header {
+  background-color: #0E1327;
+  padding: clamp(0.3rem, 1vw, 0.8rem); /* smaller padding */
+  color: white;
+  font-family: Arial, sans-serif;
+  border-bottom: 2px solid black;
+  width: 98.3vw;
+}
+
+/* Flex container */
+.header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: nowrap; /* Ensures elements stay on one line */
+  gap: clamp(0.5rem, 2vw, 1.5rem);
+}
+
+/* Left */
+.header-left h1 {
+    font-size: clamp(2.25rem, 4vw, 2rem);
+    margin: 0;
+    text-align: center;
+    font-family: 'Akaya Kanadaka', cursive;
+    color: #fff;
+    animation: bearGrowl 2s ease-in-out infinite, bearShake 1.5s ease-in-out infinite;
+}
+
+/* Center nav */
+.header-center {
+  display: flex;
+  gap: clamp(1rem, 2vw, 2rem);
+  flex: 1;
+  justify-content: center;
+  flex-wrap: nowrap; /* Prevents wrapping */
+}
+
+.header-center a {
+  text-decoration: none;
+  color: #c81f7e;
+  font-weight: bold;
+  font-size: clamp(0.9rem, 2.5vw, 1.2rem);
+}
+
+/* Right nav container */
+.header-right {
+  display: flex;
+  gap: clamp(0.5rem, 1.5vw, 1rem);
+  flex-wrap: nowrap; /* Prevents wrapping */
+  justify-content: flex-end;
+  font-weight: bold;
+}
+
+/* Buy Now button with pre-hover animation */
+.header-right .button {
+  background-color: green;
+  border: 2px solid black;
+  padding: clamp(0.3rem, 1vw, 0.6rem) clamp(0.6rem, 2vw, 1.2rem);
+  text-decoration: none;
+  color: white;
+  font-weight: bold;
+  font-size: clamp(1rem, 2.5vw, 1rem);
+  border-radius: 5px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  animation: pulse 2s infinite ease-in-out;
+}
+
+/* Hover animation */
+.header-right .button:hover {
+  background-color: black;
+  color: white;
+  transform: scale(1.05);
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.4);
+}
+
+/* Pulse animation (before hover) */
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.02); }
+  100% { transform: scale(1); }
+}
+
+/* Optional: Shine effect on hover */
+.header-right .button::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -75%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    120deg,
+    rgba(255, 255, 255, 0.3),
+    rgba(255, 255, 255, 0)
+  );
+  transform: skewX(-25deg);
+}
+
+/* Trigger shine on hover */
+.header-right .button:hover::before {
+  left: 125%;
+  transition: left 0.7s ease;
+}
+
+
+
+
+/* Menu button */
+.menu-button {
+  display: none;
+  font-size: 2rem;
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+}
+
+  .mobile-menu {
+    display: none;
+}
+
+
+
+/* Mobile tweaks */
+@media (max-width: 768px) {
+
+  /* Hide center and right sections inside header */
+  .header-center,
+  .header-right {
+    display: none;
+  }
+
+body.menu-open {
+  overflow: hidden; /* Prevent scrolling */
+}
+
+  /* Show menu button */
+  .menu-button {
+    display: block;
+    font-size: 0.9rem;
+    background: #151830;
+    border: 1px solid #fff;
+    padding: 0.5rem 0.75rem;
+    border-radius: 6px;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s ease-in-out;
+    z-index: 1001;
+  }
+
+.mobile-menu {
+  position: fixed;
+  top: 58px;
+  left: 0;
+  right: 0;
+  bottom: auto; /* Don’t stretch to bottom */
+  max-height: none;
+  height: calc(100vh - 58px); /* fills from below header to bottom */
+   background-color: #1D4781;
+  color: black;
+  z-index: 1000;
+  flex-direction: column;
+  align-items: flex-start; 
+  gap: 2rem;
+  padding: clamp(1rem, 4vw, 2rem);
+  overflow-y: auto;
+}
+
+.mobile-menu.open {
+  display: flex;
+  position: fixed;
+  top: 58px;
+  left: 0;
+  right: 0;
+  bottom: auto; /* Don’t stretch to bottom */
+  max-height: none;
+  height: calc(100vh - 58px);
+  background-color: #1D4781;
+  color: #FFD700;
+  z-index: 100;
+  flex-direction: column;
+  align-items: flex-start; 
+  gap: 2rem;
+  padding: clamp(1rem, 4vw, 2rem);
+  overflow-y: auto;
+}
+
+.mobile-menu-open .mobile-menu {
+  display: block;
+}
+
+  .mobile-menu a {
+  font-size: clamp(1rem, 2.5vw, 1.2rem);
+  text-decoration: none;
+  top: 58px;
+  color: #FFD700;
+  width: 100%;
+  position: relative;
+  padding-bottom: clamp(0.5rem, 1vw, 1rem);
+  display: inline-block;
+}
+
+.mobile-menu a::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 2px;
+  width: 50%; /* exactly text width */
+  background-color: #bb6eff;
+}
+
+  .mobile-menu.show {
+    display: flex;
+  }
+
+/* Disable ::after for links inside .mobile-menu-bottom */
+.mobile-menu-bottom a::after {
+  content: none;
+}
+
+  /* Header-left centered on mobile */
+  .header-left {
+    margin: 0 auto;
+  }
+
+.mobile-menu-bottom {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* ✅ Horizontally center children */
+  justify-content: center; /* ✅ Vertically center if needed */
+  gap: 1rem;
+  margin-top: auto;
+  padding-bottom: 22rem; /* add some space from screen bottom */
+  width: 100%; /* ✅ Ensure full width for horizontal centering */
+}
+
+.buy-button {
+  background-color: #bb6eff;
+  color: #151830;
+  padding: clamp(0.5rem, 1vw, 1rem) clamp(1rem, 3vw, 2rem);
+  border: none;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: clamp(0.9rem, 1.2vw, 1.1rem);
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  text-align: center; /* Center the button text */
+  display: inline-block; /* Makes the button fit content */
+  width: auto; /* Adjusts the width to the content */
+  max-width: 250px; /* Set a max width if needed */
+  margin: 0 auto; /* Centers the button horizontally */
+}
+
+
+  .buy-button:hover {
+    background-color: #e6b800;
+  }
+}
+
+
+@media only screen and (max-width: 768px) {
+  header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 9999;
+  }
+
+
+}
+
 
 
