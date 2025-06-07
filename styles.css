@@ -27,6 +27,7 @@
   }
 }
 
+
 .fixed-buttons {
     position: fixed;
     top: 160px;
@@ -511,7 +512,7 @@ body.menu-open {
   bottom: auto; /* Don’t stretch to bottom */
   max-height: none;
   height: calc(100vh - 58px);
-  background-color: #1D4781;
+  background-color: #021649;
   color: #FFD700;
   z-index: 100;
   flex-direction: column;
