@@ -178,7 +178,6 @@
 .container {
   margin: 0 auto;
   max-width: 510px;
-  margin-top: -300px;
   width: 80%;
 }
 
@@ -257,6 +256,7 @@
       overflow-x: auto;
       max-width: 710px;
       margin: auto;
+      margin-top: 30px;
     }
 
     .table {
@@ -343,7 +343,14 @@
   line-height: 40px;     /* Vertically centers the text/icon */
 }
   
+.history-container table {
+  font-size: 14px;
+}
 
+.history-container td,
+.history-container th {
+  text-align: center;
+}
 
 @media screen and (max-width: 768px) {
   .wrapper {
@@ -362,7 +369,7 @@
   }
 
   .container {
-    margin-top: -150px;
+    margin-top: -230px;
     width: 90%;
   }
 
@@ -401,6 +408,7 @@
   .pagination {
     flex-direction: column;
     gap: 5px;
+    margin-top: -230px;
   }
 
   .pagination button {
@@ -678,8 +686,6 @@ function renderTable() {
 </div>
 </div>
 
-</main>
-
 <div class="pagination">
     <button id="prevPage" onclick="changePage(-1)" disabled>Previous</button>
     <span id="pageInfo">Page 1</span>
@@ -687,6 +693,96 @@ function renderTable() {
 </div>
 
 
+<div class="container history-container">
+  <h2>GTB Hunt History</h2>
+  <div class="table-responsive">
+    <table class="table table-dark">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Starting Balance</th>
+          <th>Final Balance</th>
+          <th>Result</th>
+        </tr>
+      </thead>
+      <tbody id="history-body">
+        <!-- Data inserted by JavaScript -->
+      </tbody>
+    </table>
+  </div>
+
+  <div class="pagination">
+    <button id="history-prevPage" onclick="changeHistoryPage(-1)" disabled>Previous</button>
+    <span id="history-pageInfo">Page 1</span>
+    <button id="history-nextPage" onclick="changeHistoryPage(1)">Next</button>
+  </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const historyData = [
+    { date: "June 6", start: "$500.00", end: "$381.00", result: "-$119.00" },
+    { date: "June 5", start: "$420.00", end: "$690.00", result: "+$270.00" },
+    { date: "June 4", start: "$300.00", end: "$500.00", result: "+$200.00" },
+    { date: "June 6", start: "$500.00", end: "$381.00", result: "-$119.00" },
+    { date: "June 5", start: "$420.00", end: "$690.00", result: "+$270.00" },
+    { date: "June 4", start: "$300.00", end: "$500.00", result: "+$200.00" },
+    { date: "June 6", start: "$500.00", end: "$381.00", result: "-$119.00" },
+    { date: "June 5", start: "$420.00", end: "$690.00", result: "+$270.00" },
+    { date: "June 4", start: "$300.00", end: "$500.00", result: "+$200.00" },
+    { date: "June 6", start: "$500.00", end: "$381.00", result: "-$119.00" },
+    { date: "June 5", start: "$420.00", end: "$690.00", result: "+$270.00" },
+    { date: "June 4", start: "$300.00", end: "$500.00", result: "+$200.00" },
+  ];
+
+  const rowsPerPage = 5;
+  let currentHistoryPage = 1;
+
+  function renderHistoryTable() {
+    const tbody = document.getElementById("history-body");
+    if (!tbody) return; // If not found, exit early
+
+    tbody.innerHTML = "";
+
+    const start = (currentHistoryPage - 1) * rowsPerPage;
+    const end = start + rowsPerPage;
+    const pageData = historyData.slice(start, end);
+
+    pageData.forEach((data) => {
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td><a href="history/${data.date}" style="color: white; text-decoration: underline;">${data.date}</a></td>
+        <td>${data.start}</td>
+        <td>${data.end}</td>
+        <td>${data.result}</td>
+      `;
+      tbody.appendChild(row);
+    });
+
+    document.getElementById("history-pageInfo").textContent =
+      `Page ${currentHistoryPage} of ${Math.ceil(historyData.length / rowsPerPage)}`;
+
+    document.getElementById("history-prevPage").disabled = currentHistoryPage === 1;
+    document.getElementById("history-nextPage").disabled = end >= historyData.length;
+  }
+
+  function changeHistoryPage(direction) {
+    currentHistoryPage += direction;
+    renderHistoryTable();
+  }
+
+  // Expose pagination globally
+  window.changeHistoryPage = changeHistoryPage;
+
+  // Render the first page
+  renderHistoryTable();
+});
+</script>
+
+
+
+
+</main>
 
 
 
