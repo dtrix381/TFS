@@ -9,6 +9,7 @@
   <link rel="apple-touch-icon" href="../assets/icon.png">
   <link href="https://fonts.googleapis.com/css2?family=Orbitron&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Brick+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Akaya+Kanadaka&display=swap" rel="stylesheet">
 
 <!-- Open Graph Tags -->
 <meta property="og:title" content="TeamFullSendSlots">
@@ -363,7 +364,7 @@
       
       <!-- Left -->
       <div class="header-left">
-        <h1>TeamFullSend</h1>
+        <a href="/" style="text-decoration: none;"><h1>TeamFullSend</h1></a>
       </div>
       
 	<!-- Menu button (only visible on mobile) -->
@@ -459,9 +460,13 @@ menuToggle.addEventListener('click', () => {
 <div class="container">
 <div class="button-group-wrapper">
   <div class="button-group">
-    <button id="finalsBtn" class="sticky-participants-btn"><a href="/Tournament/Finals/">Finals</a></button>	
-    <button id="historyBtn" class="sticky-participants-btn"><a href="/Tournament/History/">History</a></button>	
-    <button id="leaderboardBtn" class="sticky-participants-btn"><a href="/Tournament/Leaderboard/">Leaderboard</a></button>	
+<a href="/Tournament/Finals/" class="sticky-participants-btn" style="text-decoration:none; display:inline-block; padding:8px 15px; background:red; color:#fff; border-radius:5px;">
+  Finals</a>	
+<a href="/Tournament/History/" class="sticky-participants-btn" style="text-decoration:none; display:inline-block; padding:8px 15px; background:red; color:#fff; border-radius:5px;">
+  History</a>	
+<a href="/Tournament/Leaderboard/" class="sticky-participants-btn" style="text-decoration:none; display:inline-block; padding:8px 15px; background:red; color:#fff; border-radius:5px;">
+  Leaderboard</a>
+
   </div>
 </div>
 
