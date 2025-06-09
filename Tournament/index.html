@@ -63,13 +63,18 @@
 
 .container {
   max-width: 900px;
-  margin: 80px auto; /* Gives some space from the top */
+  margin: 80px auto;
   padding: 20px;
   background-color: #021649;
   border: 2px solid #bb6eff;
   border-radius: 10px;
-  box-shadow: 0 0 15px gold;
+  box-shadow: #bb6eff;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* <<< ADD THIS LINE */
 }
+
 
     input[type="text"], input[type="number"] {
       padding: 10px;
@@ -93,6 +98,7 @@
       cursor: pointer;
       transition: 0.3s ease;
       box-shadow: 0 0 10px crimson;
+      justify-content: center; 
     }
 
     button:hover {
@@ -220,7 +226,135 @@
   }
 }
 
-  </style>
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed;
+  z-index: 999;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.7);
+}
+
+.modal-content {
+  background-color: red;
+  margin: 10% auto;
+  padding: 20px;
+  border: 2px solid gold;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 600px;
+  color: white;
+  text-align: center;
+  box-shadow: 0 0 20px gold;
+}
+
+.close {
+  color: crimson;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+  text-shadow: 0 0 5px crimson;
+}
+
+.close:hover {
+  color: gold;
+  text-shadow: 0 0 10px gold;
+}
+
+.panel {
+  display: none;
+  position: fixed;
+  top: 15%;
+  right: 5%;
+  width: 90%;
+  max-width: 500px;
+  background-color: red;
+  border: 2px solid gold;
+  border-radius: 12px;
+  box-shadow: 0 0 20px rgba(255, 215, 0, 0.7);
+  z-index: 1020;
+  padding: 20px;
+  color: white;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.panel-content {
+  position: relative;
+}
+
+.panel .close {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 24px;
+  color: crimson;
+  cursor: pointer;
+}
+
+.panel .close:hover {
+  color: gold;
+  text-shadow: 0 0 5px gold;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.popup-overlay {
+  display: none; /* This ensures it's hidden initially */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 9999;
+  justify-content: center;
+  align-items: center;
+}
+
+
+/* The actual popup box */
+.popup-box {
+  background: #121e3a;
+  color: white;
+  padding: 20px;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 500px;
+  position: relative;
+  animation: fadeIn 0.3s ease-in-out;
+  box-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
+  border: 2px solid gold;
+}
+
+/* Close button */
+.popup-close {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 24px;
+  color: crimson;
+  cursor: pointer;
+}
+
+.popup-close:hover {
+  color: gold;
+  text-shadow: 0 0 5px gold;
+}
+
+@keyframes fadeIn {
+  from { transform: translateY(-10px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+</style>
+
 </head>
 <body>
     
@@ -244,6 +378,8 @@
 
 
   </header>
+
+
 <button id="menu-toggle" class="menu-button2">☰</button>
 <div class="fixed-buttons">
   <div class="button-wrapper"><a href="/Guess-the-Balance/" data-tooltip="Guess the Balance"><span>Guess the Balance</span></a></div>
@@ -319,7 +455,16 @@ menuToggle.addEventListener('click', () => {
   });
 </script>
 
-  <div class="container">
+
+<div class="container">
+<div class="button-group-wrapper">
+  <div class="button-group">
+    <button id="finalsBtn" class="sticky-participants-btn"><a href="/Tournament/Finals/">Finals</a></button>	
+    <button id="historyBtn" class="sticky-participants-btn"><a href="/Tournament/History/">History</a></button>	
+    <button id="leaderboardBtn" class="sticky-participants-btn"><a href="/Tournament/Leaderboard/">Leaderboard</a></button>	
+  </div>
+</div>
+
     <h1>🎰 𝗧𝗲𝗮𝗺𝗙𝘂𝗹𝗹𝗦𝗲𝗻𝗱𝗦𝗹𝗼𝘁𝘀 𝗧𝗼𝘂𝗿𝗻𝗮𝗺𝗲𝗻𝘁 🎲</h1>
     <div style="text-align:center; margin-bottom: 15px;">
       <input type="text" id="kickUsername" placeholder="Kick Username" />
@@ -523,14 +668,12 @@ menuToggle.addEventListener('click', () => {
       generateBracket();
     }
   </script>
+
+
 </body>
 
 <footer>
   <p>&copy; 2025 <strong>TeamFullSendSlots.com</strong>. All rights reserved.</p>
-
-<div class="footer-legal">
-  <a href="/Policy/">Privacy & Terms</a>
-</div>
 </footer>
 
 
