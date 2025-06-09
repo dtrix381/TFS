@@ -319,7 +319,6 @@
   border: none;
   padding: 8px 16px; /* Slightly smaller */
   font-size: 14px;   /* Slightly smaller text */
-  margin: 15px 0;
   cursor: pointer;
   border-radius: 5px;
   display: inline-block; /* Keeps it inline */
@@ -334,6 +333,13 @@
   display: flex;
   justify-content: center;
   margin: 15px 0;
+}
+
+@media (max-width: 480px) {
+  .back-button {
+    padding: 8px 16px;
+    font-size: 13px;
+  }
 }
 
   </style>
@@ -438,10 +444,6 @@ menuToggle.addEventListener('click', () => {
   });
 </script>
 
-
-<div class="flex-center">
-  <a href="/Tournament/" class="back-button">Back</a>
-</div>
 
 <main>
   <div class="container leaderboard">
