@@ -106,8 +106,8 @@
     }
 
     .rank-img {
-      width: 40px;
-      height: 40px;
+      width: 50px;
+      height: 50px;
       border-radius: 50%;
       margin-right: 10px;
     }
@@ -171,7 +171,7 @@
       text-align: center;
       padding: 15px;
       color: #fff;
-      font-size: 14px;
+      font-size: 20px;
       border-bottom: 1px solid rgba(255, 215, 0, 0.3);
     }
 
@@ -488,8 +488,8 @@ menuToggle.addEventListener('click', () => {
 
 <script>
     const leaderboardData = [
-        { discord: "Player 1", avatar: "0", hash: "None", entries: "Vacant" },
-        { discord: "Player 2", avatar: "0", hash: "None", entries: "Vacant" },
+        { discord: "Patchy", avatar: "743392043157553204", hash: "03be465ebc28e19e04e3479928e47b9f", entries: "Rad Maxx [super]" },
+        { discord: "Jess ♡", avatar: "725092559701147688", hash: "None", entries: "Sugar Rush" },
         { discord: "Player 3", avatar: "0", hash: "None", entries: "Vacant" },
         { discord: "Player 4", avatar: "0", hash: "None", entries: "Vacant" },
         { discord: "Player 5", avatar: "0", hash: "None", entries: "Vacant" },
@@ -535,7 +535,7 @@ function renderTable() {
         row.innerHTML = `
             <td>
                 <div style="display: flex; align-items: center;">
-                    <img src="${avatarURL}" class="rank-img" style="width: 20px; height: 20px; margin-right: 5px;">
+                    <img src="${avatarURL}" class="rank-img" style="width: 50px; height: 50px; margin-right: 5px;">
                     <a href="https://discord.com/users/${data.avatar}" target="_blank" 
                         style="text-decoration: none; font-weight: bold; color: inherit;">
                         ${data.discord}
