@@ -73,7 +73,7 @@
 
     .leaderboard h2 {
       text-align: center;
-      margin-bottom: -60px;
+      margin-bottom: -44px;
       font-size: 58px;
       font-family: 'Brick Sans';
     }
@@ -81,7 +81,7 @@
 .leaderboard h5 {
   font-size: 20px;
   font-weight: bold;
-  margin-top: -50px;
+  margin-top: -30px;
 }
 
     .event-details {
@@ -102,8 +102,8 @@
     }
 
     .rank-img {
-      width: 40px;
-      height: 40px;
+      width: 50px;
+      height: 50px;
       border-radius: 50%;
       margin-right: 10px;
     }
@@ -281,7 +281,7 @@
       }
 
       .event-details {
-        padding: 10px;
+        padding: 4px;
       }
 
       .event-rules {
@@ -289,8 +289,8 @@
       }
 
       .rank-img {
-        width: 25px;
-        height: 25px;
+        width: 50px;
+        height: 50px;
         margin-right: 3px;
       }
 
@@ -300,8 +300,8 @@
       }
 
       .table th, .table td {
-        font-size: 12px;
-        padding: 5px;
+        font-size: 11px;
+        padding: 3px;
       }
 
       iframe {
@@ -414,7 +414,7 @@ menuToggle.addEventListener('click', () => {
     <h2>𝐉𝐔𝐍𝐄 𝐒𝐔𝐁𝐒 𝐆𝐈𝐕𝐄𝐀𝐖𝐀𝐘</h2>
 
     <div class="event-details-box">
-      <h3 class="event-total">Total Entries: <span class="highlight">17</span></h3>
+      <h3 class="event-total">Total Entries: <span class="highlight">18</span></h3>
       <div class="event-stats">
         <div class="stat">
           <p class="stat-label">Total Subs</p>
@@ -422,7 +422,7 @@ menuToggle.addEventListener('click', () => {
         </div>
         <div class="stat">
           <p class="stat-label">Gifted Subs</p>
-          <p class="stat-value success">12</p>
+          <p class="stat-value success">13</p>
         </div>
       </div>
     </div>
@@ -459,8 +459,8 @@ menuToggle.addEventListener('click', () => {
 
 <script>
     const leaderboardData = [
-        { rank: 1, discord: "adrumx6", avatar: "1341484764305166378", hash: "None", subs: "0", gifts: "5", entries: "7" },
-        { rank: 2, discord: "Parky2192", avatar: "798462121972727829", hash: "None", subs: "1", gifts: "6", entries: "6" },
+        { rank: 1, discord: "Parky2192", avatar: "798462121972727829", hash: "None", subs: "1", gifts: "7", entries: "7" },
+        { rank: 2, discord: "adrumx6", avatar: "1341484764305166378", hash: "None", subs: "0", gifts: "5", entries: "7" },
         { rank: 3, discord: "hamslicer", avatar: "850665803161534484", hash: "ae41cd1995ef4f0b3e47aad2dddb196a", subs: "0", gifts: "1", entries: "1" },
         { rank: 4, discord: "KrazyMum008", avatar: "532165402369982474", hash: "5a60e4e02e83ddb5363d173bed3af1cb", subs: "1", gifts: "0", entries: "1" },
         { rank: 5, discord: "Patchy", avatar: "743392043157553204", hash: "03be465ebc28e19e04e3479928e47b9f", subs: "1", gifts: "0", entries: "1" },
@@ -505,7 +505,7 @@ function renderTable() {
             <td><span class="rank-badge ${rankBadgeClass}">${rankIcon}</span></td>
             <td>
                 <div style="display: flex; align-items: center;">
-                    <img src="${avatarURL}" class="rank-img" style="width: 20px; height: 20px; margin-right: 5px;">
+                    <img src="${avatarURL}" class="rank-img" style="width: 28px; height: 28px; margin-right: 5px;">
                     <a href="https://discord.com/users/${data.avatar}" target="_blank" 
                         style="text-decoration: none; font-weight: bold; color: inherit;">
                         ${data.discord}
