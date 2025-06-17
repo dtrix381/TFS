@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>TFS | GTB History </title>
+  <link rel="stylesheet" href="../../../styles.css" />
+  <link rel="icon" href="../../../assets/icon.png" type="image/png" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Brick+Sans:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Akaya+Kanadaka&display=swap" rel="stylesheet">
+
+<!-- Open Graph Tags -->
+<meta property="og:title" content="TeamFullSendSlots">
+<meta property="og:description" content="Guess the final balance and get tipped if you're the closest! If the hunt ends in profit, the 3 closest guesses get tipped. Join the fun and test your luck!">
+<meta property="og:image" content="https://i.imgur.com/IR08Bjy.png">
+<meta property="og:url" content="https://www.teamfullsendslots.com/Guess-the-Balance/">
+<meta property="og:type" content="website">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="TeamFullSendSlots">
+<meta name="twitter:description" content="Guess the final balance and get tipped if you're the closest! If the hunt ends in profit, the 3 closest guesses get tipped. Join the fun and test your luck!">
+<meta name="twitter:image" content="https://i.imgur.com/IR08Bjy.png">
+<meta name="twitter:url" content="https://www.teamfullsendslots.com/Guess-the-Balance/">
+
+  <style>
+    body {
+      font-family: 'Orbitron', sans-serif;
+      background-size: cover;
+      background-color: #000000;
+      color: white;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      text-shadow: 1px 1px 2px #000;
+      height: 100%; 
+      overflow-x: hidden;
+    }
+
+    html, body {
+      height: 100%;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+    }
+
+    main, .content {
+      padding-bottom: 150px;
+    }
+
+    h1, h2 {
+      text-align: center;
+      color: gold;
+      text-shadow: 2px 2px 4px #000;
+    }
+
+    .container {
+      margin: 70px auto 0 auto; 
+      max-width: 710px;
+    }
+
+    .leaderboard {
+      background: #1a1a1f;
+      backdrop-filter: blur(10px);
+      border-radius: 15px;
+      padding: 20px;
+      box-shadow: 0 0 25px rgba(187, 110, 255, 0.5);
+      border: 2px solid #bb6eff;
+    }
+
+    .leaderboard h2 {
+      text-align: center;
+      margin-bottom: -60px;
+      font-size: 58px;
+      font-family: 'Brick Sans';
+    }
+
+.leaderboard h5 {
+  font-size: 20px;
+  font-weight: bold;
+  margin-top: -50px;
+}
+
+    .event-details {
+      background: #333;
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+    }
+
+    .event-rules {
+      font-size: 14px;
+      color: #FFD700;
+      text-shadow: 
+        -1px -1px 0 #000,  
+         1px -1px 0 #000,
+        -1px  1px 0 #000,
+         1px  1px 0 #000;
+    }
+
+    .rank-img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      margin-right: 10px;
+    }
+
+    tbody tr:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+      transition: 0.3s;
+    }
+
+    .depositors-title {
+      font-size: 20px;
+      font-weight: bold;
+      text-align: center;
+      text-transform: uppercase;
+      background: linear-gradient(90deg, #FFD700, #FF8C00);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+      padding: 10px 0;
+      letter-spacing: 2px;
+    }
+
+    .table-responsive {
+      overflow-x: auto;
+      max-width: 710px;
+      margin: auto;
+    }
+
+    .table-container {
+      display: flex;
+      justify-content: center;
+      width: 100%;
+      max-width: 600px;
+      overflow-x: auto;
+      margin: auto;
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(255, 215, 0, 0.7);
+      background: rgba(20, 20, 20, 0.8);
+      backdrop-filter: blur(10px);
+      padding: 10px;
+    }
+
+    .table {
+      width: 100%;
+      border-collapse: collapse;
+      border-radius: 10px;
+      overflow: hidden;
+      background: rgba(0, 0, 0, 0.6);
+    }
+
+    .table th {
+      background: rgba(138, 43, 226, 0.9);
+      color: #000;
+      font-size: 16px;
+      padding: 15px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .table td {
+      text-align: center;
+      padding: 15px;
+      color: #fff;
+      font-size: 14px;
+      border-bottom: 1px solid rgba(255, 215, 0, 0.3);
+    }
+
+    .table tbody tr:nth-child(odd) {
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .table tbody tr:hover {
+      background: rgba(255, 215, 0, 0.2);
+      transition: 0.3s ease-in-out;
+    }
+
+    .table td:first-child {
+      font-weight: bold;
+      color: #FFD700;
+      text-shadow: 0 0 5px rgba(255, 215, 0, 0.8);
+    }
+
+    .pagination {
+      margin-top: -105px;
+      text-align: center;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .pagination button {
+      padding: 5px 15px;
+      font-size: 14px;
+      cursor: pointer;
+      border: none;
+      background-color: #ff4500;
+      color: white;
+      border-radius: 5px;
+      transition: 0.3s;
+    }
+
+    .pagination button:disabled {
+      background-color: #888;
+      cursor: not-allowed;
+    }
+
+    .pagination span {
+      font-size: 16px;
+      font-weight: bold;
+    }
+
+    .event-details-box {
+      background-color: #1a1a1f;
+      padding: clamp(1rem, 4vw, 2rem);
+      border-radius: 2px;
+      text-align: center;
+      color: #fff;
+      box-shadow: #DBB35C;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    .event-total {
+      font-size: clamp(2rem, 6vw, 3rem);
+      font-family: 'Brick Sans', sans-serif;
+      margin-bottom: 1.5rem;
+    }
+
+    .highlight {
+      color: #FFD700;
+      font-weight: bold;
+    }
+
+    .event-stats {
+      display: flex;
+      justify-content: space-around;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .stat {
+      flex: 1;
+      min-width: 60px;
+    }
+
+    .stat-label {
+      font-size: 1.5rem;
+      font-weight: 300;
+      font-family: 'Brick Sans', sans-serif;
+      margin-bottom: 0.3rem;
+    }
+
+    .stat-value {
+      font-size: 1.2rem;
+      font-weight: bold;
+    }
+
+    .success {
+      color: #1ceb1c;
+    }
+
+.stat-value.success {
+  color: limegreen;
+  font-weight: bold;
+}
+
+.stat-value.negative {
+  color: red;
+  font-weight: bold;
+}
+
+    @media (max-width: 768px) {
+      .container {
+        max-width: 90%;
+        margin-top: 60px;
+      }
+
+      .leaderboard {
+        padding: 10px;
+      }
+
+      .leaderboard h2 {
+        font-size: 34px;
+	margin-bottom: 0.5px;
+      }
+
+      .event-total {
+       font-size: 24px;
+      }
+ 
+      .event-stats {
+       font-size: 14px;
+      }
+
+    .stat {
+      flex: 1;
+      min-width: 120px;
+    }
+
+      .stat-value success {
+       font-size: 14px;
+      }
+
+     .event-details {
+        padding: 8px;
+      }
+
+      .event-rules {
+        font-size: 10px;
+      }
+
+      .rank-img {
+        width: 25px;
+        height: 25px;
+        margin-right: 3px;
+      }
+
+      .depositors-title {
+        font-size: 18px;
+        letter-spacing: 1px;
+      }
+
+      .table th, .table td {
+        font-size: 12px;
+        padding: 5px;
+      }
+
+      iframe {
+        width: 90%;
+        height: 400px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="header-container">
+      
+      <!-- Left -->
+      <div class="header-left">
+        <a href="/" style="text-decoration: none;"><h1>TeamFullSend</h1></a>
+      </div>
+      
+	<!-- Menu button (only visible on mobile) -->
+    <button class="menu-button" aria-label="Toggle Menu">☰</button>
+
+      <!-- Right -->
+      <div class="header-right">
+        <a href="https://kick.com/teamfullsendslots" target="_blank" rel="noopener noreferrer" class="button">Live on KICK</a>
+      </div>
+
+    </div>
+
+
+  </header>
+<button id="menu-toggle" class="menu-button2">☰</button>
+<div class="fixed-buttons">
+  <div class="button-wrapper"><a href="/Tournament/" data-tooltip="Tournament"><span>Tournament</span></a></div>
+  <div class="button-wrapper"><a href="/Giveaways/" data-tooltip="Giveaways"><span>Giveaways</span></a></div>
+  <div class="button-wrapper"><a href="/Casino-Links/" data-tooltip="Casino Links"><span>Casino Links</span></a></div>
+  <div class="button-wrapper"><a href="/" data-tooltip="Home"><span>Home Page</span></a></div>
+</div>
+
+<script>
+const menuToggle = document.getElementById('menu-toggle');
+const buttons = document.querySelector('.fixed-buttons');
+const wrappers = document.querySelectorAll('.button-wrapper');
+
+let menuVisible = true;
+
+menuToggle.addEventListener('click', () => {
+    if (menuVisible) {
+        // Hide with animation
+        buttons.classList.remove('showing');
+        buttons.classList.add('hiding');
+        setTimeout(() => {
+            buttons.style.display = 'none';
+        }, 400);
+    } else {
+        // Prepare hidden state first before showing
+        wrappers.forEach(wrapper => {
+            wrapper.style.opacity = 0;
+            wrapper.style.transform = 'scale(0.8)';
+        });
+
+        buttons.style.display = 'flex';
+
+        // Force reflow so the browser registers the styles above
+        void buttons.offsetWidth;
+
+        buttons.classList.remove('hiding');
+        buttons.classList.add('showing');
+
+        // After animation ends, clear inline styles to reset for next toggle
+        setTimeout(() => {
+            wrappers.forEach(wrapper => {
+                wrapper.style.opacity = '';
+                wrapper.style.transform = '';
+            });
+        }, 400);
+    }
+
+    menuVisible = !menuVisible;
+});
+
+</script>
+
+
+<!-- Mobile full-screen menu (hidden by default) -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="/Tournament/"><span>Tournament</span></a>
+  <a href="/Giveaways/"><span>Giveaways</span></a>
+  <a href="/Casino-Links/"><span>Casino Links</span></a>
+
+  <!-- Bottom section inside mobile menu -->
+  <div class="mobile-menu-bottom">
+    <a href="/" class="buy-button">Go back Home 🏠</a>
+  </div>
+</div>
+
+<script>
+  const mobileMenuButton = document.querySelector('.menu-button');
+  const mobileMenu = document.getElementById('mobileMenu');
+
+  mobileMenuButton.addEventListener('click', () => {
+    mobileMenu.classList.toggle('open');
+    document.body.classList.toggle('menu-open');
+  });
+</script>
+
+
+<main>
+  <div class="container leaderboard">
+    <h2>JUNE 16 - GTB HUNT!</h2>
+
+    <div class="event-details-box">
+      <h3 class="event-total">Total Bonuses: <span class="highlight">23</span></h3>
+ <div class="event-stats">
+        <div class="stat">
+          <p class="stat-label">Total Guesses</p>
+          <p class="stat-value success">23</p>
+        </div>
+        <div class="stat">
+          <p class="stat-label">Starting Balance</p>
+          <p class="stat-value success">$1,100</p>
+        </div>
+        <div class="stat">
+          <p class="stat-label">Final Balance</p>
+          <p class="stat-value success">$827.03</p>
+        </div>
+        <div class="stat">
+          <p class="stat-label">Hunt Result</p>
+          <p class="stat-value success">-$272.97</p>
+        </div>
+      </div>
+    </div>
+
+
+<div class="table-responsive">
+        <table class="table table-dark">
+    <thead>
+        <tr>
+            <th>Icon</th>
+            <th>Slot</th>
+            <th>Bet</th>
+            <th>Pays</th>
+            <th>Total x</th>
+        </tr>
+    </thead>
+        <tbody id="leaderboard-body">
+            <!-- Rows will be inserted dynamically -->
+        </tbody>
+    </table>
+</div>
+        </div>
+
+<script>
+  const leaderboardData = [
+    {
+      slot: "5 Lions Megaways",
+      icon: "../../../assets/slots/5LionsMegaways.webp",
+      bet: "$0.50",
+      pays: "$47.90",
+      totalX: "95.98x"
+    },
+    {
+      slot: "Hot Fiesta",
+      icon: "../../../assets/slots/HotFiesta.webp",
+      bet: "$0.70",
+      pays: "$44.80",
+      totalX: "64x"
+    },
+    {
+      slot: "Wild West Gold",
+      icon: "../../../assets/slots/WildWestGold.webp",
+      bet: "$0.40",
+      pays: "$76.22",
+      totalX: "190.55x"
+    },
+    {
+      slot: "Sky Bounty",
+      icon: "../../../assets/slots/SkyBounty.webp",
+      bet: "$0.60",
+      pays: "$105.14",
+      totalX: "175.23x"
+    },
+    {
+      slot: "Pirates Pub",
+      icon: "../../../assets/slots/PiratesPub.webp",
+      bet: "$0.70",
+      pays: "$10.08",
+      totalX: "14.4x"
+    }
+  ];
+
+  function renderTable() {
+    const tbody = document.getElementById("leaderboard-body");
+    tbody.innerHTML = "";
+
+    leaderboardData.forEach(data => {
+      const row = document.createElement("tr");
+
+      row.innerHTML = `
+        <td><img src="${data.icon}" alt="${data.slot} icon" style="width: 50px; height: 50px; border-radius: 8px;"></td>
+        <td style="font-weight: bold;">${data.slot}</td>
+        <td>${data.bet}</td>
+        <td>${data.pays}</td>
+        <td style="color: #FFD700; font-weight: bold;">${data.totalX}</td>
+      `;
+
+      tbody.appendChild(row);
+    });
+  }
+
+  renderTable();
+</script>
+</div>
+</div>
+</main>
+
+
+<div class="pagination">
+    <button id="prevPage" onclick="changePage(-1)" disabled>Previous</button>
+    <span id="pageInfo">Page 1</span>
+    <button id="nextPage" onclick="changePage(1)">Next</button>
+</div>
+
+
+
+    </div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const stats = document.querySelectorAll(".stat");
+
+  stats.forEach(stat => {
+    const label = stat.querySelector(".stat-label");
+    const valueEl = stat.querySelector(".stat-value");
+
+    if (label && label.textContent.includes("Hunt Result")) {
+      const valueText = valueEl.textContent.replace(/[^0-9.-]/g, '');
+      const numericValue = parseFloat(valueText);
+
+      if (!isNaN(numericValue)) {
+        valueEl.classList.remove("success");
+        valueEl.classList.add(numericValue < 0 ? "negative" : "success");
+      }
+    }
+  });
+});
+</script>
+
+
+</body>
+
+<footer>
+  <p>&copy; 2025 <strong>TeamFullSendSlots.com</strong>. All rights reserved.</p>
+
+<div class="footer-legal">
+  <a href="/Policy/">Privacy & Terms</a>
+</div>
+</footer>
+
+
+</html>
