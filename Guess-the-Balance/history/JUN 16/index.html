@@ -56,9 +56,15 @@
       text-shadow: 2px 2px 4px #000;
     }
 
+.container.leaderboard {
+  position: relative;
+  z-index: 2; /* higher value */
+}
     .container {
       margin: 70px auto 0 auto; 
       max-width: 710px;
+      z-index:: 2;
+position: relative;
     }
 
     .leaderboard {
@@ -68,6 +74,8 @@
       padding: 20px;
       box-shadow: 0 0 25px rgba(187, 110, 255, 0.5);
       border: 2px solid #bb6eff;
+	z-index:: 2;
+position: relative;
     }
 
     .leaderboard h2 {
@@ -282,6 +290,98 @@
   }
 
 
+.top-players-slider {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      max-width: 1500px;
+      margin: 90px auto 30px auto;
+      pointer-events: none;
+      margin-left: 190px;
+  position: absolute; /* or relative if needed */
+  z-index: 1; /* lower value */
+  top: 50px; /* position it if needed */
+left: 0;
+}
+
+    .slider-column {
+  width: 80px;
+  position: relative;
+  height: 100%; /* same or greater than max drop height */
+  overflow: hidden;
+}
+
+
+.avatar {
+  width: 48px;
+  height: 48px;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0;
+  transition: transform 0.3s;
+  cursor: pointer;
+  z-index: 1000;
+  animation: drop 10s linear forwards;
+}
+
+
+    .avatar:hover {
+      transform: translateX(-50%) scale(1.1);
+    }
+
+@keyframes drop {
+  0%   { top: -60px; opacity: 0; }
+  10%  { opacity: 1; }
+  90%  { opacity: 1; }
+  100% { opacity: 0; } /* REMOVE top from here */
+}
+}
+
+
+    .stats-modal {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: #021649;
+      padding: 20px;
+      border-radius: 12px;
+      border: 2px solid #bb6eff;
+      color: #fff;
+      max-width: 400px;
+      width: 90%;
+      z-index: 9999;
+    }
+
+    .stats-modal-content ul {
+      list-style: none;
+      padding: 0;
+      margin-top: 15px;
+    }
+
+    .stats-modal-content li strong {
+      color: gold;
+    }
+
+    .stats-modal-content li {
+      margin-bottom: 6px;
+    }
+
+    .close-stats {
+      position: absolute;
+      top: 8px;
+      right: 14px;
+      font-size: 22px;
+      cursor: pointer;
+      color: #fff;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+
 @media (max-width: 768px) {
   .container {
     max-width: 90%;
@@ -450,6 +550,30 @@ menuToggle.addEventListener('click', () => {
 </script>
 
 
+<div class="top-players-slider">
+  <div class="slider-column" id="col1"></div>
+  <div class="slider-column" id="col2"></div>
+  <div class="slider-column" id="col3"></div>
+  <div class="slider-column" id="col4"></div>
+  <div class="slider-column" id="col5"></div>
+  <div class="slider-column" id="col6"></div>
+  <div class="slider-column" id="col7"></div>
+  <div class="slider-column" id="col8"></div>
+  <div class="slider-column" id="col9"></div>
+  <div class="slider-column" id="col10"></div>
+  <div class="slider-column" id="col11"></div>
+</div>
+
+<!-- Modal -->
+<div id="playerStatsModal" class="stats-modal hidden">
+  <div class="stats-modal-content">
+    <span class="close-stats">&times;</span>
+    <h3 id="modalPlayerName">Player Stats</h3>
+    <ul id="modalPlayerStats"></ul>
+  </div>
+</div>
+
+
 <main>
   <div class="container leaderboard">
     <h2>JUNE 16 - GTB HUNT!</h2>
@@ -501,7 +625,7 @@ menuToggle.addEventListener('click', () => {
 
 
         </div>
-
+</div>
 
 <script>
   const leaderboardData = [
@@ -626,7 +750,7 @@ menuToggle.addEventListener('click', () => {
     },
     {
       slot: "Sugar Supreme Powernudge",
-      icon: "../../../assets/slots/SugarSupremePowernnudge.webp",
+      icon: "../../../assets/slots/SugarSupremePowernudge.webp",
       bet: "$0.60",
       pays: "$0.27",
       totalX: "0.45x"
@@ -668,7 +792,7 @@ menuToggle.addEventListener('click', () => {
     }
   ];
 
-    const rowsPerPage = 10;
+    const rowsPerPage = 5;
     let currentPage = 1;
 
 function renderTable() {
@@ -737,7 +861,283 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 </script>
 
+<script>
+const topPlayers = [
+  {
+    name: "5 Lions Megaways",
+    avatar: "../../../assets/slots/5LionsMegaways.webp",
+    stats: {
+      games: 12, wins: 7, loses: 5, winPct: "58%", buy: "$560", pay: "$688.40", x: "1.23x", profit: "$128.40"
+    }
+  },
+  {
+    name: "Hot Fiesta",
+    avatar: "../../../assets/slots/HotFiesta.webp",
+    stats: {
+      games: 14, wins: 9, loses: 5, winPct: "64%", buy: "$680", pay: "$730.10", x: "1.07x", profit: "$50.10"
+    }
+   },
+  {
+    name: "Wild West Gold",
+    avatar: "../../../assets/slots/WildWestGold.webp",
+    stats: {
+      games: 14, wins: 9, loses: 5, winPct: "64%", buy: "$680", pay: "$730.10", x: "1.07x", profit: "$50.10"
+    }
+  },
+  {
+    name: "Sky Bounty",
+    avatar: "../../../assets/slots/SkyBounty.webp",
+    stats: {
+      games: 14, wins: 9, loses: 5, winPct: "64%", buy: "$680", pay: "$730.10", x: "1.07x", profit: "$50.10"
+    }
+   },
+  {
+    name: "Pirates Pub",
+    avatar: "../../../assets/slots/PiratesPub.webp",
+    stats: {
+      games: 14, wins: 9, loses: 5, winPct: "64%", buy: "$680", pay: "$730.10", x: "1.07x", profit: "$50.10"
+    }
+  },
+{
+    name: "Wild West Duels",
+    avatar: "../../../assets/slots/WildWestDuels.webp",
+    stats: {
+      games: 12, wins: 7, loses: 5, winPct: "58%", buy: "$560", pay: "$688.40", x: "1.23x", profit: "$128.40"
+    }
+  },
+  {
+    name: "Wild West Gold Megaways",
+    avatar: "../../../assets/slots/WildWestGoldMegaways.webp",
+    stats: {
+      games: 14, wins: 9, loses: 5, winPct: "64%", buy: "$680", pay: "$730.10", x: "1.07x", profit: "$50.10"
+    }
+   },
+  {
+    name: "Tome of Madness",
+    avatar: "../../../assets/slots/TomeofMadness.webp",
+    stats: {
+      games: 14, wins: 9, loses: 5, winPct: "64%", buy: "$680", pay: "$730.10", x: "1.07x", profit: "$50.10"
+    }
+  },
+  {
+    name: "Fury of Odin Megaways",
+    avatar: "../../../assets/slots/FuryofOdinMegaways.webp",
+    stats: {
+      games: 14, wins: 9, loses: 5, winPct: "64%", buy: "$680", pay: "$730.10", x: "1.07x", profit: "$50.10"
+    }
+   },
+  {
+    name: "Legacy of Dead",
+    avatar: "../../../assets/slots/LegacyofDead.webp",
+    stats: {
+      games: 14, wins: 9, loses: 5, winPct: "64%", buy: "$680", pay: "$730.10", x: "1.07x", profit: "$50.10"
+    }
+  },
+{
+    name: "SixSixSix",
+    avatar: "../../../assets/slots/SixSixSix.webp",
+    stats: {
+      games: 12, wins: 7, loses: 5, winPct: "58%", buy: "$560", pay: "$688.40", x: "1.23x", profit: "$128.40"
+    }
+  },
+  {
+    name: "Fish Eye",
+    avatar: "../../../assets/slots/FishEye.webp",
+    stats: {
+      games: 14, wins: 9, loses: 5, winPct: "64%", buy: "$680", pay: "$730.10", x: "1.07x", profit: "$50.10"
+    }
+   },
+  {
+    name: "Power of Thor Megaways",
+    avatar: "../../../assets/slots/PowerofThorMegaways.webp",
+    stats: {
+      games: 14, wins: 9, loses: 5, winPct: "64%", buy: "$680", pay: "$730.10", x: "1.07x", profit: "$50.10"
+    }
+  },
+  {
+    name: "Warrior Ways",
+    avatar: "../../../assets/slots/WarriorWays.webp",
+    stats: {
+      games: 14, wins: 9, loses: 5, winPct: "64%", buy: "$680", pay: "$730.10", x: "1.07x", profit: "$50.10"
+    }
+   },
+  {
+    name: "Extra Juicy",
+    avatar: "../../../assets/slots/ExtraJuicy.webp",
+    stats: {
+      games: 14, wins: 9, loses: 5, winPct: "64%", buy: "$680", pay: "$730.10", x: "1.07x", profit: "$50.10"
+    }
+  },
+{
+    name: "Fortune of Giza",
+    avatar: "../../../assets/slots/FortuneofGiza.webp",
+    stats: {
+      games: 12, wins: 7, loses: 5, winPct: "58%", buy: "$560", pay: "$688.40", x: "1.23x", profit: "$128.40"
+    }
+  },
+  {
+    name: "Book of Tut Megaways",
+    avatar: "../../../assets/slots/BookofTutMegaways.webp",
+    stats: {
+      games: 14, wins: 9, loses: 5, winPct: "64%", buy: "$680", pay: "$730.10", x: "1.07x", profit: "$50.10"
+    }
+   },
+  {
+    name: "Sugar Supreme Powernudge",
+    avatar: "../../../assets/slots/SugarSupremePowernudge.webp",
+    stats: {
+      games: 14, wins: 9, loses: 5, winPct: "64%", buy: "$680", pay: "$730.10", x: "1.07x", profit: "$50.10"
+    }
+  },
+  {
+    name: "Slayers Inc",
+    avatar: "../../../assets/slots/SlayersInc.webp",
+    stats: {
+      games: 14, wins: 9, loses: 5, winPct: "64%", buy: "$680", pay: "$730.10", x: "1.07x", profit: "$50.10"
+    }
+   },
+  {
+    name: "Fruit Party",
+    avatar: "../../../assets/slots/FruitParty.webp",
+    stats: {
+      games: 14, wins: 9, loses: 5, winPct: "64%", buy: "$680", pay: "$730.10", x: "1.07x", profit: "$50.10"
+    }
+  },
+  {
+    name: "Gems Bonanza",
+    avatar: "../../../assets/slots/GemsBonanza.webp",
+    stats: {
+      games: 14, wins: 9, loses: 5, winPct: "64%", buy: "$680", pay: "$730.10", x: "1.07x", profit: "$50.10"
+    }
+  },
+  {
+    name: "Wanted Dead or a Wild",
+    avatar: "../../../assets/slots/WantedDeadoraWild.webp",
+    stats: {
+      games: 14, wins: 9, loses: 5, winPct: "64%", buy: "$680", pay: "$730.10", x: "1.07x", profit: "$50.10"
+    }
+   },
+  {
+    name: "Fruit Warp",
+    avatar: "../../../assets/slots/FruitWarp.webp",
+    stats: {
+      games: 14, wins: 9, loses: 5, winPct: "64%", buy: "$680", pay: "$730.10", x: "1.07x", profit: "$50.10"
+    }
+  },
+];
 
+function createAvatar(player, container) {
+  const img = document.createElement("img");
+  img.className = "avatar";
+  img.src = player.avatar;
+  img.alt = player.name;
+  img.title = player.name;
+  img.onclick = () => showPlayerStats(player);
+
+  // Set up for animation
+  const dropDistance = container.offsetHeight; // How tall the column is
+  img.style.top = `-${img.height || 60}px`; // Start above
+  img.style.setProperty('--start-top', `-${img.height || 60}px`);
+  img.style.setProperty('--end-top', `${dropDistance}px`);
+
+  // Force layout reflow
+  void img.offsetWidth;
+
+  // Set final position using animation
+  img.animate([
+    { top: `-${img.height || 60}px`, opacity: 0 },
+    { offset: 0.1, opacity: 1 },
+    { top: `${dropDistance}px`, opacity: 1, offset: 0.9 },
+    { top: `${dropDistance}px`, opacity: 0 }
+  ], {
+    duration: 10000,
+    easing: "linear",
+    fill: "forwards"
+  });
+
+  container.appendChild(img);
+
+  setTimeout(() => {
+    img.remove();
+  }, 10000);
+}
+
+
+
+function startSlider() {
+  const columns = document.querySelectorAll(".slider-column");
+
+  columns.forEach(col => {
+    function dropAvatarLoop() {
+      const player = topPlayers[Math.floor(Math.random() * topPlayers.length)];
+      createAvatar(player, col);
+
+      const delay = 1000 + Math.random() * 2500; // Random gap between drops
+      setTimeout(dropAvatarLoop, delay);
+    }
+
+    setTimeout(dropAvatarLoop, Math.random() * 2000); // staggered initial drop
+  });
+}
+
+function showPlayerStats(player) {
+  const modal = document.getElementById("playerStatsModal");
+  const modalName = document.getElementById("modalPlayerName");
+  const modalStats = document.getElementById("modalPlayerStats");
+
+  modalName.textContent = player.name + "'s Stats";
+  modalStats.innerHTML = `
+    <li><strong>Games:</strong> ${player.stats.games}</li>
+    <li><strong>Wins:</strong> ${player.stats.wins}</li>
+    <li><strong>Loses:</strong> ${player.stats.loses}</li>
+    <li><strong>Win %:</strong> ${player.stats.winPct}</li>
+    <li><strong>Total Buy:</strong> ${player.stats.buy}</li>
+    <li><strong>Total Pay:</strong> ${player.stats.pay}</li>
+    <li><strong>Average X:</strong> ${player.stats.x}</li>
+    <li><strong>Total Profit:</strong> ${player.stats.profit}</li>
+  `;
+  modal.classList.remove("hidden");
+}
+
+document.querySelector(".close-stats").addEventListener("click", () => {
+  document.getElementById("playerStatsModal").classList.add("hidden");
+});
+
+console.log("Slider running");
+startSlider();
+</script>
+
+<script>
+function syncSliderHeight() {
+  const container = document.querySelector('.container.leaderboard');
+  const slider = document.querySelector('.top-players-slider');
+  if (container && slider) {
+    slider.style.height = container.offsetHeight + 'px';
+  }
+}
+
+// Run once at load
+document.addEventListener("DOMContentLoaded", syncSliderHeight);
+
+// Optional: run again on window resize or DOM change
+window.addEventListener("resize", syncSliderHeight);
+</script>
+
+<script>
+function updateDropHeight() {
+  const slider = document.querySelector('.top-players-slider');
+  if (slider) {
+    const dropHeight = slider.offsetHeight;
+    slider.style.setProperty('--drop-end', dropHeight + 'px');
+  }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  updateDropHeight();
+  window.addEventListener("resize", updateDropHeight);
+});
+
+</script>
 </body>
 
 <footer>
