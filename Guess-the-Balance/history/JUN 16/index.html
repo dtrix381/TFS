@@ -275,67 +275,80 @@
   font-weight: bold;
 }
 
-    @media (max-width: 768px) {
-      .container {
-        max-width: 90%;
-        margin-top: 60px;
-      }
 
-      .leaderboard {
-        padding: 10px;
-      }
+  .slot-name {
+    font-size: 18px !important;
+  font-weight: bold;
+  }
 
-      .leaderboard h2 {
-        font-size: 34px;
-	margin-bottom: 0.5px;
-      }
+@media (max-width: 768px) {
+  .container {
+    max-width: 90%;
+    margin-top: 60px;
+  }
 
-      .event-total {
-       font-size: 24px;
-      }
- 
-      .event-stats {
-       font-size: 14px;
-      }
+  .leaderboard {
+    padding: 10px;
+  }
 
-    .stat {
-      flex: 1;
-      min-width: 120px;
-    }
+  .leaderboard h2 {
+    font-size: 34px;
+    margin-bottom: 0.5px;
+  }
 
-      .stat-value success {
-       font-size: 14px;
-      }
+  .event-total {
+    font-size: 24px;
+  }
 
-     .event-details {
-        padding: 8px;
-      }
+  .event-stats {
+    font-size: 14px;
+  }
 
-      .event-rules {
-        font-size: 10px;
-      }
+  .stat {
+    flex: 1;
+    min-width: 120px;
+  }
 
-      .rank-img {
-        width: 25px;
-        height: 25px;
-        margin-right: 3px;
-      }
+  .stat-value.success {
+    font-size: 14px;
+  }
 
-      .depositors-title {
-        font-size: 18px;
-        letter-spacing: 1px;
-      }
+  .event-details {
+    padding: 8px;
+  }
 
-      .table th, .table td {
-        font-size: 12px;
-        padding: 5px;
-      }
+  .event-rules {
+    font-size: 10px;
+  }
 
-      iframe {
-        width: 90%;
-        height: 400px;
-      }
-    }
+  .rank-img {
+    width: 25px;
+    height: 25px;
+    margin-right: 3px;
+  }
+
+  .depositors-title {
+    font-size: 18px;
+    letter-spacing: 1px;
+  }
+
+  .table th,
+  .table td {
+    font-size: 12px;
+    padding: 5px;
+  }
+
+  iframe {
+    width: 90%;
+    height: 400px;
+  }
+
+  /* ✅ Move this outside of any other block */
+  .slot-name {
+    font-size: 13px !important;
+  }
+}
+
   </style>
 </head>
 <body>
@@ -481,6 +494,7 @@ menuToggle.addEventListener('click', () => {
 </div>
         </div>
 
+
 <script>
   const leaderboardData = [
     {
@@ -517,40 +531,184 @@ menuToggle.addEventListener('click', () => {
       bet: "$0.70",
       pays: "$10.08",
       totalX: "14.4x"
+    },
+    {
+      slot: "Wild West Duels",
+      icon: "../../../assets/slots/WildWestDuels.webp",
+      bet: "$0.60",
+      pays: "$4.26",
+      totalX: "7.1x"
+    },
+    {
+      slot: "Wild West Gold Megaways",
+      icon: "../../../assets/slots/WildWestGoldMegaways.webp",
+      bet: "$0.60",
+      pays: "$9.07",
+      totalX: "15.12x"
+    },
+    {
+      slot: "Tome of Madness",
+      icon: "../../../assets/slots/TomeofMadness.webp",
+      bet: "$0.50",
+      pays: "$42.60",
+      totalX: "85.2x"
+    },
+    {
+      slot: "Fury of Odin Megaways",
+      icon: "../../../assets/slots/FuryofOdinMegaways.webp",
+      bet: "$0.50",
+      pays: "$59.24",
+      totalX: "118.48x"
+    },
+    {
+      slot: "Legacy of Dead",
+      icon: "../../../assets/slots/LegacyofDead.webp",
+      bet: "$0.50",
+      pays: "$16.50",
+      totalX: "33x"
+    },
+    {
+      slot: "SixSixSix",
+      icon: "../../../assets/slots/SixSixSix.webp",
+      bet: "$0.40",
+      pays: "$44.00",
+      totalX: "110x"
+    },
+    {
+      slot: "Fish Eye",
+      icon: "../../../assets/slots/FishEye.webp",
+      bet: "$0.50",
+      pays: "$8.80",
+      totalX: "17.6x"
+    },
+    {
+      slot: "Power of Thor Megaways",
+      icon: "../../../assets/slots/PowerofThorMegaways.webp",
+      bet: "$0.60",
+      pays: "$22.56",
+      totalX: "37.6x"
+    },
+    {
+      slot: "Warrior Ways",
+      icon: "../../../assets/slots/WarriorWays.webp",
+      bet: "$0.40",
+      pays: "$7.64",
+      totalX: "19.1x"
+    },
+    {
+      slot: "Extra Juicy",
+      icon: "../../../assets/slots/ExtraJuicy.webp",
+      bet: "$0.60",
+      pays: "$118.08",
+      totalX: "196.8x"
+    },
+    {
+      slot: "Fortune of Giza",
+      icon: "../../../assets/slots/FortuneofGiza.webp",
+      bet: "$0.60",
+      pays: "$5.64",
+      totalX: "9.4x"
+    },
+    {
+      slot: "Book of Tut Megaways",
+      icon: "../../../assets/slots/BookofTutMegaways.webp",
+      bet: "$0.60",
+      pays: "$63.06",
+      totalX: "105.1x"
+    },
+    {
+      slot: "Sugar Supreme Powernudge",
+      icon: "../../../assets/slots/SugarSupremePowernnudge.webp",
+      bet: "$0.60",
+      pays: "$0.27",
+      totalX: "0.45x"
+    },
+    {
+      slot: "Slayers Inc",
+      icon: "../../../assets/slots/SlayersInc.webp",
+      bet: "$0.20",
+      pays: "$58.74",
+      totalX: "293.7x"
+    },
+    {
+      slot: "Fruit Warp",
+      icon: "../../../assets/slots/FruitWarp.webp",
+      bet: "$0.50",
+      pays: "$1.15",
+      totalX: "2.3x"
+    },
+    {
+      slot: "Fruit Party",
+      icon: "../../../assets/slots/FruitParty.webp",
+      bet: "$0.60",
+      pays: "$25.83",
+      totalX: "43.05x"
+    },
+    {
+      slot: "Gems Bonanza",
+      icon: "../../../assets/slots/GemsBonanza.webp",
+      bet: "$0.60",
+      pays: "$41.13",
+      totalX: "68.55x"
+    },
+    {
+      slot: "Wanted Dead or a Wild",
+      icon: "../../../assets/slots/WantedDeadoraWild.webp",
+      bet: "$0.20",
+      pays: "$14.32",
+      totalX: "71.6x"
     }
   ];
 
-  function renderTable() {
-    const tbody = document.getElementById("leaderboard-body");
-    tbody.innerHTML = "";
+    const rowsPerPage = 10;
+    let currentPage = 1;
 
-    leaderboardData.forEach(data => {
-      const row = document.createElement("tr");
+function renderTable() {
+    const tbody = document.getElementById("leaderboard-body");
+    tbody.innerHTML = ""; // Clear existing rows
+
+    const start = (currentPage - 1) * rowsPerPage;
+    const end = start + rowsPerPage;
+    const pageData = leaderboardData.slice(start, end);
+
+    pageData.forEach((data, index) => {
+        const row = document.createElement("tr");
 
       row.innerHTML = `
-        <td><img src="${data.icon}" alt="${data.slot} icon" style="width: 50px; height: 50px; border-radius: 8px;"></td>
-        <td style="font-weight: bold;">${data.slot}</td>
+        <td><img src="${data.icon}" alt="${data.slot} icon" style="width: 65px; height: 75px; border-radius: 8px;"></td>
+        <td class="slot-name">${data.slot}</td>
         <td>${data.bet}</td>
         <td>${data.pays}</td>
         <td style="color: #FFD700; font-weight: bold;">${data.totalX}</td>
       `;
 
       tbody.appendChild(row);
-    });
-  }
+   });
 
-  renderTable();
+    document.getElementById("pageInfo").textContent = `Page ${currentPage} of ${Math.ceil(leaderboardData.length / rowsPerPage)}`;
+
+    document.getElementById("prevPage").disabled = currentPage === 1;
+    document.getElementById("nextPage").disabled = end >= leaderboardData.length;
+}
+
+    function changePage(direction) {
+        currentPage += direction;
+        renderTable();
+    }
+
+    renderTable();
 </script>
+
 </div>
 </div>
 </main>
-
 
 <div class="pagination">
     <button id="prevPage" onclick="changePage(-1)" disabled>Previous</button>
     <span id="pageInfo">Page 1</span>
     <button id="nextPage" onclick="changePage(1)">Next</button>
 </div>
+
 
 
 
