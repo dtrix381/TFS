@@ -186,12 +186,12 @@
     }
 
     .pagination {
-      margin-top: -105px;
       text-align: center;
       display: flex;
       justify-content: center;
       align-items: center;
       gap: 10px;
+      margin-top: 10px;
     }
 
     .pagination button {
@@ -280,6 +280,7 @@
     font-size: 18px !important;
   font-weight: bold;
   }
+
 
 @media (max-width: 768px) {
   .container {
@@ -492,6 +493,13 @@ menuToggle.addEventListener('click', () => {
         </tbody>
     </table>
 </div>
+<div class="pagination">
+    <button id="prevPage" onclick="changePage(-1)" disabled>Previous</button>
+    <span id="pageInfo">Page 1</span>
+    <button id="nextPage" onclick="changePage(1)">Next</button>
+</div>
+
+
         </div>
 
 
@@ -702,12 +710,6 @@ function renderTable() {
 </div>
 </div>
 </main>
-
-<div class="pagination">
-    <button id="prevPage" onclick="changePage(-1)" disabled>Previous</button>
-    <span id="pageInfo">Page 1</span>
-    <button id="nextPage" onclick="changePage(1)">Next</button>
-</div>
 
 
 
