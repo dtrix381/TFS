@@ -803,7 +803,7 @@ function clearActiveAvatars() {
   document.querySelectorAll('.avatar').forEach(el => el.remove());
 }
 
-clearActiveAvatars(); // 🧼 Clean out old drops BEFORE resizing
+// No longer needed – let avatars continue falling across pages
 
 
     const start = (currentPage - 1) * rowsPerPage;
@@ -831,9 +831,17 @@ clearActiveAvatars(); // 🧼 Clean out old drops BEFORE resizing
 }
 
     function changePage(direction) {
-        currentPage += direction;
-        renderTable();
-    }
+  currentPage += direction;
+
+  // Step 1: render the new table content
+  renderTable();
+
+  // Step 2: wait a moment so DOM updates
+  setTimeout(() => {
+    syncSliderHeight();   // update slider height to match container
+    syncDropHeight();     // recalculate how far avatars should fall
+  }, 50);
+}
 
     renderTable();
 </script>
@@ -1124,20 +1132,23 @@ function syncSliderHeight() {
   }
 }
 
-// Run once at load
+window.addEventListener("resize", syncSliderHeight);
 document.addEventListener("DOMContentLoaded", syncSliderHeight);
 
-// Optional: run again on window resize or DOM change
-window.addEventListener("resize", syncSliderHeight);
 </script>
 
 <script>
-function updateDropHeight() {
-  const slider = document.querySelector('.top-players-slider');
-  if (slider) {
-    const dropHeight = slider.offsetHeight;
-    slider.style.setProperty('--drop-end', dropHeight + 'px');
-  }
+function syncDropHeight() {
+  const column = document.querySelector('.slider-column');
+  const footer = document.querySelector('footer');
+
+  if (!column || !footer) return;
+
+  const colTop = column.getBoundingClientRect().top + window.scrollY;
+  const footerTop = footer.getBoundingClientRect().top + window.scrollY;
+  const maxDrop = footerTop - colTop - 48; // subtract avatar height
+
+  document.documentElement.style.setProperty('--drop-end', `${Math.max(0, maxDrop)}px`);
 }
 
 document.addEventListener("DOMContentLoaded", () => {
