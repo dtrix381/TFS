@@ -321,8 +321,9 @@ left: 0;
   opacity: 0;
   transition: transform 0.3s;
   cursor: pointer;
-  z-index: 1000;
+  z-index: 999999999;
   animation: drop 10s linear forwards;
+  pointer-events: auto;
 }
 
 
@@ -336,50 +337,87 @@ left: 0;
   90%  { opacity: 1; }
   100% { opacity: 0; } /* REMOVE top from here */
 }
+
+.stats-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(8px);
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 9999;
 }
 
+.stats-modal.hidden {
+  display: none !important;
+}
 
-    .stats-modal {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background-color: #021649;
-      padding: 20px;
-      border-radius: 12px;
-      border: 2px solid #bb6eff;
-      color: #fff;
-      max-width: 400px;
-      width: 90%;
-      z-index: 9999;
-    }
+.stats-modal-content {
+  background: linear-gradient(to bottom right, #021649, #0c1e4c);
+  padding: 25px 30px;
+  border-radius: 14px;
+  border: 2px solid #bb6eff;
+  color: #ffffff;
+  max-width: 400px;
+  width: 90%;
+  box-shadow: 0 0 25px rgba(187, 110, 255, 0.4);
+  position: relative;
+  font-family: 'Orbitron', sans-serif;
+}
 
-    .stats-modal-content ul {
-      list-style: none;
-      padding: 0;
-      margin-top: 15px;
-    }
+.stats-modal-content h3 {
+  font-size: 22px;
+  margin-bottom: 15px;
+  color: gold;
+  text-align: center;
+  text-shadow: 1px 1px 2px #000;
+}
 
-    .stats-modal-content li strong {
-      color: gold;
-    }
+.stats-modal-content ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
 
-    .stats-modal-content li {
-      margin-bottom: 6px;
-    }
+.stats-modal-content li {
+  margin-bottom: 8px;
+  font-size: 15px;
+  line-height: 1.6;
+}
 
-    .close-stats {
-      position: absolute;
-      top: 8px;
-      right: 14px;
-      font-size: 22px;
-      cursor: pointer;
-      color: #fff;
-    }
+.stats-modal-content li strong {
+  color: #FFD700;
+  font-weight: bold;
+}
+
+.close-stats {
+  position: absolute;
+  top: 10px;
+  right: 14px;
+  font-size: 24px;
+  font-weight: bold;
+  cursor: pointer;
+  color: #ffffff;
+  background: none;
+  border: none;
+  transition: transform 0.2s ease;
+}
+
+.close-stats:hover {
+  transform: scale(1.2);
+  color: #ff5c5c;
+}
+
 
     .hidden {
       display: none;
     }
+
+
 
 .back-button {
   background-color: red;
@@ -582,17 +620,9 @@ menuToggle.addEventListener('click', () => {
   <div class="slider-column" id="col11"></div>
 </div>
 
-<!-- Modal -->
-<div id="playerStatsModal" class="stats-modal hidden">
-  <div class="stats-modal-content">
-    <span class="close-stats">&times;</span>
-    <h3 id="modalPlayerName">Player Stats</h3>
-    <ul id="modalPlayerStats"></ul>
-  </div>
-</div>
-
 
 <main>
+
   <div class="container leaderboard">
     <h2>JUNE 16 - GTB HUNT!</h2>
 
@@ -618,7 +648,6 @@ menuToggle.addEventListener('click', () => {
       </div>
     </div>
 
-
 <div class="table-responsive">
         <table class="table table-dark">
     <thead>
@@ -637,7 +666,6 @@ menuToggle.addEventListener('click', () => {
 
 </div>
 
-
 <div class="pagination">
     <button id="prevPage" onclick="changePage(-1)" disabled>Previous</button>
     <span id="pageInfo">Page 1</span>
@@ -649,6 +677,7 @@ menuToggle.addEventListener('click', () => {
 </div>
         </div>
 </div>
+
 
 <script>
   const leaderboardData = [
@@ -873,10 +902,13 @@ function clearActiveAvatars() {
 </div>
 </main>
 
-
-
-
-    </div>
+<div id="playerStatsModal" class="stats-modal hidden">
+  <div class="stats-modal-content">
+    <span class="close-stats">&times;</span>
+    <h3 id="modalPlayerName">Player Stats</h3>
+    <ul id="modalPlayerStats"></ul>
+  </div>
+</div>
 
 <script>
 document.addEventListener("DOMContentLoaded", function () {
@@ -905,164 +937,229 @@ const topPlayers = [
     name: "5 Lions Megaways",
     avatar: "../../../assets/slots/5LionsMegaways.webp",
     stats: {
-      games: 12, wins: 7, loses: 5, winPct: "58%", buy: "$560", pay: "$688.40", x: "1.23x", profit: "$128.40"
+      bet: "$0.50",
+      pays: "$47.90",
+      totalX: "95.98x"
     }
   },
   {
     name: "Hot Fiesta",
     avatar: "../../../assets/slots/HotFiesta.webp",
     stats: {
-      games: 14, wins: 9, loses: 5, winPct: "64%", buy: "$680", pay: "$730.10", x: "1.07x", profit: "$50.10"
+      bet: "$0.70",
+      pays: "$44.80",
+      totalX: "64x"
     }
    },
   {
     name: "Wild West Gold",
     avatar: "../../../assets/slots/WildWestGold.webp",
     stats: {
-      games: 14, wins: 9, loses: 5, winPct: "64%", buy: "$680", pay: "$730.10", x: "1.07x", profit: "$50.10"
+      bet: "$0.40",
+      pays: "$76.22",
+      totalX: "190.55x"
     }
   },
   {
     name: "Sky Bounty",
     avatar: "../../../assets/slots/SkyBounty.webp",
     stats: {
-      games: 14, wins: 9, loses: 5, winPct: "64%", buy: "$680", pay: "$730.10", x: "1.07x", profit: "$50.10"
+      bet: "$0.60",
+      pays: "$105.14",
+      totalX: "175.23x"
     }
    },
   {
     name: "Pirates Pub",
     avatar: "../../../assets/slots/PiratesPub.webp",
     stats: {
-      games: 14, wins: 9, loses: 5, winPct: "64%", buy: "$680", pay: "$730.10", x: "1.07x", profit: "$50.10"
+      bet: "$0.70",
+      pays: "$10.08",
+      totalX: "14.4x"
     }
   },
 {
     name: "Wild West Duels",
     avatar: "../../../assets/slots/WildWestDuels.webp",
     stats: {
-      games: 12, wins: 7, loses: 5, winPct: "58%", buy: "$560", pay: "$688.40", x: "1.23x", profit: "$128.40"
+      bet: "$0.60",
+      pays: "$4.26",
+      totalX: "7.1x"
     }
   },
   {
     name: "Wild West Gold Megaways",
     avatar: "../../../assets/slots/WildWestGoldMegaways.webp",
     stats: {
-      games: 14, wins: 9, loses: 5, winPct: "64%", buy: "$680", pay: "$730.10", x: "1.07x", profit: "$50.10"
+      bet: "$0.60",
+      pays: "$9.07",
+      totalX: "15.12x"
     }
    },
   {
     name: "Tome of Madness",
     avatar: "../../../assets/slots/TomeofMadness.webp",
     stats: {
-      games: 14, wins: 9, loses: 5, winPct: "64%", buy: "$680", pay: "$730.10", x: "1.07x", profit: "$50.10"
+      bet: "$0.50",
+      pays: "$42.60",
+      totalX: "85.2x"
     }
   },
   {
     name: "Fury of Odin Megaways",
     avatar: "../../../assets/slots/FuryofOdinMegaways.webp",
     stats: {
-      games: 14, wins: 9, loses: 5, winPct: "64%", buy: "$680", pay: "$730.10", x: "1.07x", profit: "$50.10"
+      bet: "$0.50",
+      pays: "$59.24",
+      totalX: "118.48x"
     }
    },
   {
     name: "Legacy of Dead",
     avatar: "../../../assets/slots/LegacyofDead.webp",
     stats: {
-      games: 14, wins: 9, loses: 5, winPct: "64%", buy: "$680", pay: "$730.10", x: "1.07x", profit: "$50.10"
+      bet: "$0.50",
+      pays: "$16.50",
+      totalX: "33x"
     }
   },
 {
     name: "SixSixSix",
     avatar: "../../../assets/slots/SixSixSix.webp",
     stats: {
-      games: 12, wins: 7, loses: 5, winPct: "58%", buy: "$560", pay: "$688.40", x: "1.23x", profit: "$128.40"
+      bet: "$0.40",
+      pays: "$44.00",
+      totalX: "110x"
     }
   },
   {
     name: "Fish Eye",
     avatar: "../../../assets/slots/FishEye.webp",
     stats: {
-      games: 14, wins: 9, loses: 5, winPct: "64%", buy: "$680", pay: "$730.10", x: "1.07x", profit: "$50.10"
+      bet: "$0.50",
+      pays: "$8.80",
+      totalX: "17.6x"
     }
    },
   {
     name: "Power of Thor Megaways",
     avatar: "../../../assets/slots/PowerofThorMegaways.webp",
     stats: {
-      games: 14, wins: 9, loses: 5, winPct: "64%", buy: "$680", pay: "$730.10", x: "1.07x", profit: "$50.10"
+      bet: "$0.60",
+      pays: "$22.56",
+      totalX: "37.6x"
     }
   },
   {
     name: "Warrior Ways",
     avatar: "../../../assets/slots/WarriorWays.webp",
     stats: {
-      games: 14, wins: 9, loses: 5, winPct: "64%", buy: "$680", pay: "$730.10", x: "1.07x", profit: "$50.10"
+      bet: "$0.40",
+      pays: "$7.64",
+      totalX: "19.1x"
     }
    },
   {
     name: "Extra Juicy",
     avatar: "../../../assets/slots/ExtraJuicy.webp",
     stats: {
-      games: 14, wins: 9, loses: 5, winPct: "64%", buy: "$680", pay: "$730.10", x: "1.07x", profit: "$50.10"
+      bet: "$0.60",
+      pays: "$118.08",
+      totalX: "196.8x"
     }
   },
 {
     name: "Fortune of Giza",
     avatar: "../../../assets/slots/FortuneofGiza.webp",
     stats: {
-      games: 12, wins: 7, loses: 5, winPct: "58%", buy: "$560", pay: "$688.40", x: "1.23x", profit: "$128.40"
+      bet: "$0.60",
+      pays: "$5.64",
+      totalX: "9.4x"
     }
   },
   {
     name: "Book of Tut Megaways",
     avatar: "../../../assets/slots/BookofTutMegaways.webp",
     stats: {
-      games: 14, wins: 9, loses: 5, winPct: "64%", buy: "$680", pay: "$730.10", x: "1.07x", profit: "$50.10"
+      bet: "$0.60",
+      pays: "$63.06",
+      totalX: "105.1x"
     }
    },
   {
     name: "Sugar Supreme Powernudge",
     avatar: "../../../assets/slots/SugarSupremePowernudge.webp",
     stats: {
-      games: 14, wins: 9, loses: 5, winPct: "64%", buy: "$680", pay: "$730.10", x: "1.07x", profit: "$50.10"
+      bet: "$0.60",
+      pays: "$0.27",
+      totalX: "0.45x"
     }
   },
   {
     name: "Slayers Inc",
     avatar: "../../../assets/slots/SlayersInc.webp",
     stats: {
-      games: 14, wins: 9, loses: 5, winPct: "64%", buy: "$680", pay: "$730.10", x: "1.07x", profit: "$50.10"
+      bet: "$0.20",
+      pays: "$58.74",
+      totalX: "293.7x"
     }
    },
   {
     name: "Fruit Party",
     avatar: "../../../assets/slots/FruitParty.webp",
     stats: {
-      games: 14, wins: 9, loses: 5, winPct: "64%", buy: "$680", pay: "$730.10", x: "1.07x", profit: "$50.10"
+      bet: "$0.60",
+      pays: "$25.83",
+      totalX: "43.05x"
     }
   },
   {
     name: "Gems Bonanza",
     avatar: "../../../assets/slots/GemsBonanza.webp",
     stats: {
-      games: 14, wins: 9, loses: 5, winPct: "64%", buy: "$680", pay: "$730.10", x: "1.07x", profit: "$50.10"
+      bet: "$0.60",
+      pays: "$41.13",
+      totalX: "68.55x"
     }
   },
   {
     name: "Wanted Dead or a Wild",
     avatar: "../../../assets/slots/WantedDeadoraWild.webp",
     stats: {
-      games: 14, wins: 9, loses: 5, winPct: "64%", buy: "$680", pay: "$730.10", x: "1.07x", profit: "$50.10"
+      bet: "$0.20",
+      pays: "$14.32",
+      totalX: "71.6x"
     }
    },
   {
     name: "Fruit Warp",
     avatar: "../../../assets/slots/FruitWarp.webp",
     stats: {
-      games: 14, wins: 9, loses: 5, winPct: "64%", buy: "$680", pay: "$730.10", x: "1.07x", profit: "$50.10"
+      bet: "$0.50",
+      pays: "$1.15",
+      totalX: "2.3x"
     }
   },
 ];
+
+function showPlayerStats(player) {
+  const modal = document.getElementById("playerStatsModal");
+  const modalName = document.getElementById("modalPlayerName");
+  const modalStats = document.getElementById("modalPlayerStats");
+
+  modalName.textContent = `${player.name}`;
+  modalStats.innerHTML = `
+    <li><strong>Bet:</strong> ${player.stats.bet}</li>
+    <li><strong>Pays:</strong> ${player.stats.pays}</li>
+    <li><strong>Total X:</strong> ${player.stats.totalX}</li>
+  `;
+  modal.classList.remove("hidden");
+}
+
+document.querySelector(".close-stats").addEventListener("click", () => {
+  document.getElementById("playerStatsModal").classList.add("hidden");
+});
+
 
 function createAvatar(player, container) {
   const img = document.createElement("img");
@@ -1119,24 +1216,7 @@ function startSlider() {
   });
 }
 
-function showPlayerStats(player) {
-  const modal = document.getElementById("playerStatsModal");
-  const modalName = document.getElementById("modalPlayerName");
-  const modalStats = document.getElementById("modalPlayerStats");
 
-  modalName.textContent = player.name + "'s Stats";
-  modalStats.innerHTML = `
-    <li><strong>Games:</strong> ${player.stats.games}</li>
-    <li><strong>Wins:</strong> ${player.stats.wins}</li>
-    <li><strong>Loses:</strong> ${player.stats.loses}</li>
-    <li><strong>Win %:</strong> ${player.stats.winPct}</li>
-    <li><strong>Total Buy:</strong> ${player.stats.buy}</li>
-    <li><strong>Total Pay:</strong> ${player.stats.pay}</li>
-    <li><strong>Average X:</strong> ${player.stats.x}</li>
-    <li><strong>Total Profit:</strong> ${player.stats.profit}</li>
-  `;
-  modal.classList.remove("hidden");
-}
 
 document.querySelector(".close-stats").addEventListener("click", () => {
   document.getElementById("playerStatsModal").classList.add("hidden");
@@ -1180,6 +1260,8 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 </script>
+
+
 </body>
 
 <footer>
