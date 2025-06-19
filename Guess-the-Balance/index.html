@@ -590,12 +590,12 @@ menuToggle.addEventListener('click', () => {
     <div class="rewards-title">
         <h2>𝐆𝐔𝐄𝐒𝐒 𝐓𝐇𝐄 𝐁𝐀𝐋𝐀𝐍𝐂𝐄 𝐑𝐄𝐖𝐀𝐑𝐃𝐒</h2>
 	<br>
-	Total Guess the Balance Hosted: <span style="color: gold;">6</span>
+	Total Guess the Balance Hosted: <span style="color: gold;">7</span>
     </div>
     <div>
         <span class="rewards-amount">
             🎁 <span class="prize-text">Total Prizes Given:</span> 
-            <span id="prize-display" class="animated-prize">$127.00</span>
+            <span id="prize-display" class="animated-prize">$152.00</span>
         </span>
     </div>
 </div>
@@ -646,15 +646,16 @@ menuToggle.addEventListener('click', () => {
 
 <script>
     const leaderboardData = [
-        { rank: 1, discord: "teelux187", avatar: "878253813553844254", hash: "8857d958a26cca18f70464ec8eb75d30", rewards: "$ 25" },
-        { rank: 2, discord: "dtrix381", avatar: "488015447417946151", hash: "19e7b770b91a24f3891e8646dc09d335", rewards: "$ 25" },
+        { rank: 1, discord: "dtrix381", avatar: "488015447417946151", hash: "19e7b770b91a24f3891e8646dc09d335", rewards: "$ 25" },
+        { rank: 2, discord: "teelux187", avatar: "878253813553844254", hash: "8857d958a26cca18f70464ec8eb75d30", rewards: "$ 25" },
         { rank: 3, discord: "k_baybe", avatar: "920118580916420670", hash: "65841c4757994c4c5f0c5c20e9b1f6e1", rewards: "$ 25" },
-        { rank: 4, discord: "shawon02", avatar: "1136593521684517005", hash: "f5dae62b252ce71a5d9da20f057fe862", rewards: "$ 25" },
-        { rank: 5, discord: "rirvik", avatar: "766972022223667200", hash: "a_8d23c859cce91b65275fb1de1318e540", rewards: "$ 15" },
-        { rank: 6, discord: "avidity5308", avatar: "100093573961089024", hash: "696a9707e1d13c30add049560f195b48", rewards: "$ 12" },
+        { rank: 4, discord: "dewiputewasi", avatar: "988865245793636392", hash: "bd37fa5476ccf70ef6c784712a2055db", rewards: "$ 25" },
+        { rank: 5, discord: "shawon02", avatar: "1136593521684517005", hash: "f5dae62b252ce71a5d9da20f057fe862", rewards: "$ 25" },
+        { rank: 6, discord: "rirvik", avatar: "766972022223667200", hash: "a_8d23c859cce91b65275fb1de1318e540", rewards: "$ 15" },
+        { rank: 7, discord: "avidity5308", avatar: "100093573961089024", hash: "696a9707e1d13c30add049560f195b48", rewards: "$ 12" },
    ];
 
-    const rowsPerPage = 10;
+    const rowsPerPage = 5;
     let currentPage = 1;
 
 function renderTable() {
