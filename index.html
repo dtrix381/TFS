@@ -3,7 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>𝗧𝗲𝗮𝗺𝗙𝘂𝗹𝗹𝗦𝗲𝗻𝗱𝗦𝗹𝗼𝘁𝘀</title>
+  <meta name="googlebot" content="nosnippet">
+  <title>TeamFullSendSlots | Weekly Slot Tournaments & Giveaways on Kick</title>
+  <meta name="description" content="Join weekly slot tournaments, Guess the Balance, casino giveaways, and live streams hosted by TeamFullSendSlots. Watch us live on Kick and join our Discord community.">
   <link rel="stylesheet" href="styles.css"> <!-- Link to your global styles -->
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Akaya+Kanadaka&display=swap" rel="stylesheet">
@@ -631,14 +633,17 @@ document.addEventListener("DOMContentLoaded", function () {
     const checkbox = document.getElementById("age-check");
     const proceedButton = document.getElementById("proceed-button");
 
-    // Get today's date in YYYY-MM-DD format
     const today = new Date().toISOString().split('T')[0];
     const lastShown = localStorage.getItem("ageVerifiedDate");
 
-    if (lastShown === today) {
-        popup.style.display = "none"; // Already verified today
+    // Bot detection (basic): Googlebot, Bingbot, etc.
+    const userAgent = navigator.userAgent.toLowerCase();
+    const isBot = /googlebot|bingbot|slurp|duckduckbot|baiduspider|yandex|facebookexternalhit/.test(userAgent);
+
+    if (isBot || lastShown === today) {
+        popup.style.display = "none"; // Skip popup for bots or verified users
     } else {
-        popup.style.display = "flex"; // Show popup
+        popup.style.display = "flex"; // Show popup for users
     }
 
     checkbox.addEventListener("change", function () {
@@ -651,6 +656,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 </script>
+
 
   <header>
     <div class="header-container">
