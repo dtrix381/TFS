@@ -75,6 +75,7 @@
   display: flex;
   flex-direction: column;
   align-items: center; /* <<< ADD THIS LINE */
+  z-index: 2;
 }
 
 
@@ -247,6 +248,201 @@ body.modal-open {
 }
 
 
+.top-players-slider {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      max-width: 1500px;
+      margin: 90px auto 30px auto;
+      pointer-events: none;
+      margin-left: 190px;
+  position: absolute; /* or relative if needed */
+  z-index: 1; /* lower value */
+  top: 70px; /* position it if needed */
+left: 0;
+}
+
+    .slider-column {
+  width: 150px;
+  position: relative;
+  height: 100%; /* same or greater than max drop height */
+  overflow: hidden;
+}
+
+
+.avatar {
+  width: 48px;
+  height: 48px;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0;
+  transition: transform 0.3s;
+  cursor: pointer;
+  z-index: 999999999;
+  animation: drop 10s linear forwards;
+  pointer-events: auto;
+}
+
+
+    .avatar:hover {
+      transform: translateX(-50%) scale(1.1);
+    }
+
+@keyframes drop {
+  0%   { top: -60px; opacity: 0; }
+  10%  { opacity: 1; }
+  90%  { opacity: 1; }
+  100% { opacity: 0; } /* REMOVE top from here */
+}
+
+.avatar-click-effect {
+  animation: avatarPop 0.5s ease forwards;
+  z-index: 10000 !important;
+}
+
+@keyframes avatarPop {
+  0% {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(2.5) rotate(180deg);
+    opacity: 0.3;
+  }
+  100% {
+    transform: scale(4) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+.zoom-to-center {
+  animation: zoomToCenter 0.5s ease-out forwards;
+  z-index: 10000 !important;
+}
+
+@keyframes zoomToCenter {
+  0% {
+    transform: translateX(-50%) scale(1) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(2.5) rotate(360deg);
+    top: 50vh;
+    left: 50vw;
+    opacity: 0;
+  }
+}
+
+
+.stats-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(8px);
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 9999;
+  font-family: 'Exo 2', sans-serif;
+}
+
+.stats-modal.hidden {
+  display: none !important;
+}
+
+.stats-modal-content {
+  background: linear-gradient(to bottom right, #021649, #0c1e4c);
+  padding: 25px 30px;
+  border-radius: 14px;
+  border: 2px solid #bb6eff;
+  color: #ffffff;
+  max-width: 400px;
+  width: 90%;
+  box-shadow: 0 0 25px rgba(187, 110, 255, 0.4);
+  position: relative;
+  font-family: 'Exo 2', sans-serif;
+}
+
+.stats-modal-content h3 {
+  font-size: 22px;
+  margin-bottom: 15px;
+  color: gold;
+  text-align: center;
+  text-shadow: 1px 1px 2px #000;
+}
+
+.stats-modal-content ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.stats-modal-content li {
+  margin-bottom: 8px;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.stats-modal-content li strong {
+  color: #FFD700;
+  font-weight: bold;
+}
+
+.close-stats {
+  position: absolute;
+  top: 10px;
+  right: 14px;
+  font-size: 24px;
+  font-weight: bold;
+  cursor: pointer;
+  color: #ffffff;
+  background: none;
+  border: none;
+  transition: transform 0.2s ease;
+}
+
+.close-stats:hover {
+  transform: scale(1.2);
+  color: #ff5c5c;
+}
+
+.profit-positive {
+  color: limegreen;
+  font-weight: bold;
+}
+
+.profit-negative {
+  color: red;
+  font-weight: bold;
+}
+
+    .hidden {
+      display: none;
+    }
+
+
+
+.back-button {
+  background-color: red;
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  font-size: 14px;
+  cursor: pointer;
+  border-radius: 5px;
+  display: block;         /* 👈 Makes it a block element */
+  width: fit-content;     /* 👈 Shrinks to fit content */
+  margin: 15px auto;      /* 👈 Centers horizontally */
+}
+.back-button:hover {
+  background-color: #666;
+}
+
+
 
     @media (max-width: 768px) {
       .container {
@@ -302,9 +498,15 @@ body.modal-open {
   to {
     text-shadow: 0 0 10px #ffd700, 0 0 20px #ffcc00;
   }
+
+  /* ✅ Move this outside of any other block */
+  .slot-name {
+    font-size: 13px !important;
+  }
+  .top-players-slider {
+    display: none !important;
+  }
 }
-
-
 </style>
 
 </head>
@@ -406,6 +608,20 @@ menuToggle.addEventListener('click', () => {
     document.body.classList.toggle('menu-open');
   });
 </script>
+
+<div class="top-players-slider">
+  <div class="slider-column" id="col1"></div>
+  <div class="slider-column" id="col2"></div>
+  <div class="slider-column" id="col3"></div>
+  <div class="slider-column" id="col4"></div>
+  <div class="slider-column" id="col5"></div>
+  <div class="slider-column" id="col6"></div>
+  <div class="slider-column" id="col7"></div>
+  <div class="slider-column" id="col8"></div>
+  <div class="slider-column" id="col9"></div>
+  <div class="slider-column" id="col10"></div>
+  <div class="slider-column" id="col11"></div>
+</div>
 
 
 <div class="container">
@@ -711,6 +927,542 @@ function openModal() {
 function closeModal() {
   document.getElementById("historyModal").classList.add("hidden");
 }
+</script>
+
+
+<div id="playerStatsModal" class="stats-modal hidden">
+  <div class="stats-modal-content">
+    <span class="close-stats">&times;</span>
+    <h3 id="modalPlayerName">Player Stats</h3>
+    <ul id="modalPlayerStats"></ul>
+  </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const stats = document.querySelectorAll(".stat");
+
+  stats.forEach(stat => {
+    const label = stat.querySelector(".stat-label");
+    const valueEl = stat.querySelector(".stat-value");
+
+    if (label && label.textContent.includes("Hunt Result")) {
+      const valueText = valueEl.textContent.replace(/[^0-9.-]/g, '');
+      const numericValue = parseFloat(valueText);
+
+      if (!isNaN(numericValue)) {
+        valueEl.classList.remove("success");
+        valueEl.classList.add(numericValue < 0 ? "negative" : "success");
+      }
+    }
+  });
+});
+</script>
+
+<script>
+const topPlayers = [
+  {
+    name: "Le Bandit",
+    avatar: "../assets/slots/LeBandit.webp",
+    stats: {
+      games: "6",
+      wins: "6",
+      lost: "0",
+      wratio: "100.00%",
+      buys: "$700.00",
+      pays: "$1,348.92",
+      profit: "$648.92",
+      totalX: "1.93x"
+    }
+  },
+  {
+    name: "Dragon's Domain",
+    avatar: "../assets/slots/Dragon'sDomain.webp",
+    stats: {
+      games: "2",
+      wins: "2",
+      lost: "0",
+      wratio: "100.00%",
+      buys: "$160.00",
+      pays: "$62.40",
+      profit: "-$97.60",
+      totalX: "0.39x"
+    }
+   },
+  {
+    name: "Fear the Dark",
+    avatar: "../assets/slots/FeartheDark.webp",
+    stats: {
+      games: "1",
+      wins: "1",
+      lost: "0",
+      wratio: "100.00%",
+      buys: "$90.00",
+      pays: "$271.80",
+      profit: "$181.80",
+      totalX: "3.02x"
+    }
+  },
+  {
+    name: "Rad Maxx",
+    avatar: "../assets/slots/RadMaxx.webp",
+    stats: {
+      games: "5",
+      wins: "3",
+      lost: "2",
+      wratio: "60.00%",
+      buys: "$440.00",
+      pays: "$618.08",
+      profit: "$178.08",
+      totalX: "1.40x"
+    }
+   },
+  {
+    name: "Sugar Rush",
+    avatar: "../assets/slots/SugarRush.webp",
+    stats: {
+      games: "5",
+      wins: "3",
+      lost: "2",
+      wratio: "60.00%",
+      buys: "$440.00",
+      pays: "$232.83",
+      profit: "-$207.17",
+      totalX: "0.53x"
+    }
+  },
+  {
+    name: "Beast Below",
+    avatar: "../assets/slots/BeastBelow.webp",
+    stats: {
+      games: "4",
+      wins: "3",
+      lost: "1",
+      wratio: "75.00%",
+      buys: "$320.00",
+      pays: "$208.42",
+      profit: "-$111.58",
+      totalX: "0.65x"
+    }
+  },
+  {
+    name: "Heart of Cleopatra",
+    avatar: "../assets/slots/HeartofCleopatra.webp",
+    stats: {
+      games: "6",
+      wins: "4",
+      lost: "2",
+      wratio: "66.67%",
+      buys: "$700.00",
+      pays: "$629.57",
+      profit: "-$70.43",
+      totalX: "0.90x"
+    }
+   },
+  {
+    name: "Hounds of Hell",
+    avatar: "../assets/slots/HoundsofHell.webp",
+    stats: {
+      games: "5",
+      wins: "3",
+      lost: "2",
+      wratio: "60.00%",
+      buys: "$500.00",
+      pays: "$350.36",
+      profit: "-$149.64",
+      totalX: "0.70x"
+    }
+  },
+  {
+    name: "Gates of Olympus Super Scatter",
+    avatar: "../assets/slots/GatesofOlympusSuperScatter.webp",
+    stats: {
+      games: "8",
+      wins: "4",
+      lost: "4",
+      wratio: "50.00%",
+      buys: "$820.00",
+      pays: "$695.86",
+      profit: "-$124.14",
+      totalX: "0.85x"
+    }
+   },
+  {
+    name: "Wild Bison Charge",
+    avatar: "../assets/slots/WildBisonCharge.webp",
+    stats: {
+      games: "2",
+      wins: "1",
+      lost: "1",
+      wratio: "50.00%",
+      buys: "$200.00",
+      pays: "$428.15",
+      profit: "$228.15",
+      totalX: "2.14x"
+    }
+  },
+{
+    name: "teelux187",
+    avatar: "https://cdn.discordapp.com/avatars/878253813553844254/9d42234d3f6c20040ae5ff442736eb31.png",
+    stats: {
+      games: "6",
+      wins: "6",
+      lost: "0",
+      wratio: "100.00%",
+      buys: "$700.00",
+      pays: "$1,348.92",
+      profit: "$648.92",
+      totalX: "1.93x"
+    }
+  },
+  {
+    name: "denni905",
+    avatar: "https://cdn.discordapp.com/embed/avatars/1.png",
+    stats: {
+      games: "3",
+      wins: "3",
+      lost: "0",
+      wratio: "100.00%",
+      buys: "$250.00",
+      pays: "$334.20",
+      profit: "$84.20",
+      totalX: "1.34x"
+    }
+   },
+  {
+    name: "Patchy",
+    avatar: "https://cdn.discordapp.com/avatars/743392043157553204/03be465ebc28e19e04e3479928e47b9f.png",
+    stats: {
+      games: "4",
+      wins: "3",
+      lost: "1",
+      wratio: "75.00%",
+      buys: "$360.00",
+      pays: "$462.68",
+      profit: "$102.68",
+      totalX: "1.29x"
+    }
+  },
+  {
+    name: "Dtrix",
+    avatar: "https://cdn.discordapp.com/avatars/488015447417946151/19e7b770b91a24f3891e8646dc09d335.png",
+    stats: {
+      games: "6",
+      wins: "4",
+      lost: "2",
+      wratio: "66.67%",
+      buys: "$700.00",
+      pays: "$629.57",
+      profit: "-$70.43",
+      totalX: "0.90x"
+    }
+   },
+  {
+    name: "Queenbaka",
+    avatar: "https://cdn.discordapp.com/avatars/915451578708820000/c8b557780ab5c2db351fcf5e01eb4e1c.png",
+    stats: {
+      games: "6",
+      wins: "4",
+      lost: "2",
+      wratio: "66.67%",
+      buys: "$480.00",
+      pays: "$270.70",
+      profit: "-$209.30",
+      totalX: "0.56x"
+    }
+  },
+{
+    name: "dewiputewasi",
+    avatar: "https://cdn.discordapp.com/avatars/988865245793636392/bd37fa5476ccf70ef6c784712a2055db.png",
+    stats: {
+      games: "5",
+      wins: "3",
+      lost: "2",
+      wratio: "60.00%",
+      buys: "$500.00",
+      pays: "$350.36",
+      profit: "-$149.64",
+      totalX: "0.70x"
+    }
+  },
+  {
+    name: "Jess ♡",
+    avatar: "https://cdn.discordapp.com/embed/avatars/2.png",
+    stats: {
+      games: "5",
+      wins: "3",
+      lost: "2",
+      wratio: "60.00%",
+      buys: "$440.00",
+      pays: "$232.83",
+      profit: "-$207.17",
+      totalX: "0.53x"
+    }
+   },
+  {
+    name: "bemboyadvancee",
+    avatar: "https://cdn.discordapp.com/avatars/528637332799225876/2a8dcb99f38abf44838483af83a65e8e.png",
+    stats: {
+      games: "4",
+      wins: "2",
+      lost: "2",
+      wratio: "50.00%",
+      buys: "$420.00",
+      pays: "$333.31",
+      profit: "-$86.69",
+      totalX: "0.79x"
+    }
+   },
+  {
+    name: "scoco85",
+    avatar: "https://cdn.discordapp.com/avatars/894496485574586428/0d65c011714b9d093f6953d9b407650e.png",
+    stats: {
+      games: "2",
+      wins: "1",
+      lost: "1",
+      wratio: "50.00%",
+      buys: "$200.00",
+      pays: "$428.15",
+      profit: "$228.15",
+      totalX: "2.14x"
+    }
+   },
+  {
+    name: "Karina_baybe",
+    avatar: "https://cdn.discordapp.com/avatars/920118580916420670/65841c4757994c4c5f0c5c20e9b1f6e1.png",
+    stats: {
+      games: "2",
+      wins: "1",
+      lost: "1",
+      wratio: "50.00%",
+      buys: "$200.00",
+      pays: "$278.06",
+      profit: "$78.06",
+      totalX: "1.39x"
+    }
+   },
+];
+
+function showPlayerStats(player) {
+  const modal = document.getElementById("playerStatsModal");
+  const modalName = document.getElementById("modalPlayerName");
+  const modalStats = document.getElementById("modalPlayerStats");
+
+  modalName.textContent = `${player.name}`;
+
+  // Parse profit as a float number
+  const profitValue = parseFloat(player.stats.profit.replace(/[^0-9.-]/g, ""));
+  const profitClass = profitValue >= 0 ? "profit-positive" : "profit-negative";
+
+  modalStats.innerHTML = `
+    <li><strong>Games Played:</strong> ${player.stats.games}</li>
+    <li><strong>Wins:</strong> ${player.stats.wins}</li>
+    <li><strong>Loses:</strong> ${player.stats.lost}</li>
+    <li><strong>Win %:</strong> ${player.stats.wratio}</li>
+    <li><strong>Total Buy:</strong> ${player.stats.buys}</li>
+    <li><strong>Total Pay:</strong> ${player.stats.pays}</li>
+    <li><strong>Total Profit:</strong> <span class="${profitClass}">${player.stats.profit}</span></li>
+    <li><strong>Average X:</strong> ${player.stats.totalX}</li>
+  `;
+
+  modal.classList.remove("hidden");
+}
+
+
+document.querySelector(".close-stats").addEventListener("click", () => {
+  document.getElementById("playerStatsModal").classList.add("hidden");
+});
+
+
+function createAvatar(player, container) {
+  const img = document.createElement("img");
+  img.className = "avatar";
+  img.src = player.avatar;
+  img.alt = player.name;
+  img.title = player.name;
+
+  const containerHeight = document.querySelector(".container")?.offsetHeight || 600;
+  const avatarHeight = 48;
+  const dropDistance = containerHeight - avatarHeight;
+
+  img.style.top = `-${avatarHeight}px`;
+  img.style.opacity = "0";
+  container.appendChild(img);
+
+  // Track position manually using requestAnimationFrame
+  let start = null;
+  const duration = 10000;
+
+  function fallStep(timestamp) {
+    if (!start) start = timestamp;
+    const elapsed = timestamp - start;
+    const progress = Math.min(elapsed / duration, 1);
+    const eased = progress; // linear, or use easing
+
+    const currentTop = -avatarHeight + eased * dropDistance;
+    img.style.top = `${currentTop}px`;
+    img.style.opacity = progress < 0.1 ? "0" : "1";
+
+    if (progress < 1) {
+      img._animationFrame = requestAnimationFrame(fallStep);
+    } else {
+      img.remove(); // remove after complete
+    }
+  }
+
+  img._animationFrame = requestAnimationFrame(fallStep);
+
+  // Click to animate pop-up
+img.onclick = () => {
+  playPopSound?.();
+
+  // Get actual position relative to page
+  const rect = img.getBoundingClientRect();
+  const scrollTop = window.scrollY || document.documentElement.scrollTop;
+  const scrollLeft = window.scrollX || document.documentElement.scrollLeft;
+
+  const clone = img.cloneNode(true);
+  clone.style.position = "absolute";
+  clone.style.left = `${rect.left + scrollLeft + rect.width / 2}px`;
+  clone.style.top = `${rect.top + scrollTop + rect.height / 2}px`;
+  clone.style.width = `${rect.width}px`;
+  clone.style.height = `${rect.height}px`;
+  clone.style.transform = "translate(-50%, -50%) scale(1)";
+  clone.style.pointerEvents = "none";
+  clone.style.zIndex = "9999";
+
+  document.body.appendChild(clone);
+
+  // Animate to center of screen
+  const centerX = window.innerWidth / 2;
+  const centerY = window.innerHeight / 2;
+
+  clone.animate([
+    {
+      transform: "translate(-50%, -50%) scale(1) rotate(0deg)",
+      opacity: 1,
+      left: `${rect.left + scrollLeft + rect.width / 2}px`,
+      top: `${rect.top + scrollTop + rect.height / 2}px`
+    },
+    {
+      transform: "translate(-50%, -50%) scale(2.5) rotate(360deg)",
+      opacity: 0.2,
+      left: `${centerX}px`,
+      top: `${centerY}px`
+    }
+  ], {
+    duration: 600,
+    easing: "ease-out",
+    fill: "forwards"
+  });
+
+  setTimeout(() => {
+    clone.remove();
+    showPlayerStats(player);
+  }, 600);
+
+  img.remove(); // remove original
+};
+
+  setTimeout(() => img.remove(), 10000);
+}
+
+
+function startSlider() {
+  const columns = document.querySelectorAll(".slider-column");
+
+  columns.forEach(col => {
+    function dropAvatarLoop() {
+      const container = document.querySelector(".container");
+      const height = container ? container.offsetHeight : 600;
+
+      // Dynamic delay: taller container = faster drops, shorter = slower
+      // You can adjust the scale factor to your preference
+      const delay = Math.max(1500, height * 2); // Minimum 1.5s, more if small
+
+      const player = topPlayers[Math.floor(Math.random() * topPlayers.length)];
+      createAvatar(player, col);
+
+      setTimeout(dropAvatarLoop, delay + Math.random() * 1000); // slight randomness
+    }
+
+    // Start with a random delay so columns are staggered
+    setTimeout(dropAvatarLoop, Math.random() * 1000);
+  });
+}
+
+
+
+
+document.querySelector(".close-stats").addEventListener("click", () => {
+  document.getElementById("playerStatsModal").classList.add("hidden");
+});
+
+console.log("Slider running");
+startSlider();
+</script>
+
+<script>
+function playPopSound() {
+  const audio = new Audio("https://cdn.pixabay.com/download/audio/2022/03/15/audio_9a97b5c0a3.mp3?filename=video-game-bonus-coin-199896.mp3");
+  audio.volume = 0.5;
+
+  // Try play, catch any autoplay block
+  audio.play().catch(err => {
+    console.warn("Sound blocked by browser autoplay policy.", err);
+  });
+}
+
+</script>
+
+<script>
+function syncSliderHeight() {
+  const container = document.querySelector('.container');
+  const slider = document.querySelector('.top-players-slider');
+  if (container && slider) {
+    slider.style.height = container.offsetHeight + 'px';
+  }
+}
+
+window.addEventListener("resize", syncSliderHeight);
+document.addEventListener("DOMContentLoaded", syncSliderHeight);
+
+</script>
+
+<script>
+function syncDropHeight() {
+  const column = document.querySelector('.slider-column');
+  const footer = document.querySelector('footer');
+
+  if (!column || !footer) return;
+
+  const colTop = column.getBoundingClientRect().top + window.scrollY;
+  const footerTop = footer.getBoundingClientRect().top + window.scrollY;
+  const maxDrop = footerTop - colTop - 48; // subtract avatar height
+
+  document.documentElement.style.setProperty('--drop-end', `${Math.max(0, maxDrop)}px`);
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  startSlider();
+  syncSliderHeight();
+  syncDropHeight();
+
+  // Periodic sync
+  setInterval(syncSliderHeight, 10);
+
+  // MutationObserver for dynamic growth
+  const container = document.querySelector('.container');
+  if (container) {
+    const observer = new MutationObserver(() => syncSliderHeight());
+    observer.observe(container, { childList: true, subtree: true });
+  }
+
+  window.addEventListener("resize", syncSliderHeight);
+});
+
+
+
 </script>
 
 </body>
