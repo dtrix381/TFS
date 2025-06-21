@@ -630,8 +630,8 @@ menuToggle.addEventListener('click', () => {
         Finals</a>	
       <a href="javascript:void(0);" id="openHistoryModal" class="sticky-participants-btn" style="text-decoration:none; display:inline-block; padding:8px 15px; background:red; color:#fff; border-radius:5px;">
         History</a>	
-      <a href="/Tournament/Leaderboard/" class="sticky-participants-btn" style="text-decoration:none; display:inline-block; padding:8px 15px; background:red; color:#fff; border-radius:5px;">
-        Leaderboard</a>
+      <a href="javascript:void(0);" id="openLeaderboardModal" class="sticky-participants-btn" style="text-decoration:none; display:inline-block; padding:8px 15px; background:red; color:#fff; border-radius:5px;">
+  Leaderboard</a>
     </div>
   </div>
 
@@ -662,6 +662,17 @@ menuToggle.addEventListener('click', () => {
       <span id="pageNumber">1</span>
       <button id="nextPage">Next</button>
     </div>
+  </div>
+</div>
+
+<div id="leaderboardModal" class="modal hidden">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <h2>Select a Leaderboard</h2>
+    <ul>
+      <li><a href="/Tournament/Leaderboard/">Tournament Leaderboard</a></li>
+      <li><a href="/Slot-Leaderboard/">Slot Leaderboard</a></li>
+    </ul>
   </div>
 </div>
 
@@ -926,6 +937,29 @@ function openModal() {
 function closeModal() {
   document.getElementById("historyModal").classList.add("hidden");
 }
+</script>
+
+<script>
+// Leaderboard Modal logic
+const openLeaderboardModal = document.getElementById('openLeaderboardModal');
+const leaderboardModal = document.getElementById('leaderboardModal');
+const closeLeaderboardModal = leaderboardModal.querySelector('.close');
+
+// Show Modal
+openLeaderboardModal.addEventListener('click', () => {
+  leaderboardModal.classList.remove('hidden');
+});
+
+// Close Modal
+closeLeaderboardModal.addEventListener('click', () => {
+  leaderboardModal.classList.add('hidden');
+});
+
+// Optional: close when clicking outside
+leaderboardModal.addEventListener('click', (e) => {
+  if (e.target === leaderboardModal) leaderboardModal.classList.add('hidden');
+});
+
 </script>
 
 
