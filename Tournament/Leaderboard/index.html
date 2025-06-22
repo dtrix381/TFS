@@ -355,8 +355,6 @@
     }
 
 
-
-
 /* Desktop view */
 @media (min-width: 769px) {
   .container.leaderboard {
@@ -375,8 +373,6 @@
     min-width: auto;              /* Let the table shrink or grow as needed */
   }
 }
-
-
 
 @media (max-width: 768px) {
   .wrapper {
@@ -452,6 +448,32 @@
     font-size: 14px;
   }
 }
+
+
+.back-button {
+  background-color: red;
+  color: #fff;
+  border: none;
+  padding: 8px 16px; /* Slightly smaller */
+  font-size: 14px;   /* Slightly smaller text */
+  cursor: pointer;
+  border-radius: 5px;
+  display: inline-block; /* Keeps it inline */
+  width: auto;           /* Ensures it doesn't stretch */
+  max-width: fit-content; /* Optional: ensures it only fits the content */
+  margin: 15px 0;
+}
+.back-button:hover {
+  background-color: #666;
+}
+
+.flex-center {
+  display: flex;
+  justify-content: center;
+  margin: 15px 0;
+}
+
+
 
 
 
@@ -593,9 +615,20 @@ menuToggle.addEventListener('click', () => {
             <!-- Rows will be inserted dynamically -->
         </tbody>
     </table>
-</div>
- 
 
+</div>
+ </div>
+<div class="pagination">
+    <button id="prevPage" onclick="changePage(-1)" disabled>Previous</button>
+    <span id="pageInfo">Page 1</span>
+    <button id="nextPage" onclick="changePage(1)">Next</button>
+</div>
+
+<div class="flex-center">
+  <a href="/Tournament/" class="back-button">Back</a>
+</div>
+
+</div>
 
 <script>
     // Number Count Animation Effect
@@ -731,13 +764,7 @@ const rewardsColor = rewardsValue >= 1 ? '#1ceb1c' : '#ccc';
 
     renderTable();
 </script>
-</div>
-<div class="pagination">
-    <button id="prevPage" onclick="changePage(-1)" disabled>Previous</button>
-    <span id="pageInfo">Page 1</span>
-    <button id="nextPage" onclick="changePage(1)">Next</button>
-</div>
-</div>
+
 
 </main>
 
