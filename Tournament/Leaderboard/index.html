@@ -595,22 +595,22 @@ menuToggle.addEventListener('click', () => {
 </div>
 
 <div class="table-responsive">
-        <table class="table table-dark">
-    <thead>
-        <tr>
-            <th>Rank</th>
-            <th>Player</th>
-            <th>Games</th>
-            <th>Wins</th>
-            <th>Loses</th>
-            <th>Win %</th>
-            <th>Total Buy</th>
-            <th>Total Pay</th>
-            <th>Total Profit</th>
-            <th>Average x</th>
-            <th>Rewards</th>
-       </tr>
-    </thead>
+<table class="table table-dark">
+  <thead>
+    <tr>
+      <th data-key="rank">Rank</th>
+      <th data-key="discord">Player</th>
+      <th data-key="games">Games</th>
+      <th data-key="wins">Wins</th>
+      <th data-key="loses">Loses</th>
+      <th data-key="Wratio">Win %</th>
+      <th data-key="buy">Total Buy</th>
+      <th data-key="pay">Total Pay</th>
+      <th data-key="profit">Total Profit</th>
+      <th data-key="avgX">Average x</th>
+      <th data-key="rewards">Rewards</th>
+    </tr>
+  </thead>
         <tbody id="leaderboard-body">
             <!-- Rows will be inserted dynamically -->
         </tbody>
@@ -658,7 +658,7 @@ menuToggle.addEventListener('click', () => {
 
 
 <script>
-    const leaderboardData = [
+let leaderboardData = [
 { rank: 1, discord: "teelux187", avatar: "878253813553844254", hash: "8857d958a26cca18f70464ec8eb75d30", games: "6", wins: "6", loses: "0", Wratio: "100.00%", buy: "$ 700.00", pay: "$ 1,348.92", profit: "$ 648.92", avgX: "1.93x", rewards: "$ 70" },
 { rank: 2, discord: "Denni", avatar: "1334181807163314206", hash: "None", games: "3", wins: "3", loses: "0", Wratio: "100.00%", buy: "$ 250.00", pay: "$ 334.20", profit: "$ 84.20", avgX: "1.34x", rewards: "$ 0" },
 { rank: 3, discord: "Patchy ", avatar: "743392043157553204", hash: "03be465ebc28e19e04e3479928e47b9f", games: "4", wins: "3", loses: "1", Wratio: "75.00%", buy: "$ 360.00", pay: "$ 462.68", profit: "$ 102.68", avgX: "1.29x", rewards: "$ 20" },
@@ -682,8 +682,14 @@ menuToggle.addEventListener('click', () => {
 { rank: 21, discord: "Yongdiba", avatar: "899983590782304306", hash: "ecbe546e3f7de269fbf34ef0d63230da", games: "4", wins: "0", loses: "4", Wratio: "0.00%", buy: "$ 380.00", pay: "$ 63.98", profit: "-$ 316.02", avgX: "0.17x", rewards: "$ 0" },
    ];
 
-    const rowsPerPage = 5;
-    let currentPage = 1;
+let originalData = [...leaderboardData]; // preserve the default order at page load
+let isDefaultOrder = true; // track if current order is the original
+let sortKey = null;
+let sortAsc = true;
+let rankClickCount = 0;
+
+const rowsPerPage = 5;
+let currentPage = 1;
 
 function renderTable() {
     const tbody = document.getElementById("leaderboard-body");
@@ -763,6 +769,52 @@ const rewardsColor = rewardsValue >= 1 ? '#1ceb1c' : '#ccc';
     }
 
     renderTable();
+
+
+function sortData(key) {
+  leaderboardData.sort((a, b) => {
+    let valA = a[key];
+    let valB = b[key];
+
+    if (["buy", "pay", "profit", "avgX", "games", "wins", "loses"].includes(key)) {
+      valA = parseFloat((valA || "").replace(/[^0-9.-]/g, "")) || 0;
+      valB = parseFloat((valB || "").replace(/[^0-9.-]/g, "")) || 0;
+    } else if (key === "Wratio") {
+      valA = parseFloat(a.Wratio) || 0;
+      valB = parseFloat(b.Wratio) || 0;
+    } else {
+      valA = (valA || "").toString().toLowerCase();
+      valB = (valB || "").toString().toLowerCase();
+    }
+
+     return sortAsc ? (valA > valB ? 1 : -1) : (valA < valB ? 1 : -1);
+  });
+}
+
+// Attach listeners after DOM loads
+document.addEventListener("DOMContentLoaded", () => {
+  document.querySelectorAll("th[data-key]").forEach((th) => {
+    th.style.cursor = "pointer";
+    th.addEventListener("click", () => {
+      const key = th.dataset.key;
+      if (key === "rank") {
+        rankClickCount++;
+        leaderboardData = rankClickCount % 2 === 1 ? [...originalData].reverse() : [...originalData];
+      } else {
+        if (sortKey === key) sortAsc = !sortAsc;
+        else {
+          sortKey = key;
+          sortAsc = (key === 'player');
+        }
+        sortData(key);
+      }
+      currentPage = 1;
+      renderTable();
+    });
+  });
+
+  renderTable();
+});
 </script>
 
 
