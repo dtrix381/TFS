@@ -558,7 +558,7 @@ function renderTable() {
 
     <div style="text-align: center; margin-top: 20px;">
     <h2 class="depositors-title">𝐉𝐔𝐍𝐄 𝐒𝐔𝐁-𝐆𝐈𝐕𝐄𝐀𝐖𝐀𝐘𝐒</h2>
-    <iframe src="https://wheelofnames.com/r3c-c4z" width="710" height="750" style="border: none;"></iframe>
+    <iframe src="https://wheelofnames.com/g3f-gfh" width="710" height="750" style="border: none;"></iframe>
 </div>
 </div>
 
@@ -570,10 +570,25 @@ function renderTable() {
 <footer>
   <p>&copy; 2025 <strong>TeamFullSendSlots.com</strong>. All rights reserved.</p>
 
-<div class="footer-legal">
-  <a href="/policy/">Privacy & Terms</a>
-</div>
+  <div class="footer-legal">
+    <a href="/policy/">Privacy & Terms</a>
+  </div>
+
+  <div class="footer-updated" id="last-updated"></div>
 </footer>
+
+<script>
+  const updated = new Date(document.lastModified);
+  const formatted = updated.toLocaleString(undefined, {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true,
+  });
+  document.getElementById("last-updated").textContent = `Last updated: ${formatted}`;
+</script>
 
 
 </html>
