@@ -463,8 +463,8 @@ menuToggle.addEventListener('click', () => {
                 <li>$250 Total Prize to be tipped on winners Dimebit Accounts</li>
                 <li>1st Place = $70</li>
                 <li>2nd Place = $50</li>
-                <li>3rd & 4th Place = $25 each</li>
-                <li>5th - 8th Place = $20 each</li>
+                <li>3rd = $30</li>
+                <li>4th - 8th Place = $20 each</li>
                 <li>From Monday to Thursday we doing a daily Tournaments.</li>
                 <li>The Top 2 on each Tournament will advance to the Finals on Friday</li>
             </ul>
@@ -475,8 +475,10 @@ menuToggle.addEventListener('click', () => {
         <table class="table table-dark">
     <thead>
         <tr>
+            <th>Rank</th>
             <th>Player</th>
             <th>Slot Picked</th>
+            <th>Reward</th>
         </tr>
     </thead>
         <tbody id="leaderboard-body">
@@ -491,14 +493,14 @@ menuToggle.addEventListener('click', () => {
 
 <script>
     const leaderboardData = [
-        { discord: "Queenbaka", avatar: "915451578708820000", hash: "c8b557780ab5c2db351fcf5e01eb4e1c", entries: "Fruit Party" },
-        { discord: "Hamslicer35", avatar: "850665803161534484", hash: "ae41cd1995ef4f0b3e47aad2dddb196a", entries: "Le Viking"},
-        { discord: "Sushan", avatar: "1152297634548158544", hash: "aacef4e055c0b6055d3d88d9920fece3", entries: "Book of Tut Respin [K symbol]" },
-        { discord: "jamesmckenna", avatar: "937976594864164894", hash: "e4cc9e8a80feb698858825500ed1257d", entries: "Gates of Olympus Super Scatter" },
-        { discord: "haroon06", avatar: "875842451590500403", hash: "edafc931822af8fadf42838bdd4e02a0", entries: "Ultimate Slot of America" },
-        { discord: "acytidiva", avatar: "100093573961089024", hash: "696a9707e1d13c30add049560f195b48", entries: "Ze Zeus [super] " },
-        { discord: "dewiputewasi", avatar: "988865245793636392", hash: "bd37fa5476ccf70ef6c784712a2055db", entries: "Jewel Rush" },
-        { discord: "Goggy12", avatar: "1252610980014456905", hash: "13e6575bc070f444953561895fdaede5", entries: "Fist of Destruction" },
+        { rank: 1, discord: "Goggy12", avatar: "1252610980014456905", hash: "13e6575bc070f444953561895fdaede5", entries: "Fist of Destruction", reward: "$70" },
+        { rank: 2, discord: "jamesmckenna", avatar: "937976594864164894", hash: "e4cc9e8a80feb698858825500ed1257d", entries: "Gates of Olympus Super Scatter", reward: "$50" },
+        { rank: 3, discord: "dewiputewasi", avatar: "988865245793636392", hash: "bd37fa5476ccf70ef6c784712a2055db", entries: "Jewel Rush", reward: "$30" },
+        { rank: 4, discord: "haroon06", avatar: "875842451590500403", hash: "edafc931822af8fadf42838bdd4e02a0", entries: "Ze Zeus [super]", reward: "$20" },
+        { rank: 5, discord: "Queenbaka", avatar: "915451578708820000", hash: "c8b557780ab5c2db351fcf5e01eb4e1c", entries: "Fruit Party", reward: "$20" },
+        { rank: 6, discord: "Hamslicer35", avatar: "850665803161534484", hash: "ae41cd1995ef4f0b3e47aad2dddb196a", entries: "Le Viking", reward: "$20"},
+        { rank: 7, discord: "acytidiva", avatar: "100093573961089024", hash: "696a9707e1d13c30add049560f195b48", entries: "Ultimate Slot of America", reward: "$20" },
+        { rank: 8, discord: "Sushan", avatar: "1152297634548158544", hash: "aacef4e055c0b6055d3d88d9920fece3", entries: "Book of Tut Respin [K symbol]", reward: "$20" },
    ];
 
     const rowsPerPage = 10;
@@ -535,7 +537,14 @@ function renderTable() {
             ? `https://cdn.discordapp.com/avatars/${data.avatar}/${data.hash}.png`
             : `https://cdn.discordapp.com/embed/avatars/${data.avatar % 1}.png`;
 
+// Get numeric value of rewards
+const rewardValue = parseFloat(data.reward.replace(/[^0-9.]/g, '') || 0);
+
+// Choose color
+const rewardColor = rewardValue >= 1 ? 'gold' : '#ccc';
+
         row.innerHTML = `
+            <td><span class="rank-badge ${rankBadgeClass}">${rankIcon}</span></td>
             <td>
                 <div style="display: flex; align-items: center;">
                     <img src="${avatarURL}" class="rank-img" style="width: 50px; height: 50px; margin-right: 5px;">
@@ -546,6 +555,7 @@ function renderTable() {
                 </div>
             </td>
             <td style="color: #1ceb1c; font-weight: bold; font-size: 18px;">${data.entries}</td>
+	    <td style="color: ${rewardColor}; font-weight: bold; font-size: 18px;">${data.reward}</td>
         `;
 
         tbody.appendChild(row);
