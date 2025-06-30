@@ -555,6 +555,25 @@ left: 0;
   <div class="button-wrapper"><a href="/" data-tooltip="Home"><span>Home Page</span></a></div>
 </div>
 
+
+<script>
+const params = new URLSearchParams(window.location.search);
+const token = params.get("token");
+
+if (token) {
+  try {
+    const user = JSON.parse(atob(token));
+    localStorage.setItem("userId", user.id);
+    localStorage.setItem("username", user.username);
+    // Optionally: Clean the URL
+    history.replaceState({}, document.title, window.location.pathname);
+  } catch (e) {
+    console.error("Invalid token", e);
+  }
+}
+</script>
+
+
 <script>
 const menuToggle = document.getElementById('menu-toggle');
 const buttons = document.querySelector('.fixed-buttons');
