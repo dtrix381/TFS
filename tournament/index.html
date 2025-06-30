@@ -696,13 +696,16 @@ menuToggle.addEventListener('click', () => {
 </div>
 
 <script>
+
+const loginBtn = document.getElementById("login-btn");
+if (loginBtn) loginBtn.style.display = "none";
+
   const adminIds = ["488015447417946151", "1037485428921606185"];
   let userIsAdmin = false;
 
   function parseUserFromToken(token) {
     try {
-      const user = JSON.parse(atob(token));
-      return user;
+      return JSON.parse(atob(token));
     } catch (e) {
       return null;
     }
@@ -710,46 +713,70 @@ menuToggle.addEventListener('click', () => {
 
   function applyToken(token) {
     const user = parseUserFromToken(token);
-    if (user && adminIds.includes(user.id)) {
-      userIsAdmin = true;
-    }
-    window.userIsAdmin = userIsAdmin;
-    sessionStorage.setItem("userToken", token);
-  }
+    if (user) {
+      if (adminIds.includes(user.id)) userIsAdmin = true;
+      localStorage.setItem("user", JSON.stringify(user));
+      localStorage.setItem("userId", user.id);
+      localStorage.setItem("username", user.username);
+      sessionStorage.setItem("userToken", token);
 
-  // ✅ Step 1: Get token from URL if exists
-  const url = new URL(window.location.href);
-  const tokenFromUrl = url.searchParams.get("token");
-  if (tokenFromUrl) {
-    applyToken(tokenFromUrl);
+      const loginBtn = document.getElementById("login-btn");
+      if (loginBtn) loginBtn.style.display = "none";
 
-    // Clean up the URL (remove ?token=...)
-    url.searchParams.delete("token");
-    window.history.replaceState({}, "", url.toString());
-  } else {
-    // ✅ Step 2: Use sessionStorage if already logged in
-    const savedToken = sessionStorage.getItem("userToken");
-    if (savedToken) {
-      applyToken(savedToken);
+      const userInfo = document.getElementById("user-info");
+      if (userInfo) userInfo.innerHTML = `👤 Logged in as <strong>${user.username}</strong>`;
     }
   }
 
-  // ✅ Step 3: Start button logic
   document.addEventListener("DOMContentLoaded", () => {
+    const url = new URL(window.location.href);
+    const tokenFromUrl = url.searchParams.get("token");
+
+    if (tokenFromUrl) {
+      applyToken(tokenFromUrl);
+      url.searchParams.delete("token");
+      window.history.replaceState({}, "", url.toString());
+    } else {
+      const savedToken = sessionStorage.getItem("userToken");
+      if (savedToken) applyToken(savedToken);
+    }
+
     const btn = document.getElementById("startBtn");
-    if (!btn) return;
+    if (btn) {
+      btn.addEventListener("click", () => {
+        const userId = localStorage.getItem("userId");
+        const username = localStorage.getItem("username") || "Unknown";
 
-    btn.addEventListener("click", () => {
-      if (!window.userIsAdmin) {
-        alert("❌ You are not authorized to start the tournament.");
-        return;
-      }
+        if (!userId) {
+          alert("🚫 Please log in with Discord first.");
+          return;
+        }
 
-      // ✅ Start tournament if authorized
-      startTournament();
-    });
+        if (!adminIds.includes(userId)) {
+          alert(`⛔ Access denied. ${username}, you are not authorized to start the tournament.`);
+          return;
+        }
+
+        alert(`✅ Welcome ${username}! You are authorized to start the tournament.`);
+
+        // Start logic
+        if (players.length !== 8) {
+          alert("Exactly 8 players are required to start the tournament.");
+          return;
+        }
+        shuffle(players);
+        rounds = [
+          [players[0], players[7]],
+          [players[3], players[4]],
+          [players[2], players[5]],
+          [players[1], players[6]],
+        ];
+        generateBracket();
+      });
+    }
   });
 </script>
+
 
 
 <script>
