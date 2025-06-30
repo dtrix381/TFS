@@ -737,26 +737,41 @@ menuToggle.addEventListener('click', () => {
     }
 
     function startTournament() {
-      if (!user) return alert("Please log in first.");
-      const isAdmin = adminIds.includes(user.id);
-      if (!isAdmin) return alert(`⛔ ${user.username}, you are not authorized to start the tournament.`);
+  const token = sessionStorage.getItem("userToken");
+  if (!token) return alert("🚫 Please log in with Discord first.");
 
-      if (players.length !== 8) return alert("Need exactly 8 players.");
+  let user;
+  try {
+    user = JSON.parse(atob(token));
+  } catch (e) {
+    return alert("❌ Invalid token.");
+  }
 
-      const shuffled = [...players];
-      for (let i = shuffled.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-      }
+  const isAdmin = adminIds.includes(user.id);
+  if (!isAdmin) {
+    return alert(`⛔ ${user.username}, you are not authorized to start the tournament.`);
+  }
 
-      rounds = [
-        [[shuffled[0], shuffled[1]], [shuffled[2], shuffled[3]], [shuffled[4], shuffled[5]], [shuffled[6], shuffled[7]]],
-        [],
-        [],
-      ];
+  if (players.length !== 8) {
+    return alert("Please add exactly 8 players to start the tournament.");
+  }
 
-      generateBracket();
-    }
+  // Shuffle and generate bracket
+  const shuffled = [...players];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+
+  rounds = [
+    [[shuffled[0], shuffled[1]], [shuffled[2], shuffled[3]], [shuffled[4], shuffled[5]], [shuffled[6], shuffled[7]]],
+    [],
+    [],
+  ];
+
+  generateBracket();
+}
+
 
 function generateBracket() {
   const bracketContainer = document.getElementById("bracketContainer");
