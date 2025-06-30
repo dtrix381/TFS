@@ -678,7 +678,14 @@ menuToggle.addEventListener('click', () => {
     <h2>🎮 Players Pool</h2>
     <ul id="playersList"></ul>
     <div style="text-align:center;">
-      <button id="startBtn" onclick="startTournament()">Start Tournament</button>
+      <button id="startBtn" style="display: none;">Start Tournament</button>
+
+<script>
+if (window.userIsAdmin) {
+  document.getElementById("startBtn").style.display = "inline-block";
+}
+</script>
+
     </div>
     <div id="bracketContainer"></div>
     <h2 id="champion" class="hidden">🏆 Champion: <span id="championName"></span></h2>
@@ -713,6 +720,37 @@ menuToggle.addEventListener('click', () => {
 </div>
 
 <script>
+const ADMIN_IDS = ["488015447417946151", "1037485428921606185"];
+
+function getQueryParam(name) {
+  const url = new URL(window.location.href);
+  return url.searchParams.get(name);
+}
+
+const token = getQueryParam("token");
+
+if (token) {
+  try {
+    const decoded = JSON.parse(atob(token));
+    console.log("Logged in user:", decoded);
+
+    if (ADMIN_IDS.includes(decoded.id)) {
+      window.userIsAdmin = true;
+    } else {
+      window.userIsAdmin = false;
+    }
+
+    // Optional: store in sessionStorage
+    sessionStorage.setItem("discordUser", JSON.stringify(decoded));
+  } catch (err) {
+    console.error("Invalid token:", err);
+  }
+} else {
+  window.userIsAdmin = false;
+}
+</script>
+
+<script>
 let players = [];
 let rounds = [];
 
@@ -731,35 +769,6 @@ function addPlayer() {
 
   document.getElementById("kickUsername").value = "";
   document.getElementById("slot").value = "";
-}
-
-const ADMIN_IDS = ["488015447417946151", "1037485428921606185"];
-
-function checkAuth() {
-  const urlParams = new URLSearchParams(window.location.search);
-  const userId = urlParams.get("id");
-  const username = urlParams.get("user");
-  const isAdmin = ADMIN_IDS.includes(userId);
-
-  if (userId && username) {
-    // Store session in localStorage
-    localStorage.setItem("userId", userId);
-    localStorage.setItem("username", username);
-    localStorage.setItem("isAdmin", isAdmin);
-
-    // Clean up URL
-    window.history.replaceState({}, document.title, window.location.pathname);
-
-    updateUI(userId, username, isAdmin);
-  } else {
-    const storedId = localStorage.getItem("userId");
-    const storedUser = localStorage.getItem("username");
-    const storedAdmin = localStorage.getItem("isAdmin") === "true";
-
-    if (storedId && storedUser) {
-      updateUI(storedId, storedUser, storedAdmin);
-    }
-  }
 }
 
 function updateUI(id, name, admin) {
