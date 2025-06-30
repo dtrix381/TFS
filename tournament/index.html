@@ -547,6 +547,8 @@ left: 0;
   <button id="login-btn" onclick="window.location.href='https://auth.teamfullsendslots.com/auth/login'">Login with Discord</button>
 </div>
 
+<div id="user-status" style="text-align:right; font-size: 14px; color: gold;"></div>
+
 <button id="menu-toggle" class="menu-button2">☰</button>
 <div class="fixed-buttons">
   <div class="button-wrapper"><a href="/guess-the-balance/" data-tooltip="Guess the Balance"><span>Guess the Balance</span></a></div>
@@ -1645,6 +1647,41 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 
+</script>
+
+<script>
+(function () {
+  const params = new URLSearchParams(window.location.search);
+  const token = params.get("token");
+
+  if (token) {
+    try {
+      const decoded = JSON.parse(atob(token));
+      localStorage.setItem("user", JSON.stringify(decoded));
+
+      // Clean up URL
+      const cleanURL = window.location.origin + window.location.pathname;
+      window.history.replaceState({}, document.title, cleanURL);
+    } catch (e) {
+      console.error("Failed to decode token", e);
+    }
+  }
+
+  const user = JSON.parse(localStorage.getItem("user") || "null");
+
+  if (user) {
+    console.log("Logged in user:", user);
+
+    // Optional: show username somewhere
+    const userBanner = document.getElementById("user-status");
+    if (userBanner) {
+      userBanner.innerHTML = `👤 Logged in as <strong>${user.username}</strong>`;
+    }
+  } else {
+    // Optional: not logged in
+    console.log("Not logged in");
+  }
+})();
 </script>
 
 </body>
