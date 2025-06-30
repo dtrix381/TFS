@@ -680,12 +680,6 @@ menuToggle.addEventListener('click', () => {
     <div style="text-align:center;">
       <button id="startBtn">Start Tournament</button>
 
-<script>
-if (window.userIsAdmin) {
-  document.getElementById("startBtn").style.display = "inline-block";
-}
-</script>
-
     </div>
     <div id="bracketContainer"></div>
     <h2 id="champion" class="hidden">🏆 Champion: <span id="championName"></span></h2>
@@ -720,35 +714,61 @@ if (window.userIsAdmin) {
 </div>
 
 <script>
-const ADMIN_IDS = ["488015447417946151", "1037485428921606185"];
+  const adminIds = ["488015447417946151", "1037485428921606185"];
+  let userIsAdmin = false;
 
-function getQueryParam(name) {
-  const url = new URL(window.location.href);
-  return url.searchParams.get(name);
-}
-
-const token = getQueryParam("token");
-
-if (token) {
-  try {
-    const decoded = JSON.parse(atob(token));
-    console.log("Logged in user:", decoded);
-
-    if (ADMIN_IDS.includes(decoded.id)) {
-      window.userIsAdmin = true;
-    } else {
-      window.userIsAdmin = false;
+  function parseUserFromToken(token) {
+    try {
+      const user = JSON.parse(atob(token));
+      return user;
+    } catch (e) {
+      return null;
     }
-
-    // Optional: store in sessionStorage
-    sessionStorage.setItem("discordUser", JSON.stringify(decoded));
-  } catch (err) {
-    console.error("Invalid token:", err);
   }
-} else {
-  window.userIsAdmin = false;
-}
+
+  function applyToken(token) {
+    const user = parseUserFromToken(token);
+    if (user && adminIds.includes(user.id)) {
+      userIsAdmin = true;
+    }
+    window.userIsAdmin = userIsAdmin;
+    sessionStorage.setItem("userToken", token);
+  }
+
+  // ✅ Step 1: Get token from URL if exists
+  const url = new URL(window.location.href);
+  const tokenFromUrl = url.searchParams.get("token");
+  if (tokenFromUrl) {
+    applyToken(tokenFromUrl);
+
+    // Clean up the URL (remove ?token=...)
+    url.searchParams.delete("token");
+    window.history.replaceState({}, "", url.toString());
+  } else {
+    // ✅ Step 2: Use sessionStorage if already logged in
+    const savedToken = sessionStorage.getItem("userToken");
+    if (savedToken) {
+      applyToken(savedToken);
+    }
+  }
+
+  // ✅ Step 3: Start button logic
+  document.addEventListener("DOMContentLoaded", () => {
+    const btn = document.getElementById("startBtn");
+    if (!btn) return;
+
+    btn.addEventListener("click", () => {
+      if (!window.userIsAdmin) {
+        alert("❌ You are not authorized to start the tournament.");
+        return;
+      }
+
+      // ✅ Start tournament if authorized
+      startTournament();
+    });
+  });
 </script>
+
 
 <script>
 let players = [];
