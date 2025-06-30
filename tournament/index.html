@@ -757,17 +757,7 @@ menuToggle.addEventListener('click', () => {
         return;
       }
 
-      players.push({ kickUsername, slot });
-      const li = document.createElement("li");
-      li.textContent = `${kickUsername} (${slot})`;
-      playersList.appendChild(li);
-
-      document.getElementById("kickUsername").value = "";
-      document.getElementById("slot").value = "";
-    }
-
-    function startTournament() {
-      if (players.length !== 8) {
+     if (players.length !== 8) {
         alert("Exactly 8 players are required to start the tournament.");
         return;
       }
