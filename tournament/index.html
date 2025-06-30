@@ -678,194 +678,251 @@ menuToggle.addEventListener('click', () => {
 
 </div>
 
-  <script>
-    let players = [];
-    let rounds = [];
+<script>
+let players = [];
+let rounds = [];
 
-    function addPlayer() {
-      const kickUsername = document.getElementById("kickUsername").value.trim();
-      const slot = document.getElementById("slot").value.trim();
-      const playersList = document.getElementById("playersList");
+function addPlayer() {
+  const kickUsername = document.getElementById("kickUsername").value.trim();
+  const slot = document.getElementById("slot").value.trim();
+  const playersList = document.getElementById("playersList");
 
-      if (!kickUsername || !slot) return alert("Please fill in both Kick Username and Slot.");
+  if (!kickUsername || !slot) return alert("Please fill in both Kick Username and Slot.");
+  if (players.length >= 8) return alert("You can only add 8 players.");
 
-      if (players.length >= 8) {
-        alert("You can only add 8 players.");
-        return;
+  players.push({ kickUsername, slot });
+  const li = document.createElement("li");
+  li.textContent = `${kickUsername} (${slot})`;
+  playersList.appendChild(li);
+
+  document.getElementById("kickUsername").value = "";
+  document.getElementById("slot").value = "";
+}
+
+function startTournament() {
+  if (players.length !== 8) return alert("Exactly 8 players are required to start the tournament.");
+  shuffle(players);
+  rounds = [];
+  rounds[0] = [
+    [players[0], players[7]],
+    [players[3], players[4]],
+    [players[2], players[5]],
+    [players[1], players[6]],
+  ];
+  generateBracket();
+}
+
+function shuffle(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+}
+
+function generateBracket() {
+  const bracketContainer = document.getElementById("bracketContainer");
+  bracketContainer.innerHTML = "";
+
+  rounds.forEach((round, roundIndex) => {
+    const roundDiv = document.createElement("div");
+    roundDiv.classList.add("bracket");
+    roundDiv.innerHTML = `<h2>Round ${roundIndex + 1}</h2>`;
+    bracketContainer.appendChild(roundDiv);
+
+    round.forEach((match, matchIndex) => {
+      const code = `${roundIndex + 1}${String.fromCharCode(65 + matchIndex)}`;
+      const [p1 = { kickUsername: "TBD", slot: "" }, p2 = { kickUsername: "TBD", slot: "" }] = match;
+      const matchDiv = document.createElement("div");
+      matchDiv.className = "match";
+
+      const storedData = match[2];
+      if (storedData && storedData.winner) {
+        matchDiv.innerHTML = `
+          <span class="bracket-code">${code}</span>
+          <div><strong>${p1.kickUsername}</strong> (${p1.slot})<br>Buy = $${storedData.p1.buyAmount} | Pay = $${storedData.p1.totalPay} | X: ${storedData.p1.totalX}x</div>
+          <div><strong>${p2.kickUsername}</strong> (${p2.slot})<br>Buy = $${storedData.p2.buyAmount} | Pay = $${storedData.p2.totalPay} | X: ${storedData.p2.totalX}x</div>
+          <div class="winner">Winner: ${storedData.winner.kickUsername}</div>
+          <button onclick="resetMatch(${roundIndex}, ${matchIndex})">Reset Match</button>
+        `;
+      } else {
+        matchDiv.innerHTML = `
+          <span class="bracket-code">${code}</span>
+
+          <div class="player">
+            <div class="player-static">
+              <strong>${p1.kickUsername}</strong> (<span>${p1.slot}</span>) <button onclick="enableEdit(this)">✏️</button>
+            </div>
+            <div class="player-edit hidden">
+              <input type="text" class="kickUsername" value="${p1.kickUsername}"> (<input type="text" class="slot" value="${p1.slot}">)
+              <button onclick="saveEdit(this, ${roundIndex}, ${matchIndex}, 0)">Save</button>
+            </div>
+            <input type="number" class="buyAmount" placeholder="Buy Amount">
+            <input type="number" class="totalPay" placeholder="Total Pay">
+            <span class="totalX">Total X: 0</span>
+          </div>
+
+          <div class="player">
+            <div class="player-static">
+              <strong>${p2.kickUsername}</strong> (<span>${p2.slot}</span>) <button onclick="enableEdit(this)">✏️</button>
+            </div>
+            <div class="player-edit hidden">
+              <input type="text" class="kickUsername" value="${p2.kickUsername}"> (<input type="text" class="slot" value="${p2.slot}">)
+              <button onclick="saveEdit(this, ${roundIndex}, ${matchIndex}, 1)">Save</button>
+            </div>
+            <input type="number" class="buyAmount" placeholder="Buy Amount">
+            <input type="number" class="totalPay" placeholder="Total Pay">
+            <span class="totalX">Total X: 0</span>
+          </div>
+
+          <button onclick="generateWinner(this, ${roundIndex}, ${matchIndex}, '${code}')">Generate Winner</button>
+        `;
       }
 
-      players.push({ kickUsername, slot });
-      const li = document.createElement("li");
-      li.textContent = `${kickUsername} (${slot})`;
-      playersList.appendChild(li);
+      roundDiv.appendChild(matchDiv);
+    });
+  });
 
-      document.getElementById("kickUsername").value = "";
-      document.getElementById("slot").value = "";
+  addLiveTotalXListeners();
+}
+
+function enableEdit(button) {
+  const staticDiv = button.parentElement;
+  const editDiv = staticDiv.nextElementSibling;
+  staticDiv.classList.add("hidden");
+  editDiv.classList.remove("hidden");
+}
+
+function saveEdit(button, roundIndex, matchIndex, playerIndex) {
+  const editDiv = button.parentElement;
+  const username = editDiv.querySelector(".kickUsername").value.trim();
+  const slot = editDiv.querySelector(".slot").value.trim();
+
+  const old = rounds[roundIndex][matchIndex][playerIndex];
+  if (!old) return;
+
+  const oldName = old.kickUsername;
+  const oldSlot = old.slot;
+
+  // Update in players list
+  players.forEach(p => {
+    if (p.kickUsername === oldName && p.slot === oldSlot) {
+      p.kickUsername = username;
+      p.slot = slot;
     }
+  });
 
-    function startTournament() {
-      if (players.length !== 8) {
-        alert("Exactly 8 players are required to start the tournament.");
-        return;
-      }
-
-      shuffle(players);
-      rounds = [];
-
-      rounds[0] = [
-        [players[0], players[7]], // 1A
-        [players[3], players[4]], // 1B
-        [players[2], players[5]], // 1C
-        [players[1], players[6]], // 1D
-      ];
-
-      generateBracket();
-    }
-
-    function shuffle(array) {
-      for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
-      }
-    }
-
-    function generateBracket() {
-      const bracketContainer = document.getElementById("bracketContainer");
-      bracketContainer.innerHTML = "";
-
-      rounds.forEach((round, roundIndex) => {
-        const roundDiv = document.createElement("div");
-        roundDiv.classList.add("bracket");
-        roundDiv.innerHTML = `<h2>Round ${roundIndex + 1}</h2>`;
-        bracketContainer.appendChild(roundDiv);
-
-        round.forEach((match, matchIndex) => {
-          let code = `${roundIndex + 1}${String.fromCharCode(65 + matchIndex)}`;
-          let player1 = match[0] || { kickUsername: "TBD", slot: "" };
-          let player2 = match[1] || { kickUsername: "TBD", slot: "" };
-
-          const matchDiv = document.createElement("div");
-          matchDiv.className = "match";
-
-          const storedData = match[2];
-          if (storedData && storedData.winner) {
-            matchDiv.innerHTML = `
-              <span class="bracket-code">${code}</span>
-              <div>
-                <strong>${player1.kickUsername}</strong> (${player1.slot})<br>
-                Buy Amount = $${storedData.p1.buyAmount} |
-                Total Pay = $${storedData.p1.totalPay} |
-                Total X: ${storedData.p1.totalX}x
-              </div>
-              <div>
-                <strong>${player2.kickUsername}</strong> (${player2.slot})<br>
-                Buy Amount = $${storedData.p2.buyAmount} |
-                Total Pay = $${storedData.p2.totalPay} |
-                Total X: ${storedData.p2.totalX}x
-              </div>
-              <div class="winner">Winner: ${storedData.winner.kickUsername}</div>
-            `;
-          } else {
-            matchDiv.innerHTML = `
-              <span class="bracket-code">${code}</span>
-              <div>
-                <strong>${player1.kickUsername}</strong> (${player1.slot})
-                <input type="number" class="buyAmount" placeholder="Buy Amount">
-                <input type="number" class="totalPay" placeholder="Total Pay">
-                <span class="totalX">Total X: 0</span>
-              </div>
-              <div>
-                <strong>${player2.kickUsername}</strong> (${player2.slot})
-                <input type="number" class="buyAmount" placeholder="Buy Amount">
-                <input type="number" class="totalPay" placeholder="Total Pay">
-                <span class="totalX">Total X: 0</span>
-              </div>
-              <button onclick="generateWinner(this, ${roundIndex}, ${matchIndex}, '${code}')">Generate Winner</button>
-            `;
-          }
-
-          roundDiv.appendChild(matchDiv);
-        });
-      });
-
-      addLiveTotalXListeners();
-    }
-
-    function addLiveTotalXListeners() {
-      document.querySelectorAll(".match").forEach(matchDiv => {
-        const playerDivs = matchDiv.querySelectorAll("div");
-
-        playerDivs.forEach(playerDiv => {
-          const buyInput = playerDiv.querySelector(".buyAmount");
-          const payInput = playerDiv.querySelector(".totalPay");
-          const totalXSpan = playerDiv.querySelector(".totalX");
-
-          if (buyInput && payInput && totalXSpan) {
-            const updateTotalX = () => {
-              const buy = parseFloat(buyInput.value);
-              const pay = parseFloat(payInput.value);
-              if (!isNaN(buy) && !isNaN(pay) && buy > 0) {
-                const totalX = (pay / buy).toFixed(2);
-                totalXSpan.textContent = `Total X: ${totalX}x`;
-              } else {
-                totalXSpan.textContent = "Total X: 0";
-              }
-            };
-
-            buyInput.addEventListener("input", updateTotalX);
-            payInput.addEventListener("input", updateTotalX);
-          }
-        });
-      });
-    }
-
-    function generateWinner(button, roundIndex, matchIndex, code) {
-      const matchDiv = button.parentElement;
-      const playersDivs = matchDiv.querySelectorAll("div");
-      let totalXs = [];
-      let winner = null;
-      let highestX = -1;
-      let inputs = [];
-
-      playersDivs.forEach(playerDiv => {
-        const buyAmount = parseFloat(playerDiv.querySelector(".buyAmount")?.value || 0);
-        const totalPay = parseFloat(playerDiv.querySelector(".totalPay")?.value || 0);
-        const totalX = (buyAmount > 0 && totalPay > 0) ? (totalPay / buyAmount).toFixed(2) : 0;
-        const name = playerDiv.querySelector("strong")?.innerText || "TBD";
-        const slot = playerDiv.innerHTML.match(/\((.*?)\)/)?.[1] || "";
-
-        totalXs.push(parseFloat(totalX));
-        inputs.push({ buyAmount, totalPay, totalX });
-
-        if (parseFloat(totalX) > highestX) {
-          highestX = totalX;
-          winner = { kickUsername: name, slot };
+  // Update in all rounds
+  rounds.forEach(round => {
+    round.forEach(match => {
+      match.forEach(p => {
+        if (p && p.kickUsername === oldName && p.slot === oldSlot) {
+          p.kickUsername = username;
+          p.slot = slot;
         }
       });
+    });
+  });
 
-      const match = rounds[roundIndex][matchIndex];
-      match[2] = {
-        winner,
-        p1: inputs[0],
-        p2: inputs[1]
-      };
+  generateBracket();
+}
 
-      if (roundIndex < 2) {
-        rounds[roundIndex + 1] = rounds[roundIndex + 1] || [];
-        let nextRound = rounds[roundIndex + 1];
-        if (nextRound.length > 0 && nextRound[nextRound.length - 1].length === 1) {
-          nextRound[nextRound.length - 1].push(winner);
-        } else {
-          nextRound.push([winner]);
-        }
-      } else if (code === "3A") {
-        document.getElementById("champion").classList.remove("hidden");
-        document.getElementById("championName").textContent = winner.kickUsername;
+function addLiveTotalXListeners() {
+  document.querySelectorAll(".match").forEach(matchDiv => {
+    const playerDivs = matchDiv.querySelectorAll(".player");
+    playerDivs.forEach(playerDiv => {
+      const buyInput = playerDiv.querySelector(".buyAmount");
+      const payInput = playerDiv.querySelector(".totalPay");
+      const totalXSpan = playerDiv.querySelector(".totalX");
+
+      if (buyInput && payInput && totalXSpan) {
+        const updateTotalX = () => {
+          const buy = parseFloat(buyInput.value);
+          const pay = parseFloat(payInput.value);
+          const totalX = (!isNaN(buy) && !isNaN(pay) && buy > 0) ? (pay / buy).toFixed(2) : 0;
+          totalXSpan.textContent = `Total X: ${totalX}x`;
+        };
+        buyInput.addEventListener("input", updateTotalX);
+        payInput.addEventListener("input", updateTotalX);
       }
+    });
+  });
+}
 
-      generateBracket();
+function generateWinner(button, roundIndex, matchIndex, code) {
+  const matchDiv = button.closest(".match");
+  const playersDivs = matchDiv.querySelectorAll(".player");
+  let totalXs = [];
+  let winner = null;
+  let highestX = -1;
+  let inputs = [];
+
+  playersDivs.forEach((playerDiv) => {
+    const buyAmount = parseFloat(playerDiv.querySelector(".buyAmount")?.value || 0);
+    const totalPay = parseFloat(playerDiv.querySelector(".totalPay")?.value || 0);
+    const totalX = (buyAmount > 0 && totalPay > 0) ? (totalPay / buyAmount).toFixed(2) : 0;
+    const name = playerDiv.querySelector("strong")?.innerText || "TBD";
+    const slot = playerDiv.querySelector("span")?.innerText || "";
+
+    totalXs.push(parseFloat(totalX));
+    inputs.push({ buyAmount, totalPay, totalX });
+
+    if (parseFloat(totalX) > highestX) {
+      highestX = totalX;
+      winner = { kickUsername: name, slot };
     }
-  </script>
+  });
+
+  const match = rounds[roundIndex][matchIndex];
+  match[2] = { winner, p1: inputs[0], p2: inputs[1] };
+
+  if (roundIndex < 2) {
+    rounds[roundIndex + 1] = rounds[roundIndex + 1] || [];
+    const nextIndex = Math.floor(matchIndex / 2);
+    const pos = matchIndex % 2;
+    rounds[roundIndex + 1][nextIndex] = rounds[roundIndex + 1][nextIndex] || [];
+    rounds[roundIndex + 1][nextIndex][pos] = winner;
+    clearDownstream(roundIndex + 1, nextIndex);
+  } else if (code === "3A") {
+    document.getElementById("champion").classList.remove("hidden");
+    document.getElementById("championName").textContent = winner.kickUsername;
+  }
+
+  generateBracket();
+}
+
+function resetMatch(roundIndex, matchIndex) {
+  const match = rounds[roundIndex][matchIndex];
+  if (match && match[2]) delete match[2];
+
+  if (roundIndex < 2) {
+    const nextIndex = Math.floor(matchIndex / 2);
+    const pos = matchIndex % 2;
+
+    if (rounds[roundIndex + 1]?.[nextIndex]) {
+      rounds[roundIndex + 1][nextIndex][pos] = null;
+      delete rounds[roundIndex + 1][nextIndex][2];
+      clearDownstream(roundIndex + 1, nextIndex);
+    }
+  } else if (roundIndex === 2 && matchIndex === 0) {
+    document.getElementById("champion")?.classList.add("hidden");
+  }
+
+  generateBracket();
+}
+
+function clearDownstream(roundIndex, matchIndex) {
+  for (let r = roundIndex; r < rounds.length; r++) {
+    const nextMatchIndex = Math.floor(matchIndex / 2);
+    const pos = matchIndex % 2;
+    if (rounds[r + 1]?.[nextMatchIndex]) {
+      rounds[r + 1][nextMatchIndex][pos] = null;
+      delete rounds[r + 1][nextMatchIndex][2];
+    }
+    matchIndex = nextMatchIndex;
+  }
+}
+</script>
+
 
 
 
