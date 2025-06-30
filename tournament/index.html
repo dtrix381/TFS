@@ -559,24 +559,6 @@ left: 0;
 
 
 <script>
-const params = new URLSearchParams(window.location.search);
-const token = params.get("token");
-
-if (token) {
-  try {
-    const user = JSON.parse(atob(token));
-    localStorage.setItem("userId", user.id);
-    localStorage.setItem("username", user.username);
-    // Optionally: Clean the URL
-    history.replaceState({}, document.title, window.location.pathname);
-  } catch (e) {
-    console.error("Invalid token", e);
-  }
-}
-</script>
-
-
-<script>
 const menuToggle = document.getElementById('menu-toggle');
 const buttons = document.querySelector('.fixed-buttons');
 const wrappers = document.querySelectorAll('.button-wrapper');
@@ -1686,10 +1668,12 @@ document.addEventListener("DOMContentLoaded", () => {
   if (token) {
     try {
       const decoded = JSON.parse(atob(token));
-        localStorage.setItem("user", JSON.stringify(decoded));
-	localStorage.setItem("userId", decoded.id);
-	localStorage.setItem("username", decoded.username);
+      localStorage.setItem("user", JSON.stringify(decoded));
+      localStorage.setItem("userId", decoded.id);
+      localStorage.setItem("username", decoded.username);
 
+      // ✅ Sync to sessionStorage so applyToken() works
+      sessionStorage.setItem("userToken", token);
 
       // Clean up URL
       const cleanURL = window.location.origin + window.location.pathname;
@@ -1698,22 +1682,8 @@ document.addEventListener("DOMContentLoaded", () => {
       console.error("Failed to decode token", e);
     }
   }
-
-  const user = JSON.parse(localStorage.getItem("user") || "null");
-
-  if (user) {
-    console.log("Logged in user:", user);
-
-    // Optional: show username somewhere
-    const userBanner = document.getElementById("user-status");
-    if (userBanner) {
-      userBanner.innerHTML = `👤 Logged in as <strong>${user.username}</strong>`;
-    }
-  } else {
-    // Optional: not logged in
-    console.log("Not logged in");
-  }
 })();
+
 </script>
 
 </body>
