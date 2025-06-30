@@ -737,19 +737,9 @@ menuToggle.addEventListener('click', () => {
     }
 
     function startTournament() {
-  const token = sessionStorage.getItem("userToken");
-  if (!token) return alert("🚫 Please log in with Discord first.");
-
-  let user;
-  try {
-    user = JSON.parse(atob(token));
-  } catch (e) {
-    return alert("❌ Invalid token.");
-  }
-
-  const isAdmin = adminIds.includes(user.id);
-  if (!isAdmin) {
-    return alert(`⛔ ${user.username}, you are not authorized to start the tournament.`);
+      if (!user) return alert("Please log in first.");
+      const isAdmin = adminIds.includes(user.id);
+      if (!isAdmin) return alert(⛔ ${user.username}, you are not authorized to start the tournament.);
   }
 
       if (players.length >= 8) {
