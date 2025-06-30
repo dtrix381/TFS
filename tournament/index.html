@@ -63,9 +63,18 @@
       text-shadow: 2px 2px 4px #000;
     }
 
+#auth-bar {
+  text-align: right;
+  padding: 10px;
+}
+#user-info {
+  font-weight: bold;
+  margin-right: 10px;
+}
+
 .container {
   max-width: 900px;
-  margin: 80px auto;
+  margin: 20px auto;
   padding: 20px;
   background-color: #021649;
   border: 2px solid #bb6eff;
@@ -533,6 +542,10 @@ left: 0;
 
   </header>
 
+<div id="auth-bar">
+  <span id="user-info"></span>
+  <button id="login-btn" onclick="window.location.href='https://auth.teamfullsendslots.com/auth/login'">Login with Discord</button>
+</div>
 
 <button id="menu-toggle" class="menu-button2">☰</button>
 <div class="fixed-buttons">
@@ -644,7 +657,7 @@ menuToggle.addEventListener('click', () => {
     <h2>🎮 Players Pool</h2>
     <ul id="playersList"></ul>
     <div style="text-align:center;">
-      <button onclick="startTournament()">Start Tournament</button>
+      <button id="startBtn" onclick="startTournament()">Start Tournament</button>
     </div>
     <div id="bracketContainer"></div>
     <h2 id="champion" class="hidden">🏆 Champion: <span id="championName"></span></h2>
@@ -699,18 +712,73 @@ function addPlayer() {
   document.getElementById("slot").value = "";
 }
 
-function startTournament() {
-  if (players.length !== 8) return alert("Exactly 8 players are required to start the tournament.");
-  shuffle(players);
-  rounds = [];
-  rounds[0] = [
-    [players[0], players[7]],
-    [players[3], players[4]],
-    [players[2], players[5]],
-    [players[1], players[6]],
-  ];
-  generateBracket();
+const ADMIN_IDS = ["488015447417946151", "1037485428921606185"];
+
+function checkAuth() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const userId = urlParams.get("id");
+  const username = urlParams.get("user");
+  const isAdmin = ADMIN_IDS.includes(userId);
+
+  if (userId && username) {
+    // Store session in localStorage
+    localStorage.setItem("userId", userId);
+    localStorage.setItem("username", username);
+    localStorage.setItem("isAdmin", isAdmin);
+
+    // Clean up URL
+    window.history.replaceState({}, document.title, window.location.pathname);
+
+    updateUI(userId, username, isAdmin);
+  } else {
+    const storedId = localStorage.getItem("userId");
+    const storedUser = localStorage.getItem("username");
+    const storedAdmin = localStorage.getItem("isAdmin") === "true";
+
+    if (storedId && storedUser) {
+      updateUI(storedId, storedUser, storedAdmin);
+    }
+  }
 }
+
+function updateUI(id, name, admin) {
+  document.getElementById("user-info").textContent = `👋 Logged in as ${name}`;
+  document.getElementById("login-btn").style.display = "none";
+
+  // Show Start Tournament if admin
+  if (admin) {
+    document.getElementById("startBtn")?.classList.remove("hidden");
+  } else {
+    document.getElementById("startBtn")?.classList.add("hidden");
+  }
+}
+
+checkAuth();
+
+function startTournament() {
+  const userId = localStorage.getItem("userId");
+  const username = localStorage.getItem("username");
+  const ADMIN_IDS = ["488015447417946151", "1037485428921606185"];
+
+  if (!userId || !username) {
+    alert("🚫 Please log in with Discord first.");
+    return;
+  }
+
+  const isAdmin = ADMIN_IDS.includes(userId);
+
+  if (!isAdmin) {
+    alert(`⛔ Access denied. ${username}, you are not authorized to start the tournament.`);
+    return;
+  }
+
+  // ✅ If authorized, proceed as usual
+  // Your original tournament logic goes here
+  alert(`✅ Welcome ${username}! You are authorized to start the tournament.`);
+  // Call your real tournament start logic:
+  // actualStartTournament();
+}
+
 
 function shuffle(array) {
   for (let i = array.length - 1; i > 0; i--) {
