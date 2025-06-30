@@ -63,18 +63,9 @@
       text-shadow: 2px 2px 4px #000;
     }
 
-#auth-bar {
-  text-align: right;
-  padding: 10px;
-}
-#user-info {
-  font-weight: bold;
-  margin-right: 10px;
-}
-
 .container {
   max-width: 900px;
-  margin: 20px auto;
+  margin: 80px auto;
   padding: 20px;
   background-color: #021649;
   border: 2px solid #bb6eff;
@@ -542,12 +533,6 @@ left: 0;
 
   </header>
 
-<div id="auth-bar">
-  <span id="user-info"></span>
-  <button id="login-btn" onclick="window.location.href='https://auth.teamfullsendslots.com/auth/login?redirect=https://www.teamfullsendslots.com/tournament'">Login with Discord</button>
-</div>
-
-<div id="user-status" style="text-align:right; font-size: 14px; color: gold;"></div>
 
 <button id="menu-toggle" class="menu-button2">☰</button>
 <div class="fixed-buttons">
@@ -556,7 +541,6 @@ left: 0;
   <div class="button-wrapper"><a href="/casino-links/" data-tooltip="Casino Links"><span>Casino Links</span></a></div>
   <div class="button-wrapper"><a href="/" data-tooltip="Home"><span>Home Page</span></a></div>
 </div>
-
 
 <script>
 const menuToggle = document.getElementById('menu-toggle');
@@ -660,8 +644,7 @@ menuToggle.addEventListener('click', () => {
     <h2>🎮 Players Pool</h2>
     <ul id="playersList"></ul>
     <div style="text-align:center;">
-      <button id="startBtn">Start Tournament</button>
-
+      <button onclick="startTournament()">Start Tournament</button>
     </div>
     <div id="bracketContainer"></div>
     <h2 id="champion" class="hidden">🏆 Champion: <span id="championName"></span></h2>
@@ -696,143 +679,111 @@ menuToggle.addEventListener('click', () => {
 </div>
 
 <script>
-    const adminIds = ["488015447417946151", "1037485428921606185"];
-    let user = null;
+let players = [];
+let rounds = [];
 
-    // Handle Discord Token
-    const params = new URLSearchParams(window.location.search);
-    const token = params.get("token");
+function addPlayer() {
+  const kickUsername = document.getElementById("kickUsername").value.trim();
+  const slot = document.getElementById("slot").value.trim();
+  const playersList = document.getElementById("playersList");
 
-    if (token) {
-      try {
-        user = JSON.parse(atob(token));
-        sessionStorage.setItem("userToken", token);
-        window.history.replaceState({}, "", window.location.pathname);
-      } catch (err) {
-        console.error("Token error:", err);
-      }
-    } else {
-      const saved = sessionStorage.getItem("userToken");
-      if (saved) user = JSON.parse(atob(saved));
-    }
+  if (!kickUsername || !slot) return alert("Please fill in both Kick Username and Slot.");
+  if (players.length >= 8) return alert("You can only add 8 players.");
 
-    if (user) {
-      document.getElementById("user-status").innerText = `👤 Logged in as ${user.username}`;
-      document.getElementById("login-btn").style.display = "none";
-    }
+  players.push({ kickUsername, slot });
+  const li = document.createElement("li");
+  li.textContent = `${kickUsername} (${slot})`;
+  playersList.appendChild(li);
 
-    const players = [];
-    let rounds = [];
+  document.getElementById("kickUsername").value = "";
+  document.getElementById("slot").value = "";
+}
 
-    function addPlayer() {
-      const name = document.getElementById("kickUsername").value.trim();
-      const slot = document.getElementById("slot").value.trim();
-      if (!name || !slot) return alert("Fill both fields.");
-      if (players.length >= 8) return alert("Max 8 players.");
+function startTournament() {
+  if (players.length !== 8) return alert("Exactly 8 players are required to start the tournament.");
+  shuffle(players);
+  rounds = [];
+  rounds[0] = [
+    [players[0], players[7]],
+    [players[3], players[4]],
+    [players[2], players[5]],
+    [players[1], players[6]],
+  ];
+  generateBracket();
+}
 
-      players.push({ kickUsername: name, slot });
-      const li = document.createElement("li");
-      li.innerText = `${name} (${slot})`;
-      document.getElementById("playersList").appendChild(li);
-    }
-
-    function startTournament() {
-      if (!user) return alert("Please log in first.");
-      const isAdmin = adminIds.includes(user.id);
-      if (!isAdmin) return alert(⛔ ${user.username}, you are not authorized to start the tournament.);
+function shuffle(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
   }
+}
 
-      if (players.length >= 8) {
-        alert("You can only add 8 players.");
-        return;
+function generateBracket() {
+  const bracketContainer = document.getElementById("bracketContainer");
+  bracketContainer.innerHTML = "";
+
+  rounds.forEach((round, roundIndex) => {
+    const roundDiv = document.createElement("div");
+    roundDiv.classList.add("bracket");
+    roundDiv.innerHTML = `<h2>Round ${roundIndex + 1}</h2>`;
+    bracketContainer.appendChild(roundDiv);
+
+    round.forEach((match, matchIndex) => {
+      const code = `${roundIndex + 1}${String.fromCharCode(65 + matchIndex)}`;
+      const [p1 = { kickUsername: "TBD", slot: "" }, p2 = { kickUsername: "TBD", slot: "" }] = match;
+      const matchDiv = document.createElement("div");
+      matchDiv.className = "match";
+
+      const storedData = match[2];
+      if (storedData && storedData.winner) {
+        matchDiv.innerHTML = `
+          <span class="bracket-code">${code}</span>
+          <div><strong>${p1.kickUsername}</strong> (${p1.slot})<br>Buy = $${storedData.p1.buyAmount} | Pay = $${storedData.p1.totalPay} | X: ${storedData.p1.totalX}x</div>
+          <div><strong>${p2.kickUsername}</strong> (${p2.slot})<br>Buy = $${storedData.p2.buyAmount} | Pay = $${storedData.p2.totalPay} | X: ${storedData.p2.totalX}x</div>
+          <div class="winner">Winner: ${storedData.winner.kickUsername}</div>
+          <button onclick="resetMatch(${roundIndex}, ${matchIndex})">Reset Match</button>
+        `;
+      } else {
+        matchDiv.innerHTML = `
+          <span class="bracket-code">${code}</span>
+
+          <div class="player">
+            <div class="player-static">
+              <strong>${p1.kickUsername}</strong> (<span>${p1.slot}</span>) <button onclick="enableEdit(this)">✏️</button>
+            </div>
+            <div class="player-edit hidden">
+              <input type="text" class="kickUsername" value="${p1.kickUsername}"> (<input type="text" class="slot" value="${p1.slot}">)
+              <button onclick="saveEdit(this, ${roundIndex}, ${matchIndex}, 0)">Save</button>
+            </div>
+            <input type="number" class="buyAmount" placeholder="Buy Amount">
+            <input type="number" class="totalPay" placeholder="Total Pay">
+            <span class="totalX">Total X: 0</span>
+          </div>
+
+          <div class="player">
+            <div class="player-static">
+              <strong>${p2.kickUsername}</strong> (<span>${p2.slot}</span>) <button onclick="enableEdit(this)">✏️</button>
+            </div>
+            <div class="player-edit hidden">
+              <input type="text" class="kickUsername" value="${p2.kickUsername}"> (<input type="text" class="slot" value="${p2.slot}">)
+              <button onclick="saveEdit(this, ${roundIndex}, ${matchIndex}, 1)">Save</button>
+            </div>
+            <input type="number" class="buyAmount" placeholder="Buy Amount">
+            <input type="number" class="totalPay" placeholder="Total Pay">
+            <span class="totalX">Total X: 0</span>
+          </div>
+
+          <button onclick="generateWinner(this, ${roundIndex}, ${matchIndex}, '${code}')">Generate Winner</button>
+        `;
       }
 
-     if (players.length !== 8) {
-        alert("Exactly 8 players are required to start the tournament.");
-        return;
-      }
+      roundDiv.appendChild(matchDiv);
+    });
+  });
 
-      shuffle(players);
-      rounds = [];
-
-      rounds[0] = [
-        [players[0], players[7]], // 1A
-        [players[3], players[4]], // 1B
-        [players[2], players[5]], // 1C
-        [players[1], players[6]], // 1D
-      ];
-
-      generateBracket();
-    }
-
-    function shuffle(array) {
-      for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
-      }
-    }
-
-    function generateBracket() {
-      const bracketContainer = document.getElementById("bracketContainer");
-      bracketContainer.innerHTML = "";
-
-      rounds.forEach((round, roundIndex) => {
-        const roundDiv = document.createElement("div");
-        roundDiv.classList.add("bracket");
-        roundDiv.innerHTML = `<h2>Round ${roundIndex + 1}</h2>`;
-        bracketContainer.appendChild(roundDiv);
-
-        round.forEach((match, matchIndex) => {
-          let code = `${roundIndex + 1}${String.fromCharCode(65 + matchIndex)}`;
-          let player1 = match[0] || { kickUsername: "TBD", slot: "" };
-          let player2 = match[1] || { kickUsername: "TBD", slot: "" };
-
-          const matchDiv = document.createElement("div");
-          matchDiv.className = "match";
-
-          const storedData = match[2];
-          if (storedData && storedData.winner) {
-            matchDiv.innerHTML = `
-              <span class="bracket-code">${code}</span>
-              <div>
-                <strong>${player1.kickUsername}</strong> (${player1.slot})<br>
-                Buy Amount = $${storedData.p1.buyAmount} |
-                Total Pay = $${storedData.p1.totalPay} |
-                Total X: ${storedData.p1.totalX}x
-              </div>
-              <div>
-                <strong>${player2.kickUsername}</strong> (${player2.slot})<br>
-                Buy Amount = $${storedData.p2.buyAmount} |
-                Total Pay = $${storedData.p2.totalPay} |
-                Total X: ${storedData.p2.totalX}x
-              </div>
-              <div class="winner">Winner: ${storedData.winner.kickUsername}</div>
-            `;
-          } else {
-            matchDiv.innerHTML = `
-              <span class="bracket-code">${code}</span>
-              <div>
-                <strong>${player1.kickUsername}</strong> (${player1.slot})
-                <input type="number" class="buyAmount" placeholder="Buy Amount">
-                <input type="number" class="totalPay" placeholder="Total Pay">
-                <span class="totalX">Total X: 0</span>
-              </div>
-              <div>
-                <strong>${player2.kickUsername}</strong> (${player2.slot})
-                <input type="number" class="buyAmount" placeholder="Buy Amount">
-                <input type="number" class="totalPay" placeholder="Total Pay">
-                <span class="totalX">Total X: 0</span>
-              </div>
-              <button onclick="generateWinner(this, ${roundIndex}, ${matchIndex}, '${code}')">Generate Winner</button>
-            `;
-          }
-
-          roundDiv.appendChild(matchDiv);
-        });
-      });
-
-      addLiveTotalXListeners();
-    }
+  addLiveTotalXListeners();
+}
 
 function enableEdit(button) {
   const staticDiv = button.parentElement;
@@ -875,80 +826,69 @@ function saveEdit(button, roundIndex, matchIndex, playerIndex) {
   generateBracket();
 }
 
-    function addLiveTotalXListeners() {
-      document.querySelectorAll(".match").forEach(matchDiv => {
-        const playerDivs = matchDiv.querySelectorAll("div");
+function addLiveTotalXListeners() {
+  document.querySelectorAll(".match").forEach(matchDiv => {
+    const playerDivs = matchDiv.querySelectorAll(".player");
+    playerDivs.forEach(playerDiv => {
+      const buyInput = playerDiv.querySelector(".buyAmount");
+      const payInput = playerDiv.querySelector(".totalPay");
+      const totalXSpan = playerDiv.querySelector(".totalX");
 
-        playerDivs.forEach(playerDiv => {
-          const buyInput = playerDiv.querySelector(".buyAmount");
-          const payInput = playerDiv.querySelector(".totalPay");
-          const totalXSpan = playerDiv.querySelector(".totalX");
-
-          if (buyInput && payInput && totalXSpan) {
-            const updateTotalX = () => {
-              const buy = parseFloat(buyInput.value);
-              const pay = parseFloat(payInput.value);
-              if (!isNaN(buy) && !isNaN(pay) && buy > 0) {
-                const totalX = (pay / buy).toFixed(2);
-                totalXSpan.textContent = `Total X: ${totalX}x`;
-              } else {
-                totalXSpan.textContent = "Total X: 0";
-              }
-            };
-
-            buyInput.addEventListener("input", updateTotalX);
-            payInput.addEventListener("input", updateTotalX);
-          }
-        });
-      });
-    }
-
-    function generateWinner(button, roundIndex, matchIndex, code) {
-      const matchDiv = button.parentElement;
-      const playersDivs = matchDiv.querySelectorAll("div");
-      let totalXs = [];
-      let winner = null;
-      let highestX = -1;
-      let inputs = [];
-
-      playersDivs.forEach(playerDiv => {
-        const buyAmount = parseFloat(playerDiv.querySelector(".buyAmount")?.value || 0);
-        const totalPay = parseFloat(playerDiv.querySelector(".totalPay")?.value || 0);
-        const totalX = (buyAmount > 0 && totalPay > 0) ? (totalPay / buyAmount).toFixed(2) : 0;
-        const name = playerDiv.querySelector("strong")?.innerText || "TBD";
-        const slot = playerDiv.innerHTML.match(/\((.*?)\)/)?.[1] || "";
-
-        totalXs.push(parseFloat(totalX));
-        inputs.push({ buyAmount, totalPay, totalX });
-
-        if (parseFloat(totalX) > highestX) {
-          highestX = totalX;
-          winner = { kickUsername: name, slot };
-        }
-      });
-
-      const match = rounds[roundIndex][matchIndex];
-      match[2] = {
-        winner,
-        p1: inputs[0],
-        p2: inputs[1]
-      };
-
-      if (roundIndex < 2) {
-        rounds[roundIndex + 1] = rounds[roundIndex + 1] || [];
-        let nextRound = rounds[roundIndex + 1];
-        if (nextRound.length > 0 && nextRound[nextRound.length - 1].length === 1) {
-          nextRound[nextRound.length - 1].push(winner);
-        } else {
-          nextRound.push([winner]);
-        }
-      } else if (code === "3A") {
-        document.getElementById("champion").classList.remove("hidden");
-        document.getElementById("championName").textContent = winner.kickUsername;
+      if (buyInput && payInput && totalXSpan) {
+        const updateTotalX = () => {
+          const buy = parseFloat(buyInput.value);
+          const pay = parseFloat(payInput.value);
+          const totalX = (!isNaN(buy) && !isNaN(pay) && buy > 0) ? (pay / buy).toFixed(2) : 0;
+          totalXSpan.textContent = `Total X: ${totalX}x`;
+        };
+        buyInput.addEventListener("input", updateTotalX);
+        payInput.addEventListener("input", updateTotalX);
       }
+    });
+  });
+}
 
-      generateBracket();
+function generateWinner(button, roundIndex, matchIndex, code) {
+  const matchDiv = button.closest(".match");
+  const playersDivs = matchDiv.querySelectorAll(".player");
+  let totalXs = [];
+  let winner = null;
+  let highestX = -1;
+  let inputs = [];
+
+  playersDivs.forEach((playerDiv) => {
+    const buyAmount = parseFloat(playerDiv.querySelector(".buyAmount")?.value || 0);
+    const totalPay = parseFloat(playerDiv.querySelector(".totalPay")?.value || 0);
+    const totalX = (buyAmount > 0 && totalPay > 0) ? (totalPay / buyAmount).toFixed(2) : 0;
+    const name = playerDiv.querySelector("strong")?.innerText || "TBD";
+    const slot = playerDiv.querySelector("span")?.innerText || "";
+
+    totalXs.push(parseFloat(totalX));
+    inputs.push({ buyAmount, totalPay, totalX });
+
+    if (parseFloat(totalX) > highestX) {
+      highestX = totalX;
+      winner = { kickUsername: name, slot };
     }
+  });
+
+  const match = rounds[roundIndex][matchIndex];
+  match[2] = { winner, p1: inputs[0], p2: inputs[1] };
+
+  if (roundIndex < 2) {
+    rounds[roundIndex + 1] = rounds[roundIndex + 1] || [];
+    const nextIndex = Math.floor(matchIndex / 2);
+    const pos = matchIndex % 2;
+    rounds[roundIndex + 1][nextIndex] = rounds[roundIndex + 1][nextIndex] || [];
+    rounds[roundIndex + 1][nextIndex][pos] = winner;
+    clearDownstream(roundIndex + 1, nextIndex);
+  } else if (code === "3A") {
+    document.getElementById("champion").classList.remove("hidden");
+    document.getElementById("championName").textContent = winner.kickUsername;
+  }
+
+  generateBracket();
+}
 
 function resetMatch(roundIndex, matchIndex) {
   const match = rounds[roundIndex][matchIndex];
@@ -1616,33 +1556,6 @@ document.addEventListener("DOMContentLoaded", () => {
   window.addEventListener("resize", syncSliderHeight);
 });
 
-
-
-</script>
-
-<script>
-(function () {
-  const params = new URLSearchParams(window.location.search);
-  const token = params.get("token");
-
-  if (token) {
-    try {
-      const decoded = JSON.parse(atob(token));
-      localStorage.setItem("user", JSON.stringify(decoded));
-      localStorage.setItem("userId", decoded.id);
-      localStorage.setItem("username", decoded.username);
-
-      // ✅ Add this:
-      sessionStorage.setItem("userToken", token);
-
-      // Clean up URL
-      const cleanURL = window.location.origin + window.location.pathname;
-      window.history.replaceState({}, document.title, cleanURL);
-    } catch (e) {
-      console.error("Failed to decode token", e);
-    }
-  }
-})();
 
 
 </script>
