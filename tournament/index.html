@@ -1686,7 +1686,10 @@ document.addEventListener("DOMContentLoaded", () => {
   if (token) {
     try {
       const decoded = JSON.parse(atob(token));
-      localStorage.setItem("user", JSON.stringify(decoded));
+        localStorage.setItem("user", JSON.stringify(decoded));
+	localStorage.setItem("userId", decoded.id);
+	localStorage.setItem("username", decoded.username);
+
 
       // Clean up URL
       const cleanURL = window.location.origin + window.location.pathname;
