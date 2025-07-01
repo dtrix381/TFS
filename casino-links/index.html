@@ -14,7 +14,7 @@
 <meta property="og:title" content="TeamFullSendSlots">
 <meta property="og:description" content="Get access to top casino deals, massive bonuses, and free spins. Boost your luck with our exclusive links!">
 <meta property="og:image" content="https://i.imgur.com/IR08Bjy.png">
-<meta property="og:url" content="https://www.teamfullsendslots.com/Giveaways/">
+<meta property="og:url" content="https://www.teamfullsendslots.com/casino-links/">
 <meta property="og:type" content="website">
 
 <!-- Twitter Card -->
@@ -22,7 +22,7 @@
 <meta name="twitter:title" content="TeamFullSendSlots">
 <meta name="twitter:description" content="Get access to top casino deals, massive bonuses, and free spins. Boost your luck with our exclusive links!">
 <meta name="twitter:image" content="https://i.imgur.com/IR08Bjy.png">
-<meta name="twitter:url" content="https://www.teamfullsendslots.com/Giveaways/">
+<meta name="twitter:url" content="https://www.teamfullsendslots.com/casino-links/">
 
   <style>
     body {
@@ -203,6 +203,7 @@
 <button id="menu-toggle" class="menu-button2">☰</button>
 <div class="fixed-buttons">
   <div class="button-wrapper"><a href="/tournament/" data-tooltip="Tournament"><span>Tournament</span></a></div>
+  <div class="button-wrapper"><a href="/hunt-tracker/" data-tooltip="Hunt Tracker"><span>Hunt Tracker</span></a></div>
   <div class="button-wrapper"><a href="/guess-the-balance/" data-tooltip="Guess the Balance"><span>Guess the Balance</span></a></div>
   <div class="button-wrapper"><a href="/giveaways/" data-tooltip="Giveaways"><span>Giveaways</span></a></div>
   <div class="button-wrapper"><a href="/" data-tooltip="Home"><span>Home Page</span></a></div>
@@ -256,6 +257,7 @@ menuToggle.addEventListener('click', () => {
 <!-- Mobile full-screen menu (hidden by default) -->
 <div class="mobile-menu" id="mobileMenu">
   <a href="/tournament/"><span>Tournament</span></a>
+  <a href="/hunt-tracker/"><span>Hunt Tracker</span></a>
   <a href="/guess-the-balance/"><span>Guess the Balance</span></a>
   <a href="/giveaways/"><span>Giveaways</span></a>
 
@@ -587,10 +589,25 @@ menuToggle.addEventListener('click', () => {
 <footer>
   <p>&copy; 2025 <strong>TeamFullSendSlots.com</strong>. All rights reserved.</p>
 
-<div class="footer-legal">
-  <a href="/policy/">Privacy & Terms</a>
-</div>
+  <div class="footer-legal">
+    <a href="/policy/">Privacy & Terms</a>
+  </div>
+
+  <div class="footer-updated" id="last-updated"></div>
 </footer>
+
+<script>
+  const updated = new Date(document.lastModified);
+  const formatted = updated.toLocaleString(undefined, {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true,
+  });
+  document.getElementById("last-updated").textContent = `Last updated: ${formatted}`;
+</script>
 
 
 </html>
