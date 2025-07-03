@@ -395,6 +395,7 @@ menuToggle.addEventListener('click', () => {
       <th>Bet Size</th>
       <th>Total Pay</th>
       <th>Total X</th>
+      <th>🗑️</th>
     </tr>
   </thead>
   <tbody id="huntTable"></tbody>
@@ -470,6 +471,7 @@ menuToggle.addEventListener('click', () => {
     const bet = row.insertCell(2);
     const pay = row.insertCell(3);
     const totalX = row.insertCell(4);
+    const remove = row.insertCell(5);
 
     counter++;
     index.textContent = counter;
@@ -491,9 +493,31 @@ menuToggle.addEventListener('click', () => {
     `;
 
     const x = slotData.totalX || 0;
-    totalX.innerHTML = `<span class="total-x">${x.toFixed(2)}x</span>`;
-  }
+  totalX.innerHTML = `<span class="total-x">${x.toFixed(2)}x</span>`;
 
+  remove.innerHTML = `
+    <button onclick="removeRow(this)" style="background:red;color:white;border:none;border-radius:4px;cursor:pointer;padding:4px 8px;">✖</button>
+  `;
+
+  updateRowNumbers(); // set number after adding
+}
+
+function removeRow(btn) {
+  const row = btn.closest('tr');
+  row.remove();
+  updateRowNumbers();
+  updateStats(); // keep stats accurate
+}
+
+function updateRowNumbers() {
+  const rows = document.querySelectorAll('#huntTable tr');
+  rows.forEach((row, idx) => {
+    const cell = row.querySelector('td');
+    if (cell) {
+      cell.textContent = idx + 1; // 1-based index
+    }
+  });
+}
 
   function updateStats() {
     const rows = document.querySelectorAll('#huntTable tr');
