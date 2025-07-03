@@ -400,46 +400,15 @@ menuToggle.addEventListener('click', () => {
   <tbody id="huntTable"></tbody>
 </table>
 
-
-<div style="text-align:center; margin-top: 10px;">
-  <button onclick="loginWithDiscord()" style="
-    background: #7289da;
-    color: white;
-    font-weight: bold;
-    padding: 10px 25px;
-    font-size: 16px;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    box-shadow: 0 0 10px #7289da;
-  ">🔐 Use Widget</button>
-</div>
-
-
 <script>
-  function loginWithDiscord() {
-    window.location.href = "https://www.teamfullsendslots.com/hunt-tracker/auth/discord";
-  }
-</script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyCGCiv3p9KgjXR7yCA8Z2JYMhPweDRnQPk",
+    authDomain: "tfs-hunt-tracker.firebaseapp.com",
+    projectId: "tfs-hunt-tracker"
+  };
 
-
- <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyCGCiv3p9KgjXR7yCA8Z2JYMhPweDRnQPk",
-      authDomain: "tfs-hunt-tracker.firebaseapp.com",
-      projectId: "tfs-hunt-tracker"
-    };
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
-
-    const urlParams = new URLSearchParams(window.location.search);
-    const userId = urlParams.get("user");
-    if (!userId) {
-      alert("No user ID provided. Please log in via Discord.");
-      throw new Error("Missing user ID");
-    }
-    const huntDocId = userId;
-
+  firebase.initializeApp(firebaseConfig);
+  window.db = firebase.firestore(); // ✅ make db global
 </script>
 
 <script>
@@ -474,6 +443,8 @@ menuToggle.addEventListener('click', () => {
   totalX.innerHTML = `<span class="total-x">0.00x</span>`;
 }
 
+
+const huntDocId = "currentHunt";
 
   function updateStats() {
     const rows = document.querySelectorAll('#huntTable tr');
@@ -570,7 +541,6 @@ syncToFirebase();
       .catch(err => console.error("❌ Firebase Error:", err));
   }
 </script>
-
 
 </body>
 <footer>
