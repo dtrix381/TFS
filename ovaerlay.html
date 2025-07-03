@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bonus Hunt Overlay</title>
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+
+  <style>
+    body {
+      margin: 0;
+      background: transparent;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 30px;
+      color: white;
+    }
+
+    .overlay-container {
+      width: 700px;
+      height: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      background: rgba(0, 0, 0, 0.6);
+      border-radius: 20px;
+      border: 2px solid gold;
+      box-shadow: 0 0 15px gold;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      overflow: hidden;
+      text-align: center;
+    }
+
+    h1 {
+      color: #00ffff;
+      text-shadow: 0 0 10px #00ffff;
+      margin-bottom: 10px;
+    }
+
+    .header-stats {
+      background-color: rgba(0, 0, 0, 0.7);
+      border: 2px solid #444;
+      border-radius: 12px;
+      padding: 15px 30px;
+      margin-bottom: 15px;
+      display: inline-block;
+      text-align: left;
+      box-shadow: 0 0 20px #00ffff44;
+    }
+
+    .header-stats div { margin: 5px 0; }
+
+    .profit-positive { color: #00ff99; font-weight: bold; }
+    .profit-negative { color: #ff4d4d; font-weight: bold; }
+    .highlight-slot { color: #ffd700; text-shadow: 0 0 10px #ffd700; }
+    .highlight-value { color: #1ec8ff; text-shadow: 0 0 10px #1ec8ff; }
+
+    .stat-value { font-size: 32px; font-weight: bold; }
+
+    .bonus-scroll-wrapper {
+      flex-grow: 1;
+      overflow: hidden;
+      position: relative;
+      border-top: 2px solid #444;
+      margin-top: 10px;
+    }
+
+    .bonus-scroll {
+      display: flex;
+      flex-direction: column;
+      animation: scrollUp 20s linear infinite;
+    }
+
+    @keyframes scrollUp {
+      0%   { transform: translateY(0); }
+      100% { transform: translateY(-100%); }
+    }
+
+    .bonus-entry {
+      padding: 10px 0;
+      font-size: 28px;
+      color: white;
+      text-shadow: 0 0 4px black;
+    }
+
+    .upcoming-container {
+      background: rgba(0, 0, 0, 0.6);
+      margin-top: 10px;
+      padding: 10px 15px;
+      border: 2px solid #333;
+      border-radius: 10px;
+      font-size: 26px;
+    }
+
+    .upcoming-container span {
+      font-weight: bold;
+      color: gold;
+      text-shadow: 0 0 5px gold;
+    }
+  </style>
+</head>
+<body>
+  <div class="overlay-container">
+    <h1>TFS BONUS HUNT LIVE</h1>
+
+    <div class="header-stats">
+      <div id="startingBalance">Starting Balance: $0.00</div>
+      <div id="finalBalance">Final Balance: $0.00</div>
+      <div id="profit">Profit: $0.00</div>
+      <div id="highestProfit">Best Profit: -</div>
+      <div id="highestMulti">Best X: -</div>
+      <div id="bonusesOpened">Bonuses: 0 / 0</div>
+    </div>
+
+    <div class="upcoming-container" id="upcomingSection">
+      Loading bonus order...
+    </div>
+
+    <div class="bonus-scroll-wrapper">
+      <div class="bonus-scroll" id="bonusTrack"></div>
+    </div>
+  </div>
+
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const userId = urlParams.get("user");
+
+    const authorized = ["488015447417946151"]; // Add more IDs as needed
+    if (!userId || !authorized.includes(userId)) {
+      document.body.innerHTML = `<h2 style="color:red;text-align:center">❌ Not Authorized!<br>Contact TeamFullSend</h2>`;
+      throw new Error("Unauthorized");
+    }
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCGCiv3p9KgjXR7yCA8Z2JYMhPweDRnQPk",
+      authDomain: "tfs-hunt-tracker.firebaseapp.com",
+      projectId: "tfs-hunt-tracker"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    function formatCurrency(num) {
+      return `$${(+num).toFixed(2)}`;
+    }
+
+    db.collection("hunts").doc(userId).onSnapshot(doc => {
+      if (!doc.exists) return;
+      const data = doc.data();
+      const slots = data.slots || [];
+
+      let totalPay = 0;
+      let bestSlot = '-', bestXSlot = '-';
+      let highestPay = 0, highestX = 0;
+
+      const track = document.getElementById("bonusTrack");
+      track.innerHTML = "";
+
+      slots.forEach((slot, i) => {
+        totalPay += slot.totalPay;
+
+        if (slot.totalPay > highestPay) {
+          highestPay = slot.totalPay;
+          bestSlot = slot.slotName;
+        }
+
+        if (slot.totalX > highestX) {
+          highestX = slot.totalX;
+          bestXSlot = slot.slotName;
+        }
+
+        const entry = document.createElement("div");
+        entry.className = "bonus-entry";
+        entry.innerHTML = `<strong>${i + 1}.</strong> <span class='highlight-slot'>${slot.slotName}</span> — $${slot.betSize.toFixed(2)} — $${slot.totalPay.toFixed(2)} (${slot.totalX.toFixed(2)}x)`;
+        track.appendChild(entry);
+      });
+
+      const profit = totalPay - (data.startingBalance || 0);
+      const profitClass = profit >= 0 ? 'profit-positive' : 'profit-negative';
+
+      document.getElementById("startingBalance").textContent = `Starting Balance: ${formatCurrency(data.startingBalance || 0)}`;
+      document.getElementById("finalBalance").textContent = `Final Balance: ${formatCurrency(totalPay)}`;
+      document.getElementById("profit").innerHTML = `Profit: <span class='${profitClass}'>${formatCurrency(profit)}</span>`;
+      document.getElementById("highestProfit").innerHTML = `Best Profit: <span class='highlight-slot'>${bestSlot}</span> <span class='highlight-value'>(${formatCurrency(highestPay)})</span>`;
+      document.getElementById("highestMulti").innerHTML = `Best X: <span class='highlight-slot'>${bestXSlot}</span> <span class='highlight-value'>(${highestX.toFixed(2)}x)</span>`;
+      document.getElementById("bonusesOpened").textContent = `Bonuses: ${slots.filter(s => s.totalPay > 0).length} / ${slots.length}`;
+
+      const upcoming = document.getElementById("upcomingSection");
+      const nextToOpenIndex = slots.findIndex(slot => slot.totalPay <= 0);
+      const currentSlot = slots[nextToOpenIndex];
+      const nextSlot = slots[nextToOpenIndex + 1];
+
+      if (currentSlot) {
+        const current = `<span>${currentSlot.slotName}</span>`;
+        const next = nextSlot ? `<span>${nextSlot.slotName}</span>` : `<em>No more bonuses to open</em>`;
+        upcoming.innerHTML = `🎰 Opening: ${current}<br>⏭️ Next: ${next}`;
+      } else {
+        upcoming.innerHTML = `✅ All bonuses opened`;
+      }
+    });
+  </script>
+</body>
+</html>
