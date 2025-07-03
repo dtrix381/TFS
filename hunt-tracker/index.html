@@ -424,24 +424,40 @@ menuToggle.addEventListener('click', () => {
 
 
 
- <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyCGCiv3p9KgjXR7yCA8Z2JYMhPweDRnQPk",
-      authDomain: "tfs-hunt-tracker.firebaseapp.com",
-      projectId: "tfs-hunt-tracker"
-    };
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyCGCiv3p9KgjXR7yCA8Z2JYMhPweDRnQPk",
+    authDomain: "tfs-hunt-tracker.firebaseapp.com",
+    projectId: "tfs-hunt-tracker"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
 
-    const urlParams = new URLSearchParams(window.location.search);
-    const userId = urlParams.get("user");
-    if (!userId) {
-      alert("No user ID provided. Please log in via Discord.");
-      throw new Error("Missing user ID");
-    }
-    const huntDocId = userId;
+  const urlParams = new URLSearchParams(window.location.search);
+  const userId = urlParams.get("user");
+  if (!userId) {
+    alert("⚠️ No user ID provided. Please log in via Discord.");
+    throw new Error("Missing user ID");
+  }
+  const huntDocId = userId;
 
+  // 🟢 Load saved hunt data for this user
+  window.addEventListener('DOMContentLoaded', () => {
+    db.collection("hunts").doc(huntDocId).get()
+      .then(doc => {
+        if (doc.exists) {
+          const data = doc.data();
+          document.getElementById('startingBalance').value = data.startingBalance || 0;
+          (data.slots || []).forEach(addRow); // Call your existing addRow(slotData) function
+          updateStats(); // Refresh calculations/UI
+        } else {
+          console.log("🆕 No existing hunt data for this user");
+        }
+      })
+      .catch(err => console.error("❌ Error loading hunt:", err));
+  });
 </script>
+
 
 <script>
   let counter = 0;
