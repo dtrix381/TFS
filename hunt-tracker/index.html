@@ -462,34 +462,37 @@ menuToggle.addEventListener('click', () => {
 <script>
   let counter = 0;
 
-  function addRow() {
-  const table = document.getElementById('huntTable');
-  const row = table.insertRow();
-  const index = row.insertCell(0);
-  const slot = row.insertCell(1);
-  const bet = row.insertCell(2);
-  const pay = row.insertCell(3);
-  const totalX = row.insertCell(4);
+  function addRow(slotData = {}) {
+    const table = document.getElementById('huntTable');
+    const row = table.insertRow();
+    const index = row.insertCell(0);
+    const slot = row.insertCell(1);
+    const bet = row.insertCell(2);
+    const pay = row.insertCell(3);
+    const totalX = row.insertCell(4);
 
-  counter++;
-  index.textContent = counter;
-  slot.innerHTML = `<input type="text" placeholder="e.g. Sugar Rush">`;
+    counter++;
+    index.textContent = counter;
 
-  bet.innerHTML = `
-    <div class="currency-input">
-      <span>$</span>
-      <input type="number" step="0.01" min="0" onchange="updateStats()">
-    </div>
-  `;
-  pay.innerHTML = `
-    <div class="currency-input">
-      <span>$</span>
-      <input type="number" step="0.01" min="0" onchange="updateStats()">
-    </div>
-  `;
+    slot.innerHTML = `<input type="text" placeholder="e.g. Sugar Rush" value="${slotData.slotName || ''}">`;
 
-  totalX.innerHTML = `<span class="total-x">0.00x</span>`;
-}
+    bet.innerHTML = `
+      <div class="currency-input">
+        <span>$</span>
+        <input type="number" step="0.01" min="0" value="${slotData.betSize || ''}" onchange="updateStats()">
+      </div>
+    `;
+
+    pay.innerHTML = `
+      <div class="currency-input">
+        <span>$</span>
+        <input type="number" step="0.01" min="0" value="${slotData.totalPay || ''}" onchange="updateStats()">
+      </div>
+    `;
+
+    const x = slotData.totalX || 0;
+    totalX.innerHTML = `<span class="total-x">${x.toFixed(2)}x</span>`;
+  }
 
 
   function updateStats() {
