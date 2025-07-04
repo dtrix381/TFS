@@ -402,49 +402,26 @@ menuToggle.addEventListener('click', () => {
 </table>
 
 
-<div id="authStatus" style="text-align:center; margin-top: 20px;"></div>
+<div style="text-align:center; margin-top: 20px;">
+  <button onclick="loginWithDiscord()" style="
+    background: #7289da;
+    color: white;
+    font-weight: bold;
+    padding: 10px 25px;
+    font-size: 16px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    box-shadow: 0 0 10px #7289da;
+  ">🔐 Use Widget</button>
+</div>
 
 <script>
-  const urlParams = new URLSearchParams(window.location.search);
-  const username = urlParams.get("username");
-
-  const authStatusEl = document.getElementById("authStatus");
-
-  if (username) {
-    // ✅ Show logged-in username
-    authStatusEl.innerHTML = `
-      <div style="
-        color: gold;
-        font-weight: bold;
-        text-align: right;
-        padding: 10px 20px;
-        font-size: 16px;
-      ">
-        👤 Logged in as <span style="color: #1f8fff;">${username}</span>
-      </div>
-    `;
-  } else {
-    // 🟢 Show login button
-    authStatusEl.innerHTML = `
-      <button onclick="loginWithDiscord()" style="
-        background: #7289da;
-        color: white;
-        font-weight: bold;
-        padding: 10px 25px;
-        font-size: 16px;
-        border: none;
-        border-radius: 6px;
-        cursor: pointer;
-        box-shadow: 0 0 10px #7289da;
-      ">🔐 Use Widget</button>
-    `;
-  }
-
   function loginWithDiscord() {
+    // ✅ redirect to your Render backend to initiate Discord login
     window.location.href = "https://tfs-widget-auth.onrender.com/hunt-tracker/auth/discord";
   }
 </script>
-
 
 
 
@@ -454,30 +431,16 @@ menuToggle.addEventListener('click', () => {
     authDomain: "tfs-hunt-tracker.firebaseapp.com",
     projectId: "tfs-hunt-tracker"
   };
-
   firebase.initializeApp(firebaseConfig);
   const db = firebase.firestore();
 
   const urlParams = new URLSearchParams(window.location.search);
   const userId = urlParams.get("user");
-  const username = urlParams.get("username"); // optional
-
   if (!userId) {
-    alert("No user ID provided. Please log in via Discord.");
+    alert("⚠️ No user ID provided. Please log in via Discord.");
     throw new Error("Missing user ID");
   }
-
   const huntDocId = userId;
-
-  // (Optional) Show the username on the page if needed
-  if (username) {
-    const header = document.querySelector("header");
-    const userDiv = document.createElement("div");
-    userDiv.style.margin = "10px";
-    userDiv.style.textAlign = "right";
-    userDiv.innerHTML = `<strong>Logged in as: ${username}</strong>`;
-    header.appendChild(userDiv);
-  }
 
   // 🟢 Load saved hunt data for this user
   window.addEventListener('DOMContentLoaded', () => {
