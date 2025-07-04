@@ -454,19 +454,19 @@ menuToggle.addEventListener('click', () => {
     authDomain: "tfs-hunt-tracker.firebaseapp.com",
     projectId: "tfs-hunt-tracker"
   };
+
   firebase.initializeApp(firebaseConfig);
   const db = firebase.firestore();
 
   const urlParams = new URLSearchParams(window.location.search);
   const userId = urlParams.get("user");
-  const username = urlParams.get("username");
+  const username = urlParams.get("username"); // optional
 
   if (!userId) {
     alert("No user ID provided. Please log in via Discord.");
     throw new Error("Missing user ID");
   }
 
-  // ✅ Make sure you ONLY use userId as the document ID
   const huntDocId = userId;
 
   // (Optional) Show the username on the page if needed
