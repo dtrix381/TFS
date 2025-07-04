@@ -52,15 +52,13 @@
     }
 
     .header-stats div { margin: 5px 0; }
+
     .profit-positive { color: #00ff99; font-weight: bold; }
     .profit-negative { color: #ff4d4d; font-weight: bold; }
     .highlight-slot { color: #ffd700; text-shadow: 0 0 10px #ffd700; }
     .highlight-value { color: #1ec8ff; text-shadow: 0 0 10px #1ec8ff; }
 
-    .stat-value {
-      font-size: 32px;
-      font-weight: bold;
-    }
+    .stat-value { font-size: 32px; font-weight: bold; }
 
     .bonus-scroll-wrapper {
       flex-grow: 1;
@@ -130,15 +128,12 @@
     const urlParams = new URLSearchParams(window.location.search);
     const userId = urlParams.get("user");
 
-    const authorized = [
-      "488015447417946151", "927475447464329236" ];
-
+    const authorized = ["488015447417946151"]; // Add more IDs as needed
     if (!userId || !authorized.includes(userId)) {
-      document.body.innerHTML = `<h2 style="color:red;text-align:center">❌ Not Authorized! Contact TeamFullSend to request access.</h2>`;
-      throw new Error("Unauthorized access");
+      document.body.innerHTML = `<h2 style="color:red;text-align:center">❌ Not Authorized!<br>Contact TeamFullSend</h2>`;
+      throw new Error("Unauthorized");
     }
 
-    // Firebase
     const firebaseConfig = {
       apiKey: "AIzaSyCGCiv3p9KgjXR7yCA8Z2JYMhPweDRnQPk",
       authDomain: "tfs-hunt-tracker.firebaseapp.com",
@@ -192,7 +187,6 @@
       document.getElementById("highestMulti").innerHTML = `Best X: <span class='highlight-slot'>${bestXSlot}</span> <span class='highlight-value'>(${highestX.toFixed(2)}x)</span>`;
       document.getElementById("bonusesOpened").textContent = `Bonuses: ${slots.filter(s => s.totalPay > 0).length} / ${slots.length}`;
 
-      // Handle upcoming section
       const upcoming = document.getElementById("upcomingSection");
       const nextToOpenIndex = slots.findIndex(slot => slot.totalPay <= 0);
       const currentSlot = slots[nextToOpenIndex];
