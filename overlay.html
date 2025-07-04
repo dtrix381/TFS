@@ -128,7 +128,7 @@
     const urlParams = new URLSearchParams(window.location.search);
     const userId = urlParams.get("user");
 
-    const authorized = ["488015447417946151"]; // Add more IDs as needed
+    const authorized = ["488015447417946151, 1037485428921606185, 927475447464329236, 898589521711616070"]; // Add more IDs as needed
     if (!userId || !authorized.includes(userId)) {
       document.body.innerHTML = `<h2 style="color:red;text-align:center">❌ Not Authorized!<br>Contact TeamFullSend</h2>`;
       throw new Error("Unauthorized");
