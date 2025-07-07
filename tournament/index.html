@@ -861,17 +861,18 @@ function generateWinner(button, roundIndex, matchIndex, code) {
   playersDivs.forEach((playerDiv) => {
     const buyAmount = parseFloat(playerDiv.querySelector(".buyAmount")?.value || 0);
     const totalPay = parseFloat(playerDiv.querySelector(".totalPay")?.value || 0);
-    const totalX = (buyAmount > 0 && totalPay > 0) ? (totalPay / buyAmount).toFixed(2) : 0;
+    const rawX = (buyAmount > 0 && totalPay > 0) ? (totalPay / buyAmount) : 0;
+    const totalX = rawX.toFixed(2);
     const name = playerDiv.querySelector("strong")?.innerText || "TBD";
     const slot = playerDiv.querySelector("span")?.innerText || "";
 
     totalXs.push(parseFloat(totalX));
     inputs.push({ buyAmount, totalPay, totalX });
 
-    if (parseFloat(totalX) > highestX) {
-      highestX = totalX;
-      winner = { kickUsername: name, slot };
-    }
+    if (rawX > highestX) {
+  highestX = rawX;
+  winner = { kickUsername: name, slot };
+}
   });
 
   const match = rounds[roundIndex][matchIndex];
