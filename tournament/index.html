@@ -249,25 +249,28 @@ body.modal-open {
 
 
 .top-players-slider {
-      display: flex;
-      justify-content: space-between;
-      width: 100%;
-      max-width: 1500px;
-      margin: 90px auto 30px auto;
-      pointer-events: none;
-      margin-left: 190px;
-  position: absolute; /* or relative if needed */
-  z-index: 1; /* lower value */
-  top: 70px; /* position it if needed */
-left: 0;
+  position: absolute;
+  top: 150px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 70px;
+  pointer-events: none;
+  z-index: 1;
 }
 
-    .slider-column {
-  width: 150px;
-  position: relative;
-  height: 100%; /* same or greater than max drop height */
+.slider-column {
+  width: 50px;
+  height: 100%;
   overflow: hidden;
+  position: relative;
 }
+
+.slider-spacer {
+  width: 900px; /* Same width as your .container to center it */
+}
+
 
 
 .avatar {
@@ -612,17 +615,17 @@ menuToggle.addEventListener('click', () => {
 </script>
 
 <div class="top-players-slider">
-  <div class="slider-column" id="col1"></div>
-  <div class="slider-column" id="col2"></div>
-  <div class="slider-column" id="col3"></div>
-  <div class="slider-column" id="col4"></div>
-  <div class="slider-column" id="col5"></div>
-  <div class="slider-column" id="col6"></div>
-  <div class="slider-column" id="col7"></div>
-  <div class="slider-column" id="col8"></div>
-  <div class="slider-column" id="col9"></div>
-  <div class="slider-column" id="col10"></div>
+  <div class="slider-column left" id="col1"></div>
+  <div class="slider-column left" id="col2"></div>
+  <div class="slider-column left" id="col3"></div>
+
+  <div class="slider-spacer"></div>
+
+  <div class="slider-column right" id="col4"></div>
+  <div class="slider-column right" id="col5"></div>
+  <div class="slider-column right" id="col6"></div>
 </div>
+
 
 
 <div class="container">
