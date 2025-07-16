@@ -503,6 +503,7 @@
   </header>
 <button id="menu-toggle" class="menu-button2">☰</button>
 <div class="fixed-buttons">
+  <div class="button-wrapper"><a href="/hunt-tracker/" data-tooltip="Hunt Tracker"><span>Hunt Tracker</span></a></div>
   <div class="button-wrapper"><a href="/guess-the-balance/" data-tooltip="Guess the Balance"><span>Guess the Balance</span></a></div>
   <div class="button-wrapper"><a href="/giveaways/" data-tooltip="Giveaways"><span>Giveaways</span></a></div>
   <div class="button-wrapper"><a href="/casino-links/" data-tooltip="Casino Links"><span>Casino Links</span></a></div>
@@ -556,6 +557,7 @@ menuToggle.addEventListener('click', () => {
 
 <!-- Mobile full-screen menu (hidden by default) -->
 <div class="mobile-menu" id="mobileMenu">
+  <a href="/hunt-tracker/"><span>Hunt Tracker</span></a>
   <a href="/guess-the-balance/"><span>Guess the Balance</span></a>
   <a href="/giveaways/"><span>Giveaways</span></a>
   <a href="/casino-links/"><span>Casino Links</span></a>
@@ -589,7 +591,7 @@ menuToggle.addEventListener('click', () => {
     <div>
         <span class="rewards-amount">
             🎁 <span class="prize-text">Total Prizes Given:</span> 
-            <span id="prize-display" class="animated-prize">$500.00</span>
+            <span id="prize-display" class="animated-prize">$610.00</span>
         </span>
     </div>
 </div>
@@ -651,7 +653,7 @@ menuToggle.addEventListener('click', () => {
 
     // Start the animation when the page loads
     document.addEventListener("DOMContentLoaded", function() {
-        animateNumber("prize-display", 0, 500.0, 5000);
+        animateNumber("prize-display", 0, 610.0, 5000);
     });
 </script>
 
@@ -659,37 +661,48 @@ menuToggle.addEventListener('click', () => {
 
 <script>
 let leaderboardData = [
-{ rank: 1, discord: "teelux187", avatar: "878253813553844254", hash: "bd37647210aea5a7a893193b086b421b", games: "6", wins: "6", loses: "0", Wratio: "100.00%", buy: "$ 700.00", pay: "$ 1,348.92", profit: "$ 648.92", avgX: "1.93x", rewards: "$ 70" },
-{ rank: 2, discord: "Goggy12", avatar: "1252610980014456905", hash: "13e6575bc070f444953561895fdaede5", games: "6", wins: "5", loses: "1", Wratio: "83.33%", buy: "$ 1,200.00", pay: "$ 3,234.04", profit: "$ ,.034.04", avgX: "2.70x", rewards: "$ 70" },
-{ rank: 3, discord: "haroon06", avatar: "875842451590500403", hash: "edafc931822af8fadf42838bdd4e02a0", games: "7", wins: "5", loses: "2", Wratio: "71.43%", buy: "$ 1,040.00", pay: "$ 864.88", profit: "-$ 175.12", avgX: "0.83x", rewards: "$ 20" },
-{ rank: 4, discord: "dewiputewasi", avatar: "988865245793636392", hash: "bd37fa5476ccf70ef6c784712a2055db", games: "10", wins: "7", loses: "3", Wratio: "70.00%", buy: "$ 1,300.00", pay: "$ 2,591.81", profit: "$ 1,291.81", avgX: "1.99x", rewards: "$ 60" },
-{ rank: 5, discord: "Queenbaka", avatar: "915451578708820000", hash: "c8b557780ab5c2db351fcf5e01eb4e1c", games: "10", wins: "7", loses: "3", Wratio: "70.00%", buy: "$ 1,080.00", pay: "$ 778.20", profit: "-$ 301.80", avgX: "0.72x", rewards: "$ 40" },
-{ rank: 6, discord: "jamesmckenna", avatar: "937976594864164894", hash: "e4cc9e8a80feb698858825500ed1257d", games: "6", wins: "4", loses: "2", Wratio: "66.67%", buy: "$ 1,200.00", pay: "$ 1,311.52", profit: "$ 111.52", avgX: "1.09x", rewards: "$ 50" },
-{ rank: 7, discord: "Patchy ", avatar: "743392043157553204", hash: "03be465ebc28e19e04e3479928e47b9f", games: "5", wins: "3", loses: "2", Wratio: "60.00%", buy: "$ 460.00", pay: "$ 479.12", profit: "$ 19.72", avgX: "1.04x", rewards: "$ 20" },
-{ rank: 8, discord: "Jess ♡", avatar: "725092559701147688", hash: "58d86157e3173e3007e7236b17277cd0", games: "7", wins: "4", loses: "3", Wratio: "57.14%", buy: "$ 640.00", pay: "$ 523.88", profit: "-$ 116.12", avgX: "0.82x", rewards: "$ 20" },
-{ rank: 9, discord: "Dtrix", avatar: "488015447417946151", hash: "19e7b770b91a24f3891e8646dc09d335", games: "7", wins: "4", loses: "3", Wratio: "57.14%", buy: "$ 820.00", pay: "$ 640.46", profit: "-$ 179.54", avgX: "0.78x", rewards: "$ 50" },
-{ rank: 10, discord: "acytidiva", avatar: "100093573961089024", hash: "696a9707e1d13c30add049560f195b48", games: "6", wins: "3", loses: "3", Wratio: "50.00%", buy: "$ 920.00", pay: "$ 816.68", profit: "-$ 103.32", avgX: "0.89x", rewards: "$ 0" },
-{ rank: 11, discord: "HarshOp69", avatar: "1173972429144600720", hash: "99dbcedb611bb2bcf3eba1ac1b0351d6", games: "6", wins: "3", loses: "3", Wratio: "50.00%", buy: "$ 600.00", pay: "$ 524.25", profit: "-$ 75.75", avgX: "0.87x", rewards: "$ 0" },
-{ rank: 12, discord: "Hamslicer35", avatar: "850665803161534484", hash: "ae41cd1995ef4f0b3e47aad2dddb196a", games: "6", wins: "2", loses: "4", Wratio: "33.33%", buy: "$ 780.00", pay: "$ 380.88", profit: "-$ 399.12", avgX: "0.49x", rewards: "$ 20" },
-{ rank: 13, discord: "Yongdiba", avatar: "899983590782304306", hash: "ecbe546e3f7de269fbf34ef0d63230da", games: "9", wins: "2", loses: "7", Wratio: "22.22%", buy: "$ 880.00", pay: "$ 816.98", profit: "-$ 63.02", avgX: "0.93x", rewards: "$ 0" },
-{ rank: 14, discord: "Parky2192", avatar: "798462121972727829", hash: "97b6c590eac592c3b13e3b01730c264f", games: "5", wins: "1", loses: "4", Wratio: "20.00%", buy: "$ 460.00", pay: "$ 418.56", profit: "-$ 41.44", avgX: "0.91x", rewards: "$ 20" },
-{ rank: 15, discord: "Paradox_xddd", avatar: "1119171946232426557", hash: "baa883e4038ccf90837ac36bf6d5ca66", games: "6", wins: "1", loses: "5", Wratio: "16.67%", buy: "$ 540.00", pay: "$ 607.16", profit: "$ 67.16", avgX: "1.12x", rewards: "$ 0" },
-{ rank: 16, discord: "Denni", avatar: "1334181807163314206", hash: "None", games: "3", wins: "3", loses: "0", Wratio: "100.00%", buy: "$ 250.00", pay: "$ 334.20", profit: "$ 84.20", avgX: "1.34x", rewards: "$ 0" },
-{ rank: 17, discord: "Sushan", avatar: "1152297634548158544", hash: "4ee9e9783487fec978e2b7b11434930e", games: "4", wins: "3", loses: "1", Wratio: "75.00%", buy: "$ 600.00", pay: "$ 514.50", profit: "-$ 85.50", avgX: "0.86x", rewards: "$ 0" },
-{ rank: 18, discord: "bemboyadvancee", avatar: "528637332799225876", hash: "2a8dcb99f38abf44838483af83a65e8e", games: "4", wins: "2", loses: "2", Wratio: "50.00%", buy: "$ 420.00", pay: "$ 333.31", profit: "-$86.69", avgX: "0.79x", rewards: "$ 20" },
-{ rank: 19, discord: "power taker", avatar: "1340355958471135276", hash: "a6647ff463604e08cdfed7b2ffb0ebc9", games: "2", wins: "1", loses: "1", Wratio: "50.00%", buy: "$ 200.00", pay: "$ 399.12", profit: "$ 199.12", avgX: "2.00x", rewards: "$ 0" },
-{ rank: 20, discord: "k_baybe", avatar: "920118580916420670", hash: "65841c4757994c4c5f0c5c20e9b1f6e1", games: "2", wins: "1", loses: "1", Wratio: "50.00%", buy: "$ 200.00", pay: "$ 278.06", profit: "$ 78.06", avgX: "1.39x", rewards: "$ 0" },
-{ rank: 21, discord: "LilTom500", avatar: "397075423852232706", hash: "febd3f504c699262cded550cf4d78e18", games: "2", wins: "1", loses: "1", Wratio: "50.00%", buy: "$ 240.00", pay: "$ 48.06", profit: "$ -191.94", avgX: "0.20x", rewards: "$ 0" },
-{ rank: 22, discord: "scoco85", avatar: "894496485574586428", hash: "0d65c011714b9d093f6953d9b407650e", games: "4", wins: "1", loses: "3", Wratio: "25.00%", buy: "$ 400.00", pay: "$ 564.93", profit: "$ 164.93", avgX: "1.41x", rewards: "$ 0" },
-{ rank: 23, discord: "Foggy6", avatar: "1248485202527912042", hash: "cee6d4419c62aadc165154816f07c6b1", games: "4", wins: "1", loses: "3", Wratio: "25.00%", buy: "$ 400.00", pay: "$ 62.82", profit: "-$ 337.18", avgX: "0.16x", rewards: "$ 0" },
-{ rank: 24, discord: "KateCross", avatar: "1118234914517696543", hash: "53b192747bb8cc7109179ef8997a6023", games: "2", wins: "0", loses: "2", Wratio: "0.00%", buy: "$ 200.00", pay: "$ 190.95", profit: "-$ 9.05", avgX: "0.95x", rewards: "$ 0" },
-{ rank: 25, discord: "Icamehereforwinonly1", avatar: "1333712972039847957", hash: "d83438e70a606a9c56733ca87513538c", games: "2", wins: "0", loses: "2", Wratio: "0.00%", buy: "$ 220.80", pay: "$ 93.39", profit: "-$ 127.41", avgX: "0.42x", rewards: "$ 0" },
-{ rank: 26, discord: "Kyle_bossman", avatar: "766972022223667200", hash: "54a76be5ff09857c0866f656c09729e1", games: "3", wins: "0", loses: "3", Wratio: "0.00%", buy: "$ 300.00", pay: "$ 112.70", profit: "-$ 187.30", avgX: "0.38x", rewards: "$ 0" },
-{ rank: 27, discord: "adrumx6", avatar: "1295973017695944759", hash: "None", games: "2", wins: "0", loses: "2", Wratio: "0.00%", buy: "$ 200.00", pay: "$ 71.14", profit: "-$ 128.86", avgX: "0.36x", rewards: "$ 0" },
-{ rank: 28, discord: "MauriARG10", avatar: "845002725950357525", hash: "b244abe86a0030ac2445cac3d7878268", games: "1", wins: "0", loses: "1", Wratio: "0.00%", buy: "$ 60.00", pay: "$ 16.80", profit: "-$ 43.20", avgX: "0.28x", rewards: "$ 0" },
-{ rank: 29, discord: "woombamaboomba", avatar: "1332292662480474144", hash: "27f73ddad16d2fcb7d209808c45296c3", games: "1", wins: "0", loses: "1", Wratio: "0.00%", buy: "$ 120.00", pay: "$ 30.12", profit: "-$ 89.88", avgX: "0.25x", rewards: "$ 0" },
-{ rank: 30, discord: "NEDRON", avatar: "967222108390309978", hash: "0069beddbfa83ca6279b7937eec5bc2c", games: "1", wins: "0", loses: "1", Wratio: "0.00%", buy: "$ 100.00", pay: "$ 21.00", profit: "-$ 79.00", avgX: "0.21x", rewards: "$ 0" },
-{ rank: 31, discord: "Nightreign", avatar: "739613551727214736", hash: "155a9551c5f266189b203e736c8136ea", games: "1", wins: "0", loses: "1", Wratio: "0.00%", buy: "$ 80.00", pay: "$ 13.96", profit: "-$ 66.04", avgX: "0.17x", rewards: "$ 0" },
+{ rank: 1, discord: "Sid_playzz", avatar: "622849649874829314", hash: "6aca791cacf4f1ee228faa1ececebf5f", games: "6", wins: "6", loses: "0", Wratio: "100.00%", buy: "$ 456.00", pay: "$ 607.56", profit: "$ 181.56", avgX: "1.33x", rewards: "$ 50" },
+{ rank: 2, discord: "teelux187", avatar: "878253813553844254", hash: "cdbac5ee9ee57f3c9ea0011702d7c86f", games: "7", wins: "6", loses: "1", Wratio: "85.71%", buy: "$ 760.00", pay: "$ 1,377.27", profit: "$ 617.27", avgX: "1.81x", rewards: "$ 70" },
+{ rank: 3, discord: "haroon06", avatar: "875842451590500403", hash: "edafc931822af8fadf42838bdd4e02a0", games: "12", wins: "9", loses: "3", Wratio: "75.00%", buy: "$ 1,460.00", pay: "$ 1,259.75", profit: "-$ 200.25", avgX: "0.866x", rewards: "$ 20" },
+{ rank: 4, discord: "Goggy12", avatar: "1252610980014456905", hash: "13e6575bc070f444953561895fdaede5", games: "10", wins: "7", loses: "3", Wratio: "70.00%", buy: "$ 1,480.00", pay: "$ 3,558.18", profit: "$ 2,078.18", avgX: "2.40x", rewards: "$ 70" },
+{ rank: 5, discord: "Queenbaka", avatar: "915451578708820000", hash: "731a2b37655efe7ad91966b28cc1ecfb", games: "12", wins: "8", loses: "4", Wratio: "66.67%", buy: "$ 1,180.00", pay: "$ 1,163.94", profit: "-$ 16.06", avgX: "0.99x", rewards: "$ 40" },
+{ rank: 6, discord: "jamesmckenna", avatar: "937976594864164894", hash: "e1e66507614b95e58c5a8cf318d3a9c7", games: "6", wins: "4", loses: "2", Wratio: "66.67%", buy: "$ 1,200.00", pay: "$ 1,311.52", profit: "$ 111.52", avgX: "1.09x", rewards: "$ 50" },
+{ rank: 7, discord: "dewiputewasi", avatar: "988865245793636392", hash: "bd37fa5476ccf70ef6c784712a2055db", games: "16", wins: "10", loses: "6", Wratio: "62.50%", buy: "$ 1,680.00", pay: "$ 2,820.89", profit: "$ 1,140.89", avgX: "1.68x", rewards: "$ 60" },
+{ rank: 8, discord: "KateCross", avatar: "1118234914517696543", hash: "53b192747bb8cc7109179ef8997a6023", games: "8", wins: "5", loses: "3", Wratio: "62.50%", buy: "$ 640.00", pay: "$ 1,135.85", profit: "$ 495.85", avgX: "1.77x", rewards: "$ 30" },
+{ rank: 9, discord: "Bhavveesshh", avatar: "1298308501713719296", hash: "9051d777cc4b73f90836a41097784913", games: "5", wins: "3", loses: "2", Wratio: "60.00%", buy: "$ 340.00", pay: "$ 594.51", profit: "$ 254.51", avgX: "1.75x", rewards: "$ 30" },
+{ rank: 10, discord: "Patchy ", avatar: "743392043157553204", hash: "03be465ebc28e19e04e3479928e47b9f", games: "7", wins: "4", loses: "3", Wratio: "57.14%", buy: "$ 614.80", pay: "$ 813.79", profit: "$ 198.99", avgX: "1.32x", rewards: "$ 20" },
+{ rank: 11, discord: "Jess ♡", avatar: "725092559701147688", hash: "58d86157e3173e3007e7236b17277cd0", games: "7", wins: "4", loses: "3", Wratio: "57.14%", buy: "$ 640.00", pay: "$ 523.88", profit: "-$ 116.12", avgX: "0.82x", rewards: "$ 20" },
+{ rank: 12, discord: "Dtrix", avatar: "488015447417946151", hash: "19e7b770b91a24f3891e8646dc09d335", games: "10", wins: "5", loses: "5", Wratio: "50.00%", buy: "$ 1,000.00", pay: "$ 680.93", profit: "-$ 319.07", avgX: "0.68x", rewards: "$ 50" },
+{ rank: 13, discord: "acytidiva", avatar: "100093573961089024", hash: "696a9707e1d13c30add049560f195b48", games: "6", wins: "3", loses: "3", Wratio: "50.00%", buy: "$ 920.00", pay: "$ 816.68", profit: "-$ 103.32", avgX: "0.89x", rewards: "$ 0" },
+{ rank: 14, discord: "HarshOp69", avatar: "1173972429144600720", hash: "99dbcedb611bb2bcf3eba1ac1b0351d6", games: "6", wins: "3", loses: "3", Wratio: "50.00%", buy: "$ 600.00", pay: "$ 524.25", profit: "-$ 75.75", avgX: "0.87x", rewards: "$ 0" },
+{ rank: 15, discord: "Yongdiba", avatar: "899983590782304306", hash: "ecbe546e3f7de269fbf34ef0d63230da", games: "11", wins: "3", loses: "8", Wratio: "27.27%", buy: "$ 1,000.00", pay: "$ 921.14", profit: "-$ 78.86", avgX: "0.922x", rewards: "$ 0" },
+{ rank: 16, discord: "Hamslicer35", avatar: "850665803161534484", hash: "ae41cd1995ef4f0b3e47aad2dddb196a", games: "8", wins: "2", loses: "6", Wratio: "25.00%", buy: "$ 890.00", pay: "$ 401.68", profit: "-$ 488.32", avgX: "0.45x", rewards: "$ 20" },
+{ rank: 17, discord: "scoco85", avatar: "894496485574586428", hash: "0d65c011714b9d093f6953d9b407650e", games: "5", wins: "1", loses: "4", Wratio: "20.00%", buy: "$ 500.00", pay: "$ 687.70", profit: "$ 187.70", avgX: "1.38x", rewards: "$ 0" },
+{ rank: 18, discord: "Parky2192", avatar: "798462121972727829", hash: "d26448a668859964928e76d643df11b5", games: "5", wins: "1", loses: "4", Wratio: "20.00%", buy: "$ 460.00", pay: "$ 418.56", profit: "-$ 41.44", avgX: "0.91x", rewards: "$ 20" },
+{ rank: 19, discord: "Paradox_xddd", avatar: "1119171946232426557", hash: "baa883e4038ccf90837ac36bf6d5ca66", games: "7", wins: "1", loses: "6", Wratio: "14.29%", buy: "$ 580.00", pay: "$ 613.544", profit: "$ 33.54", avgX: "1.06x", rewards: "$ 0" },
+{ rank: 20, discord: "Denni", avatar: "1334181807163314206", hash: "None", games: "3", wins: "3", loses: "0", Wratio: "100.00%", buy: "$ 250.00", pay: "$ 334.20", profit: "$ 84.20", avgX: "1.34x", rewards: "$ 0" },
+{ rank: 21, discord: "Wanted_Gabbar0", avatar: "807442301663182880", hash: "7b563eadcbded47b1a3de38b0049ce48", games: "4", wins: "3", loses: "1", Wratio: "75.00%", buy: "$ 288.00", pay: "$ 309.80", profit: "$ 21.80", avgX: "1.08x", rewards: "$ 0" },
+{ rank: 22, discord: "Sushan", avatar: "1152297634548158544", hash: "4ee9e9783487fec978e2b7b11434930e", games: "4", wins: "3", loses: "1", Wratio: "75.00%", buy: "$ 600.00", pay: "$ 514.50", profit: "-$ 85.50", avgX: "0.86x", rewards: "$ 0" },
+{ rank: 23, discord: "bemboyadvancee", avatar: "528637332799225876", hash: "2a8dcb99f38abf44838483af83a65e8e", games: "4", wins: "2", loses: "2", Wratio: "50.00%", buy: "$ 420.00", pay: "$ 333.31", profit: "-$86.69", avgX: "0.79x", rewards: "$ 20" },
+{ rank: 24, discord: "Donascobar ", avatar: "500297730640314371", hash: "780f83880976a9389487d27d0f262091", games: "4", wins: "2", loses: "2", Wratio: "50.00%", buy: "$ 280.00", pay: "$ 111.35", profit: "-$ 168.65", avgX: "0.40x", rewards: "$ 0" },
+{ rank: 25, discord: "dragon", avatar: "1340355958471135276", hash: "a6647ff463604e08cdfed7b2ffb0ebc9", games: "2", wins: "1", loses: "1", Wratio: "50.00%", buy: "$ 200.00", pay: "$ 399.12", profit: "$ 199.12", avgX: "2.00x", rewards: "$ 0" },
+{ rank: 26, discord: "k_baybe", avatar: "920118580916420670", hash: "65841c4757994c4c5f0c5c20e9b1f6e1", games: "2", wins: "1", loses: "1", Wratio: "50.00%", buy: "$ 200.00", pay: "$ 278.06", profit: "$ 78.06", avgX: "1.39x", rewards: "$ 0" },
+{ rank: 27, discord: "ShinyDiscoBall", avatar: "824864071727841300", hash: "11bb74d179f4bf22b67c703eade04eba", games: "2", wins: "1", loses: "1", Wratio: "50.00%", buy: "$ 120.00", pay: "$ 140.67", profit: "$ 20.67", avgX: "1.17x", rewards: "$ 0" },
+{ rank: 28, discord: "LilTom500", avatar: "397075423852232706", hash: "febd3f504c699262cded550cf4d78e18", games: "2", wins: "1", loses: "1", Wratio: "50.00%", buy: "$ 240.00", pay: "$ 48.06", profit: "-$ 191.94", avgX: "0.20x", rewards: "$ 0" },
+{ rank: 29, discord: "Kimmy9049", avatar: "898589521711616070", hash: "faf0bacccc8d36aadf02751e16794271", games: "4", wins: "1", loses: "3", Wratio: "25.00%", buy: "$ 260.00", pay: "$ 264.18", profit: "$ 4.18", avgX: "1.02x", rewards: "$ 0" },
+{ rank: 30, discord: "woombamaboomba", avatar: "1332292662480474144", hash: "27f73ddad16d2fcb7d209808c45296c3", games: "4", wins: "1", loses: "3", Wratio: "25.00%", buy: "$ 290.00", pay: "$ 177.88", profit: "-$ 113.08", avgX: "0.61x", rewards: "$ 0" },
+{ rank: 31, discord: "Foggy6", avatar: "1248485202527912042", hash: "cee6d4419c62aadc165154816f07c6b1", games: "4", wins: "1", loses: "3", Wratio: "25.00%", buy: "$ 400.00", pay: "$ 62.82", profit: "-$ 337.18", avgX: "0.16x", rewards: "$ 0" },
+{ rank: 32, discord: "splas777", avatar: "1362884299539611741", hash: "a0414db304bbfafb559580e2a92eeb1e", games: "1", wins: "0", loses: "1", Wratio: "0.00%", buy: "$ 60.00", pay: "$ 60.60", profit: "$ 0.60", avgX: "1.01x", rewards: "$ 0" },
+{ rank: 33, discord: "Daman00", avatar: "807456822326722631", hash: "0e60a7ffd6ea6c439fcfedc3c0f1f503", games: "1", wins: "0", loses: "1", Wratio: "0.00%", buy: "$ 40.00", pay: "$ 34.00", profit: "-$ 6.00", avgX: "0.85x", rewards: "$ 0" },
+{ rank: 34, discord: "queenz250", avatar: "657584864463159308", hash: "36447d9df5373b7fe2b1f3e975110930", games: "2", wins: "0", loses: "2", Wratio: "0.00%", buy: "$ 140.00", pay: "$ 66.64", profit: "-$ 73.36", avgX: "0.48x", rewards: "$ 0" },
+{ rank: 35, discord: "Icamehereforwinonly1", avatar: "1333712972039847957", hash: "d83438e70a606a9c56733ca87513538c", games: "3", wins: "0", loses: "3", Wratio: "0.00%", buy: "$ 270.80", pay: "$ 115.25", profit: "-$ 155.55", avgX: "0.43x", rewards: "$ 0" },
+{ rank: 36, discord: "Kyle_bossman", avatar: "766972022223667200", hash: "66d655e471078651a6e15823bf0118df", games: "3", wins: "0", loses: "3", Wratio: "0.00%", buy: "$ 300.00", pay: "$ 112.70", profit: "-$ 187.30", avgX: "0.38x", rewards: "$ 0" },
+{ rank: 37, discord: "adrumx6", avatar: "1295973017695944759", hash: "None", games: "2", wins: "0", loses: "2", Wratio: "0.00%", buy: "$ 200.00", pay: "$ 71.14", profit: "-$ 128.86", avgX: "0.36x", rewards: "$ 0" },
+{ rank: 38, discord: "MauriARG10", avatar: "845002725950357525", hash: "b244abe86a0030ac2445cac3d7878268", games: "1", wins: "0", loses: "1", Wratio: "0.00%", buy: "$ 60.00", pay: "$ 16.80", profit: "-$ 43.20", avgX: "0.28x", rewards: "$ 0" },
+{ rank: 39, discord: "Nedron", avatar: "967222108390309978", hash: "0069beddbfa83ca6279b7937eec5bc2c", games: "1", wins: "0", loses: "1", Wratio: "0.00%", buy: "$ 100.00", pay: "$ 21.00", profit: "-$ 79.00", avgX: "0.21x", rewards: "$ 0" },
+{ rank: 40, discord: "JoyNyx", avatar: "571458036737114124", hash: "1165143c9a736a85e62e6f56d647d8a0", games: "1", wins: "0", loses: "1", Wratio: "0.00%", buy: "$ 60.00", pay: "$ 11.58", profit: "-$ 48.42", avgX: "0.19x", rewards: "$ 0" },
+{ rank: 41, discord: "Nightreign", avatar: "739613551727214736", hash: "155a9551c5f266189b203e736c8136ea", games: "1", wins: "0", loses: "1", Wratio: "0.00%", buy: "$ 80.00", pay: "$ 13.96", profit: "-$ 66.04", avgX: "0.17x", rewards: "$ 0" },
+{ rank: 42, discord: "paweu1312", avatar: "1388652496792195214", hash: "None", games: "1", wins: "0", loses: "1", Wratio: "0.00%", buy: "$ 60.00", pay: "$ 7.98", profit: "-$ 52/02", avgX: "0.13x", rewards: "$ 0" },
    ];
 
 let originalData = [...leaderboardData]; // preserve the default order at page load
