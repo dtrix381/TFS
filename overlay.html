@@ -156,20 +156,22 @@
       let highestPay = 0, highestX = 0;
 
       const track = document.getElementById("bonusTrack");
-      track.innerHTML = "";
+ track.innerHTML = ""; // Clear the track before rendering
 
-      slots.forEach((slot, i) => {
-        totalPay += slot.totalPay;
+const allEntries = []; // ✅ This line was missing
 
-        if (slot.totalPay > highestPay) {
-          highestPay = slot.totalPay;
-          bestSlot = slot.slotName;
-        }
+slots.forEach((slot, i) => {
+  totalPay += slot.totalPay;
 
-        if (slot.totalX > highestX) {
-          highestX = slot.totalX;
-          bestXSlot = slot.slotName;
-        }
+  if (slot.totalPay > highestPay) {
+    highestPay = slot.totalPay;
+    bestSlot = slot.slotName;
+  }
+
+  if (slot.totalX > highestX) {
+    highestX = slot.totalX;
+    bestXSlot = slot.slotName;
+  }
 
   const entry = document.createElement("div");
   entry.className = "bonus-entry";
