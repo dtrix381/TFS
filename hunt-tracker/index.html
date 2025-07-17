@@ -614,34 +614,37 @@ document.getElementById('bonusesOpened').textContent = `${openedBonuses} / ${tot
 syncToFirebase();
   }
 
-  function syncToFirebase() {
-    const data = {
-      startingBalance: parseFloat(document.getElementById('startingBalance').value) || 0,
-      slots: []
-    };
+function syncToFirebase() {
+  const data = {
+    startingBalance: parseFloat(document.getElementById('startingBalance').value) || 0,
+    slots: []
+  };
 
-const rows = document.querySelectorAll('#huntTable tr');
-rows.forEach(row => {
-  const cells = row.querySelectorAll('td');
-  const slotName = cells[1].querySelector('input')?.value || '';
-  const betVal = parseFloat(cells[2].querySelector('input')?.value) || 0;
-  const payVal = parseFloat(cells[3].querySelector('input')?.value) || 0;
-  const totalX = betVal > 0 ? payVal / betVal : 0;
-  const isOpened = !isNaN(payVal); // 💡 includes $0.00
+  const rows = document.querySelectorAll('#huntTable tr');
+  rows.forEach(row => {
+    const cells = row.querySelectorAll('td');
+    const slotName = cells[1].querySelector('input')?.value || '';
+    const betVal = parseFloat(cells[2].querySelector('input')?.value) || 0;
+    const payInput = cells[3].querySelector('input');
+    const payVal = parseFloat(payInput?.value) || 0;
+    const totalX = betVal > 0 ? payVal / betVal : 0;
 
-  data.slots.push({
-    slotName,
-    betSize: betVal,
-    totalPay: payVal,
-    totalX: parseFloat(totalX.toFixed(2)),
-    opened: isOpened // ✅ ensure this saves!
+    // ✅ Treat the slot as opened only if totalPay was typed in (including $0)
+    const opened = payInput?.value !== "" && !isNaN(payVal);
+
+    data.slots.push({
+      slotName,
+      betSize: betVal,
+      totalPay: payVal,
+      totalX: parseFloat(totalX.toFixed(2)),
+      opened: opened
+    });
   });
-});
 
-    db.collection("hunts").doc(huntDocId).set(data)
-      .then(() => console.log("✅ Synced to Firebase"))
-      .catch(err => console.error("❌ Firebase Error:", err));
-  }
+  db.collection("hunts").doc(huntDocId).set(data)
+    .then(() => console.log("✅ Synced to Firebase"))
+    .catch(err => console.error("❌ Firebase Error:", err));
+}
 </script>
 
 
