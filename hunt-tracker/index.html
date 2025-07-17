@@ -620,23 +620,23 @@ syncToFirebase();
       slots: []
     };
 
-    const rows = document.querySelectorAll('#huntTable tr');
-    rows.forEach(row => {
-      const cells = row.querySelectorAll('td');
-      const slotName = cells[1].querySelector('input')?.value || '';
-      const betVal = parseFloat(cells[2].querySelector('input')?.value) || 0;
-      const payVal = parseFloat(cells[3].querySelector('input')?.value) || 0;
-      const totalX = betVal > 0 ? payVal / betVal : 0;
-      const isOpened = !isNaN(payVal) && payVal !== null;
+const rows = document.querySelectorAll('#huntTable tr');
+rows.forEach(row => {
+  const cells = row.querySelectorAll('td');
+  const slotName = cells[1].querySelector('input')?.value || '';
+  const betVal = parseFloat(cells[2].querySelector('input')?.value) || 0;
+  const payVal = parseFloat(cells[3].querySelector('input')?.value) || 0;
+  const totalX = betVal > 0 ? payVal / betVal : 0;
+  const isOpened = !isNaN(payVal); // 💡 includes $0.00
 
-data.slots.push({
-  slotName,
-  betSize: betVal,
-  totalPay: payVal,
-  totalX: parseFloat(totalX.toFixed(2)),
-  opened: isOpened
+  data.slots.push({
+    slotName,
+    betSize: betVal,
+    totalPay: payVal,
+    totalX: parseFloat(totalX.toFixed(2)),
+    opened: isOpened // ✅ ensure this saves!
+  });
 });
-    });
 
     db.collection("hunts").doc(huntDocId).set(data)
       .then(() => console.log("✅ Synced to Firebase"))
