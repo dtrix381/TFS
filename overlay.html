@@ -76,7 +76,7 @@
 
     @keyframes scrollUp {
       0%   { transform: translateY(0); }
-      100% { transform: translateY(-100%); }
+      100% { transform: translateY(-50%); }
     }
 
     .bonus-entry {
@@ -171,11 +171,18 @@
           bestXSlot = slot.slotName;
         }
 
-        const entry = document.createElement("div");
-        entry.className = "bonus-entry";
-        entry.innerHTML = `<strong>${i + 1}.</strong> <span class='highlight-slot'>${slot.slotName}</span> — $${slot.betSize.toFixed(2)} — $${slot.totalPay.toFixed(2)} (${slot.totalX.toFixed(2)}x)`;
-        track.appendChild(entry);
-      });
+  const entry = document.createElement("div");
+  entry.className = "bonus-entry";
+  entry.innerHTML = `<strong>${i + 1}.</strong> <span class='highlight-slot'>${slot.slotName}</span> — $${slot.betSize.toFixed(2)} — $${slot.totalPay.toFixed(2)} (${slot.totalX.toFixed(2)}x)`;
+  allEntries.push(entry);
+  track.appendChild(entry);
+});
+
+// 🔁 Duplicate the same entries for infinite loop
+allEntries.forEach(entry => {
+  const clone = entry.cloneNode(true);
+  track.appendChild(clone);
+});
 
       const profit = totalPay - (data.startingBalance || 0);
       const profitClass = profit >= 0 ? 'profit-positive' : 'profit-negative';
