@@ -503,6 +503,7 @@
   </header>
 <button id="menu-toggle" class="menu-button2">☰</button>
 <div class="fixed-buttons">
+  <div class="button-wrapper"><a href="/hunt-tracker/" data-tooltip="Hunt Tracker"><span>Hunt Tracker</span></a></div>
   <div class="button-wrapper"><a href="/guess-the-balance/" data-tooltip="Guess the Balance"><span>Guess the Balance</span></a></div>
   <div class="button-wrapper"><a href="/giveaways/" data-tooltip="Giveaways"><span>Giveaways</span></a></div>
   <div class="button-wrapper"><a href="/casino-links/" data-tooltip="Casino Links"><span>Casino Links</span></a></div>
@@ -556,6 +557,7 @@ menuToggle.addEventListener('click', () => {
 
 <!-- Mobile full-screen menu (hidden by default) -->
 <div class="mobile-menu" id="mobileMenu">
+  <a href="/hunt-tracker/"><span>Hunt Tracker</span></a>
   <a href="/guess-the-balance/"><span>Guess the Balance</span></a>
   <a href="/giveaways/"><span>Giveaways</span></a>
   <a href="/casino-Links/"><span>Casino Links</span></a>
@@ -589,7 +591,7 @@ menuToggle.addEventListener('click', () => {
     <div>
         <span class="rewards-amount">
             🎁 <span class="prize-text">Total Prizes Given:</span> 
-            <span id="prize-display" class="animated-prize">$500.00</span>
+            <span id="prize-display" class="animated-prize">$610.00</span>
         </span>
     </div>
 </div>
@@ -649,7 +651,7 @@ menuToggle.addEventListener('click', () => {
 
     // Start the animation when the page loads
     document.addEventListener("DOMContentLoaded", function() {
-        animateNumber("prize-display", 0, 500.0, 5000);
+        animateNumber("prize-display", 0, 610.0, 5000);
     });
 </script>
 
@@ -658,46 +660,64 @@ menuToggle.addEventListener('click', () => {
 <script>
 let leaderboardData = [
 { rank: 1, slot: "Le Bandit", avatar: "../../assets/slots/LeBandit.webp", games: "6", wins: "6", loses: "0", Wratio: "100.00%", buy: "$ 700.00", pay: "$ 1,348.92", profit: "$ 648.92", avgX: "1.93x"},
-{ rank: 2, slot: "Ze Zeus", avatar: "../../assets/slots/ZeZeus.webp", games: "7", wins: "5", loses: "2", Wratio: "71.43%", buy: "$700.00", pay: "$ 1,348.92", profit: "$ 648.92", avgX: "1.09x"},
-{ rank: 3, slot: "Jewel Rush", avatar: "../../assets/slots/JewelRush.webp", games: "6", wins: "4", loses: "2", Wratio: "66.67%", buy: "$880.00", pay: "$ 2,256.61", profit: "$ 1,376.61", avgX: "2.56x"},
-{ rank: 4, slot: "Heart of Cleopatra", avatar: "../../assets/slots/HeartofCleopatra.webp", games: "6", wins: "4", loses: "2", Wratio: "66.67%", buy: "$ 700.00", pay: "$ 629.57", profit: "-$ 70.43", avgX: "0.90x"},
-{ rank: 5, slot: "Fist of Destruction", avatar: "../../assets/slots/FistofDestruction.webp", games: "10", wins: "6", loses: "4", Wratio: "60.00%", buy: "$1,600.00", pay: "$ 3,296.86", profit: "$ 1,696.86", avgX: "2.06x"},
-{ rank: 6, slot: "Rad Maxx", avatar: "../../assets/slots/RadMaxx.webp", games: "5", wins: "3", loses: "2", Wratio: "60.00%", buy: "$ 440.00", pay: "$ 618.08", profit: "$ 178.08", avgX: "1.40x"},
-{ rank: 7, slot: "Hounds of Hell", avatar: "../../assets/slots/HoundsofHell.webp", games: "5", wins: "3", loses: "2", Wratio: "60.00%", buy: "$  500.00", pay: "$ 350.36", profit: "-$ 149.64", avgX: "0.70x"},
-{ rank: 8, slot: "Sugar Rush", avatar: "../../assets/slots/SugarRush.webp", games: "5", wins: "3", loses: "2", Wratio: "60.00%", buy: "$ 440.00", pay: "$ 232.83", profit: "-$ 207.17", avgX: "0.53x"},
-{ rank: 9, slot: "Gates of Olympus Super Scatter", avatar: "../../assets/slots/GatesofOlympusSuperScatter.webp", games: "16", wins: "9", loses: "7", Wratio: "56.25%", buy: "$ 2,220.00", pay: "$ 2,284.34", profit: "$ 64.34", avgX: "1.03x"},
-{ rank: 10, slot: "Fruit Party", avatar: "../../assets/slots/FruitParty.webp", games: "8", wins: "4", loses: "4", Wratio: "50.00%", buy: "$980.00", pay: "$ 862.61", profit: "-$ 117.39", avgX: "0.88x"},
-{ rank: 11, slot: "Ultimate Slot of America", avatar: "../../assets/slots/UltimateSlotofAmerica.webp", games: "6", wins: "3", loses: "3", Wratio: "50.00%", buy: "$920.00", pay: "$ 816.68", profit: "-$ 103.32", avgX: "0.89x"},
-{ rank: 12, slot: "Gates of Olympus 1000", avatar: "../../assets/slots/GatesofOlympus1000.webp", games: "5", wins: "1", loses: "4", Wratio: "20.00%", buy: "$460.00", pay: "$ 418.56", profit: "-$ 41.44", avgX: "0.91x"},
-{ rank: 13, slot: "5 Lions Megaways", avatar: "../../assets/slots/5LionsMegaways.webp", games: "7", wins: "1", loses: "6", Wratio: "14.29%", buy: "$680.00", pay: "$ 705.78", profit: "$ 25.78", avgX: "1.04x"},
-{ rank: 14, slot: "Dragon's Domain", avatar: "../../assets/slots/Dragon'sDomain.webp", games: "2", wins: "2", loses: "0", Wratio: "100.00%", buy: "$ 160.00", pay: "$ 62.40", profit: "-$ 97.60", avgX: "0.39x"},
-{ rank: 15, slot: "Fear the Dark", avatar: "../../assets/slots/FeartheDark.webp", games: "1", wins: "1", loses: "0", Wratio: "100.00%", buy: "$ 90.00", pay: "$ 271.80", profit: "$ 181.80", avgX: "3.02x"},
-{ rank: 16, slot: "Book of Tut Respin", avatar: "../../assets/slots/BookofTutRespin.webp", games: "4", wins: "3", loses: "1", Wratio: "75.00%", buy: "$ 600.00", pay: "$ 514.50", profit: "-$ 85.50", avgX: "0.86x"},
-{ rank: 17, slot: "Beast Below", avatar: "../../assets/slots/BeastBelow.webp", games: "4", wins: "3", loses: "1", Wratio: "75.00%", buy: "$ 320.00", pay: "$ 208.42", profit: "-$ 111.58", avgX: "0.65x"},
-{ rank: 18, slot: "Le Pharaoh", avatar: "../../assets/slots/LePharaoh.webp", games: "4", wins: "2", loses: "2", Wratio: "50.00%", buy: "$ 400.00", pay: "$ 274.00", profit: "-$ 126.00", avgX: "0.69x"},
-{ rank: 19, slot: "Le Viking", avatar: "../../assets/slots/LeViking.webp", games: "4", wins: "2", loses: "2", Wratio: "50.00%", buy: "$ 600.00", pay: "$ 347.00", profit: "-$ 253.00", avgX: "0.58x"},
-{ rank: 20, slot: "Wild Bison Charge", avatar: "../../assets/slots/WildBisonCharge.webp", games: "2", wins: "1", loses: "1", Wratio: "50.00%", buy: "$ 200.00", pay: "$ 428.15", profit: "$ 228.15", avgX: "2.14x"},
-{ rank: 21, slot: "Hoot Shot the Sheriff", avatar: "../../assets/slots/HootShottheSheriff.webp", games: "2", wins: "1", loses: "1", Wratio: "50.00%", buy: "$160.00", pay: "$ 299.28", profit: "$ 139.28", avgX: "1.87x"},
-{ rank: 22, slot: "Benny the Beer", avatar: "../../assets/slots/BennytheBeer.webp", games: "2", wins: "1", loses: "1", Wratio: "50.00%", buy: "$240.00", pay: "$ 169.76", profit: "-$ 70.24", avgX: "0.71x"},
-{ rank: 23, slot: "Stormforged", avatar: "../../assets/slots/Stormforged.webp", games: "2", wins: "1", loses: "1", Wratio: "50.00%", buy: "$160.00", pay: "$ 62.28", profit: "-$ 97.72", avgX: "0.39x"},
-{ rank: 24, slot: "Eastern Emeralds Megaways", avatar: "../../assets/slots/EasternEmeraldsMegaways.webp", games: "2", wins: "1", loses: "1", Wratio: "50.00%", buy: "$240.00", pay: "$ 48.06", profit: "-$ 191.94", avgX: "0.20x"},
-{ rank: 25, slot: "Clumsy Cowboys", avatar: "../../assets/slots/ClumsyCowboys.webp", games: "1", wins: "0", loses: "1", Wratio: "0.00%", buy: "$100.00", pay: "$ 132.10", profit: "$ 32.10", avgX: "1.32x"},
-{ rank: 26, slot: "Sky Bounty", avatar: "../../assets/slots/SkyBounty.webp", games: "1", wins: "0", loses: "1", Wratio: "0.00%", buy: "$100.00", pay: "$ 80.68", profit: "-$ 19.32", avgX: "0.81x"},
-{ rank: 27, slot: "Olympus Trueways", avatar: "../../assets/slots/OlympusTrueways.webp", games: "1", wins: "0", loses: "1", Wratio: "0.00%", buy: "$100.00", pay: "$ 70.00", profit: "-$ 30.00", avgX: "0.70x"},
-{ rank: 28, slot: "Wild West Gold Blazing Bounty", avatar: "../../assets/slots/WildWestGoldBlazingBounty.webp", games: "2", wins: "0", loses: "2", Wratio: "0.00%", buy: "$200.00", pay: "$ 136.78", profit: "-$ 63.22", avgX: "0.68x"},
-{ rank: 29, slot: "Fruit Party 2", avatar: "../../assets/slots/FruitParty2.webp", games: "1", wins: "0", loses: "1", Wratio: "0.00%", buy: "$100.00", pay: "$ 58.85", profit: "-$ 41.15", avgX: "0.59x"},
-{ rank: 30, slot: "Joker Queen", avatar: "../../assets/slots/JokerQueen.webp", games: "1", wins: "0", loses: "1", Wratio: "0.00%", buy: "$100.80", pay: "$ 56.85", profit: "-$ 43.95", avgX: "0.56x"},
-{ rank: 31, slot: "Mayan Stackways", avatar: "../../assets/slots/MayanStackways.webp", games: "1", wins: "0", loses: "1", Wratio: "0.00%", buy: "$100.00", pay: "$ 42.00", profit: "-$ 58.00", avgX: "0.42x"},
-{ rank: 32, slot: "Phoenix DuelReels", avatar: "../../assets/slots/PhoenixDuelReels.webp", games: "1", wins: "0", loses: "1", Wratio: "0.00%", buy: "$120.00", pay: "$ 36.54", profit: "-$ 83.46", avgX: "0.30x"},
-{ rank: 33, slot: "Wheel o'Gold", avatar: "../../assets/slots/Wheelo'Gold.webp", games: "1", wins: "0", loses: "1", Wratio: "0.00%", buy: "$100.00", pay: "$ 29.80", profit: "-$ 70.20", avgX: "0.30x"},
-{ rank: 34, slot: "Tanked", avatar: "../../assets/slots/Tanked.webp", games: "1", wins: "0", loses: "1", Wratio: "0.00%", buy: "$60.00", pay: "$ 16.80", profit: "-$ 43.20", avgX: "0.28x"},
-{ rank: 35, slot: "Piggy Cluster Hunt", avatar: "../../assets/slots/PiggyClusterHunt.webp", games: "1", wins: "0", loses: "1", Wratio: "0.00%", buy: "$120.00", pay: "$ 30.12", profit: "-$ 89.88", avgX: "0.25x"},
-{ rank: 36, slot: "Lucky Penny", avatar: "../../assets/slots/LuckyPenny.webp", games: "2", wins: "0", loses: "2", Wratio: "0.00%", buy: "$200.00", pay: "$ 42.70", profit: "-$ 157.30", avgX: "0.21x"},
-{ rank: 37, slot: "Dark Summoning", avatar: "../../assets/slots/DarkSummoning.webp", games: "1", wins: "0", loses: "1", Wratio: "0.00%", buy: "$100.00", pay: "$ 21.04", profit: "-$ 78.96", avgX: "0.21x"},
-{ rank: 38, slot: "Chilli Heat Megaways", avatar: "../../assets/slots/ChilliHeatMegaways.webp", games: "1", wins: "0", loses: "1", Wratio: "0.00%", buy: "$100.00", pay: "$ 21.00", profit: "-$ 79.00", avgX: "0.21x"},
-{ rank: 39, slot: "Wings of Horus", avatar: "../../assets/slots/WingsofHorus.webp", games: "1", wins: "0", loses: "1", Wratio: "0.00%", buy: "$100.00", pay: "$ 18.72", profit: "-$ 81.28", avgX: "0.19x"},
-{ rank: 40, slot: "SixSixSix", avatar: "../../assets/slots/SixSixSix.webp", games: "1", wins: "0", loses: "1", Wratio: "0.00%", buy: "$100.00", pay: "$ 17.04", profit: "-$ 82.96", avgX: "0.17x"},
-{ rank: 41, slot: "Fruity Treats", avatar: "../../assets/slots/FruityTreats.webp", games: "1", wins: "0", loses: "1", Wratio: "0.00%", buy: "$120.00", pay: "$ 10.89", profit: "-$ 109.11", avgX: "0.09x"},
+{ rank: 2, slot: "Le King", avatar: "../../assets/slots/LeKing.webp", games: "10", wins: "9", loses: "1", Wratio: "90.00%", buy: "$ 734.00", pay: "$ 947.88", profit: "$ 213.88", avgX: "1.93x"},
+{ rank: 3, slot: "Cursed Seas", avatar: "../../assets/slots/CursedSeas.webp", games: "6", wins: "5", loses: "1", Wratio: "83.33%", buy: "$ 440.00", pay: "$ 944.90", profit: "$ 504.90", avgX: "2.15x"},
+{ rank: 4, slot: "Sugar Rush 1000", avatar: "../../assets/slots/SugarRush1000.webp", games: "5", wins: "4", loses: "1", Wratio: "80.00%", buy: "$ 420.00", pay: "$ 394.87", profit: "-$ 25.13", avgX: "0.94x"},
+{ rank: 5, slot: "Ze Zeus", avatar: "../../assets/slots/ZeZeus.webp", games: "9", wins: "6", loses: "3", Wratio: "66.67%", buy: "$ 1,100.00", pay: "$ 1,479.98", profit: "$ 379.98", avgX: "1.35x"},
+{ rank: 6, slot: "Heart of Cleopatra", avatar: "../../assets/slots/HeartofCleopatra.webp", games: "8", wins: "5", loses: "3", Wratio: "62.50%", buy: "$ 820.00", pay: "$ 652.19", profit: "-$ 167.81", avgX: "0.80x"},
+{ rank: 7, slot: "El Paso Gunfight xNudge", avatar: "../../assets/slots/ElPasoGunfightxNudge.webp", games: "5", wins: "3", loses: "2", Wratio: "60.00%", buy: "$  340.00", pay: "$ 594.51", profit: "$ 254.51", avgX: "1.75x"},
+{ rank: 8, slot: "Rad Maxx", avatar: "../../assets/slots/RadMaxx.webp", games: "5", wins: "3", loses: "2", Wratio: "60.00%", buy: "$ 440.00", pay: "$ 618.08", profit: "$ 178.08", avgX: "1.40x"},
+{ rank: 9, slot: "Sugar Rush", avatar: "../../assets/slots/SugarRush.webp", games: "5", wins: "3", loses: "2", Wratio: "60.00%", buy: "$ 440.00", pay: "$ 232.83", profit: "-$ 207.17", avgX: "0.53x"},
+{ rank: 10, slot: "Jewel Rush", avatar: "../../assets/slots/JewelRush.webp", games: "7", wins: "4", loses: "3", Wratio: "57.14%", buy: "$ 940.00", pay: "$ 2,284.96", profit: "$ 1,344.96", avgX: "2.43x"},
+{ rank: 11, slot: "Hounds of Hell", avatar: "../../assets/slots/HoundsofHell.webp", games: "7", wins: "4", loses: "3", Wratio: "57.14%", buy: "$  600.00", pay: "$ 415.34", profit: "-$ 1844.66", avgX: "0.69x"},
+{ rank: 12, slot: "Gates of Olympus Super Scatter", avatar: "../../assets/slots/GatesofOlympusSuperScatter.webp", games: "16", wins: "9", loses: "7", Wratio: "56.25%", buy: "$ 2,220.00", pay: "$ 2,284.34", profit: "$ 64.34", avgX: "1.03x"},
+{ rank: 13, slot: "Fist of Destruction", avatar: "../../assets/slots/FistofDestruction.webp", games: "15", wins: "8", loses: "7", Wratio: "53.33%", buy: "$1,930.00", pay: "$ 3,642.86", profit: "$ 1,712.86", avgX: "1.89x"},
+{ rank: 14, slot: "Fruit Party", avatar: "../../assets/slots/FruitParty.webp", games: "12", wins: "6", loses: "6", Wratio: "50.00%", buy: "$1,260.00", pay: "$ 1,026.71", profit: "-$ 233.29", avgX: "0.81x"},
+{ rank: 15, slot: "Ultimate Slot of America", avatar: "../../assets/slots/UltimateSlotofAmerica.webp", games: "6", wins: "3", loses: "3", Wratio: "50.00%", buy: "$920.00", pay: "$ 816.68", profit: "-$ 103.32", avgX: "0.89x"},
+{ rank: 16, slot: "Le Pharaoh", avatar: "../../assets/slots/LePharaoh.webp", games: "5", wins: "2", loses: "3", Wratio: "40.00%", buy: "$ 460.00", pay: "$ 308.80", profit: "-$ 151.20", avgX: "0.67x"},
+{ rank: 17, slot: "Gates of Olympus 1000", avatar: "../../assets/slots/GatesofOlympus1000.webp", games: "9", wins: "3", loses: "6", Wratio: "33.33%", buy: "$740.00", pay: "$ 529.91", profit: "-$ 210.09", avgX: "0.72x"},
+{ rank: 18, slot: "5 Lions Megaways", avatar: "../../assets/slots/5LionsMegaways.webp", games: "9", wins: "2", loses: "7", Wratio: "22.22%", buy: "$800.00", pay: "$ 809.94", profit: "$ 9.94", avgX: "1.01x"},
+{ rank: 19, slot: "Dragon's Domain", avatar: "../../assets/slots/Dragon'sDomain.webp", games: "2", wins: "2", loses: "0", Wratio: "100.00%", buy: "$ 160.00", pay: "$ 62.40", profit: "-$ 97.60", avgX: "0.39x"},
+{ rank: 20, slot: "Fear the Dark", avatar: "../../assets/slots/FeartheDark.webp", games: "1", wins: "1", loses: "0", Wratio: "100.00%", buy: "$ 90.00", pay: "$ 271.80", profit: "$ 181.80", avgX: "3.02x"},
+{ rank: 21, slot: "Book of Tut Respin", avatar: "../../assets/slots/BookofTutRespin.webp", games: "4", wins: "3", loses: "1", Wratio: "75.00%", buy: "$ 600.00", pay: "$ 514.50", profit: "-$ 85.50", avgX: "0.86x"},
+{ rank: 22, slot: "Beast Below", avatar: "../../assets/slots/BeastBelow.webp", games: "4", wins: "3", loses: "1", Wratio: "75.00%", buy: "$ 320.00", pay: "$ 208.42", profit: "-$ 111.58", avgX: "0.65x"},
+{ rank: 23, slot: "Le Viking", avatar: "../../assets/slots/LeViking.webp", games: "4", wins: "2", loses: "2", Wratio: "50.00%", buy: "$ 600.00", pay: "$ 347.00", profit: "-$ 253.00", avgX: "0.58x"},
+{ rank: 24, slot: "Hand of Anubis", avatar: "../../assets/slots/HandofAnubis.webp", games: "2", wins: "1", loses: "1", Wratio: "50.00%", buy: "$154.80", pay: "$ 334.07", profit: "$ 179.27", avgX: "2.16x"},
+{ rank: 25, slot: "Wild Bison Charge", avatar: "../../assets/slots/WildBisonCharge.webp", games: "2", wins: "1", loses: "1", Wratio: "50.00%", buy: "$ 200.00", pay: "$ 428.15", profit: "$ 228.15", avgX: "2.14x"},
+{ rank: 26, slot: "Hoot Shot the Sheriff", avatar: "../../assets/slots/HootShottheSheriff.webp", games: "2", wins: "1", loses: "1", Wratio: "50.00%", buy: "$160.00", pay: "$ 299.28", profit: "$ 139.28", avgX: "1.87x"},
+{ rank: 27, slot: "Starlight Princess 1000", avatar: "../../assets/slots/StarlightPrincess1000.webp", games: "2", wins: "1", loses: "1", Wratio: "50.00%", buy: "$120.00", pay: "$ 140.67", profit: "$ 20.67", avgX: "1.17x"},
+{ rank: 28, slot: "Gems Bonanza", avatar: "../../assets/slots/GemsBonanza.webp", games: "2", wins: "1", loses: "1", Wratio: "50.00%", buy: "$120.00", pay: "$ 114.63", profit: "-$ 5.37", avgX: "0.96x"},
+{ rank: 29, slot: "Benny the Beer", avatar: "../../assets/slots/BennytheBeer.webp", games: "2", wins: "1", loses: "1", Wratio: "50.00%", buy: "$ 240.00", pay: "$ 169.76", profit: "-$ 70.24", avgX: "0.71x"},
+{ rank: 30, slot: "Stormforged", avatar: "../../assets/slots/Stormforged.webp", games: "2", wins: "1", loses: "1", Wratio: "50.00%", buy: "$ 160.00", pay: "$ 62.28", profit: "-$ 97.72", avgX: "0.39x"},
+{ rank: 31, slot: "Eastern Emeralds Megaways", avatar: "../../assets/slots/EasternEmeraldsMegaways.webp", games: "2", wins: "1", loses: "1", Wratio: "50.00%", buy: "$240.00", pay: "$ 48.06", profit: "-$ 191.94", avgX: "0.20x"},
+{ rank: 32, slot: "Joker Queen", avatar: "../../assets/slots/JokerQueen.webp", games: "3", wins: "1", loses: "2", Wratio: "33.33%", buy: "$ 221.76", pay: "$ 139.29", profit: "-$ 82.47", avgX: "0.63x"},
+{ rank: 33, slot: "Cloud Princess", avatar: "../../assets/slots/CloudPrincess.webp", games: "1", wins: "0", loses: "1", Wratio: "0.00%", buy: "$ 80.00", pay: "$ 111.00", profit: "$ 31.00", avgX: "1.39x"},
+{ rank: 34, slot: "Clumsy Cowboys", avatar: "../../assets/slots/ClumsyCowboys.webp", games: "1", wins: "0", loses: "1", Wratio: "0.00%", buy: "$100.00", pay: "$ 132.10", profit: "$ 32.10", avgX: "1.32x"},
+{ rank: 35, slot: "Cash Chips", avatar: "../../assets/slots/CashChips.webp", games: "1", wins: "0", loses: "1", Wratio: "0.00%", buy: "$60.00", pay: "$ 60.60", profit: "$ 0.60", avgX: "1.01x"},
+{ rank: 36, slot: "Wild West Gold Blazing Bounty", avatar: "../../assets/slots/WildWestGoldBlazingBounty.webp", games: "3", wins: "0", loses: "3", Wratio: "0.00%", buy: "$300.00", pay: "$ 259.55", profit: "-$ 40.45", avgX: "0.87x"},
+{ rank: 37, slot: "Bouncy Bombs", avatar: "../../assets/slots/BouncyBombs.webp", games: "1", wins: "0", loses: "1", Wratio: "0.00%", buy: "$40.00", pay: "$ 34.00", profit: "-$ 6.00", avgX: "0.85x"},
+{ rank: 38, slot: "Sky Bounty", avatar: "../../assets/slots/SkyBounty.webp", games: "1", wins: "0", loses: "1", Wratio: "0.00%", buy: "$100.00", pay: "$ 80.68", profit: "-$ 19.32", avgX: "0.81x"},
+{ rank: 39, slot: "Olympus Trueways", avatar: "../../assets/slots/OlympusTrueways.webp", games: "1", wins: "0", loses: "1", Wratio: "0.00%", buy: "$100.00", pay: "$ 70.00", profit: "-$ 30.00", avgX: "0.70x"},
+{ rank: 40, slot: "Fire Portals", avatar: "../../assets/slots/FirePortals.webp", games: "1", wins: "0", loses: "1", Wratio: "0.00%", buy: "$60.00", pay: "$ 38.55", profit: "-$ 21.45", avgX: "0.64x"},
+{ rank: 41, slot: "Fruit Party 2", avatar: "../../assets/slots/FruitParty2.webp", games: "1", wins: "0", loses: "1", Wratio: "0.00%", buy: "$100.00", pay: "$ 58.85", profit: "-$ 41.15", avgX: "0.59x"},
+{ rank: 42, slot: "Vending Machine", avatar: "../../assets/slots/VendingMachine.webp", games: "1", wins: "0", loses: "1", Wratio: "0.00%", buy: "$80.00", pay: "$ 42.16", profit: "-$ 37.84", avgX: "0.53x"},
+{ rank: 43, slot: "Mayan Stackways", avatar: "../../assets/slots/MayanStackways.webp", games: "1", wins: "0", loses: "1", Wratio: "0.00%", buy: "$100.00", pay: "$ 42.00", profit: "-$ 58.00", avgX: "0.42x"},
+{ rank: 44, slot: "Madame Destiny Megaways", avatar: "../../assets/slots/MadameDestinyMegaways.webp", games: "1", wins: "0", loses: "1", Wratio: "0.00%", buy: "$60.00", pay: "$ 24.48", profit: "-$ 35.52", avgX: "0.41x"},
+{ rank: 45, slot: "Pirate Bonanza", avatar: "../../assets/slots/PirateBonanza.webp", games: "1", wins: "0", loses: "1", Wratio: "0.00%", buy: "$50.00", pay: "$ 17.80", profit: "-$ 32.20", avgX: "0.36x"},
+{ rank: 46, slot: "Phoenix DuelReels", avatar: "../../assets/slots/PhoenixDuelReels.webp", games: "1", wins: "0", loses: "1", Wratio: "0.00%", buy: "$120.00", pay: "$ 36.54", profit: "-$ 83.46", avgX: "0.30x"},
+{ rank: 47, slot: "Wheel o'Gold", avatar: "../../assets/slots/Wheelo'Gold.webp", games: "1", wins: "0", loses: "1", Wratio: "0.00%", buy: "$100.00", pay: "$ 29.80", profit: "-$ 70.20", avgX: "0.30x"},
+{ rank: 48, slot: "Sugar Supreme PowerNudge", avatar: "../../assets/slots/SugarSupremePowerNudge.webp", games: "1", wins: "0", loses: "1", Wratio: "0.00%", buy: "$60.00", pay: "$ 17.85", profit: "-$ 42.15", avgX: "0.30x"},
+{ rank: 49, slot: "Tanked", avatar: "../../assets/slots/Tanked.webp", games: "1", wins: "0", loses: "1", Wratio: "0.00%", buy: "$60.00", pay: "$ 16.80", profit: "-$ 43.20", avgX: "0.28x"},
+{ rank: 50, slot: "Piggy Cluster Hunt", avatar: "../../assets/slots/PiggyClusterHunt.webp", games: "1", wins: "0", loses: "1", Wratio: "0.00%", buy: "$120.00", pay: "$ 30.12", profit: "-$ 89.88", avgX: "0.25x"},
+{ rank: 51, slot: "Dark Summoning", avatar: "../../assets/slots/DarkSummoning.webp", games: "1", wins: "0", loses: "1", Wratio: "0.00%", buy: "$100.00", pay: "$ 21.04", profit: "-$ 78.96", avgX: "0.21x"},
+{ rank: 52, slot: "Chilli Heat Megaways", avatar: "../../assets/slots/ChilliHeatMegaways.webp", games: "1", wins: "0", loses: "1", Wratio: "0.00%", buy: "$100.00", pay: "$ 21.00", profit: "-$ 79.00", avgX: "0.21x"},
+{ rank: 53, slot: "Lucky Penny", avatar: "../../assets/slots/LuckyPenny.webp", games: "3", wins: "0", loses: "3", Wratio: "0.00%", buy: "$260.00", pay: "$ 54.28", profit: "-$ 205.72", avgX: "0.21x"},
+{ rank: 54, slot: "Wings of Horus", avatar: "../../assets/slots/WingsofHorus.webp", games: "1", wins: "0", loses: "1", Wratio: "0.00%", buy: "$100.00", pay: "$ 18.72", profit: "-$ 81.28", avgX: "0.19x"},
+{ rank: 55, slot: "SixSixSix", avatar: "../../assets/slots/SixSixSix.webp", games: "1", wins: "0", loses: "1", Wratio: "0.00%", buy: "$100.00", pay: "$ 17.04", profit: "-$ 82.96", avgX: "0.17x"},
+{ rank: 56, slot: "Pickle Bandit", avatar: "../../assets/slots/PickleBandit.webp", games: "1", wins: "0", loses: "1", Wratio: "0.00%", buy: "$40.00", pay: "$ 6.38", profit: "-$ 33.62", avgX: "0.16x"},
+{ rank: 57, slot: "Sweet Bonanza 1000", avatar: "../../assets/slots/SweetBonanza1000.webp", games: "1", wins: "0", loses: "1", Wratio: "0.00%", buy: "$60.00", pay: "$ 7.98", profit: "-$ 52.02", avgX: "0.13x"},
+{ rank: 58, slot: "Fruity Treats", avatar: "../../assets/slots/FruityTreats.webp", games: "1", wins: "0", loses: "1", Wratio: "0.00%", buy: "$120.00", pay: "$ 10.89", profit: "-$ 109.11", avgX: "0.09x"},
+{ rank: 59, slot: "5 Lions Megaways 2", avatar: "../../assets/slots/5LionsMegaways2.webp", games: "1", wins: "0", loses: "1", Wratio: "0.00%", buy: "$60.00", pay: "$ 3.00", profit: "-$ 57.00", avgX: "0.05x"},
   ];
 
 let originalData = [...leaderboardData]; // preserve the default order at page load
