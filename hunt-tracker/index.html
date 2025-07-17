@@ -385,6 +385,7 @@ menuToggle.addEventListener('click', () => {
 
 <div class="tracker-controls">
   <button onclick="addRow()">+ Add Slot</button>
+  <button onclick="confirmReset()" style="margin-left: 10px;">🔁 Reset Hunt</button>
 </div>
 
 <table class="tracker-table">
@@ -518,6 +519,32 @@ function updateRowNumbers() {
     }
   });
 }
+
+
+function confirmReset() {
+    const confirmReset = confirm("⚠️ Are you sure you want to reset your entire hunt?\nThis will delete all saved slots and stats.");
+
+    if (confirmReset) {
+      // Clear Firestore document
+      db.collection("hunts").doc(huntDocId).set({
+        startingBalance: 0,
+        slots: []
+      }).then(() => {
+        // Clear UI
+        document.getElementById('startingBalance').value = 0;
+        document.getElementById('huntTable').innerHTML = '';
+        counter = 0;
+        updateStats();
+        alert("✅ Hunt successfully reset!");
+      }).catch(err => {
+        console.error("❌ Error resetting hunt:", err);
+        alert("Something went wrong. Please try again.");
+      });
+    }
+  }
+
+
+
 
   function updateStats() {
     const rows = document.querySelectorAll('#huntTable tr');
