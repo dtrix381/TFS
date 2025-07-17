@@ -185,10 +185,12 @@
       document.getElementById("profit").innerHTML = `Profit: <span class='${profitClass}'>${formatCurrency(profit)}</span>`;
       document.getElementById("highestProfit").innerHTML = `Best Profit: <span class='highlight-slot'>${bestSlot}</span> <span class='highlight-value'>(${formatCurrency(highestPay)})</span>`;
       document.getElementById("highestMulti").innerHTML = `Best X: <span class='highlight-slot'>${bestXSlot}</span> <span class='highlight-value'>(${highestX.toFixed(2)}x)</span>`;
-      document.getElementById("bonusesOpened").textContent = `Bonuses: ${slots.filter(s => s.opened).length} / ${slots.length}`;
+      const openedCount = slots.filter(s => s.opened).length;
+	document.getElementById("bonusesOpened").textContent = `Bonuses: ${openedCount} / ${slots.length}`;
 
       const upcoming = document.getElementById("upcomingSection");
-      const nextToOpenIndex = slots.findIndex(slot => slot.totalPay <= 0);
+      const nextToOpenIndex = slots.findIndex(slot =>
+  	typeof slot.opened === 'undefined' || slot.opened === false);
       const currentSlot = slots[nextToOpenIndex];
       const nextSlot = slots[nextToOpenIndex + 1];
 
