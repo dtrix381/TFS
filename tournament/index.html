@@ -658,7 +658,7 @@ menuToggle.addEventListener('click', () => {
     <div id="bracketContainer"></div>
     <h2 id="champion" class="hidden">🏆 Champion: <span id="championName"></span></h2>
 
-<a href="/tournament/auth/discord" style="
+<a href="https://tfs-widget-auth.onrender.com/tournament/auth/discord" style="
   display: inline-block;
   background-color: #5865F2;
   color: white;
@@ -701,6 +701,41 @@ menuToggle.addEventListener('click', () => {
 </div>
 
 <script>
+
+const urlParams = new URLSearchParams(window.location.search);
+const authorizedUser = urlParams.get("user");
+
+if (!authorizedUser) {
+  alert("🔒 Please login via Discord to access the tournament.");
+document.addEventListener("DOMContentLoaded", () => {
+  // Disable buttons except modals
+  document.querySelectorAll("button").forEach(btn => {
+    if (!btn.closest('.modal')) btn.disabled = true;
+  });
+
+  // Create a span warning message
+  const warning = document.createElement("span");
+  warning.textContent = "🚫 Tournament features disabled until login!";
+  warning.style = `
+    color: crimson;
+    font-weight: bold;
+    font-size: 14px;
+    margin-left: 12px;
+    font-family: 'Orbitron', sans-serif;
+    white-space: nowrap;
+  `;
+
+  // Inject inline next to header title or Kick button
+  const header = document.querySelector(".header-container");
+  const kickButton = header?.querySelector("button"); // Assuming button is the Kick one
+
+  if (kickButton && header) {
+    header.insertBefore(warning, kickButton);
+  }
+});
+}
+
+
 let players = [];
 let rounds = [];
 
