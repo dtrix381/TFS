@@ -156,10 +156,10 @@
       let bestSlot = '-', bestXSlot = '-';
       let highestPay = 0, highestX = 0;
 
-      const track = document.getElementById("bonusTrack");
- track.innerHTML = ""; // Clear the track before rendering
+const track = document.getElementById("bonusTrack");
+track.innerHTML = ""; // Clear existing
 
-const allEntries = []; // ✅ This line was missing
+const allEntries = [];
 
 slots.forEach((slot, i) => {
   totalPay += slot.totalPay;
@@ -181,11 +181,26 @@ slots.forEach((slot, i) => {
   track.appendChild(entry);
 });
 
-// 🔁 Duplicate the same entries for infinite loop
-allEntries.forEach(entry => {
-  const clone = entry.cloneNode(true);
-  track.appendChild(clone);
-});
+// 🧠 Check if list height is taller than container, or has more than 5 items
+setTimeout(() => {
+  const scrollWrapper = document.querySelector(".bonus-scroll-wrapper");
+  const scrollContent = document.querySelector(".bonus-scroll");
+
+  const shouldScroll = allEntries.length > 5 || scrollContent.scrollHeight > scrollWrapper.clientHeight;
+
+  if (shouldScroll) {
+    scrollContent.style.animation = "scrollUp 20s linear infinite";
+
+    // Duplicate entries for smooth scroll loop
+    allEntries.forEach(entry => {
+      const clone = entry.cloneNode(true);
+      scrollContent.appendChild(clone);
+    });
+  } else {
+    // No scroll
+    scrollContent.style.animation = "none";
+  }
+}, 100); // Give DOM time to render before checking height
 
       const profit = totalPay - (data.startingBalance || 0);
       const profitClass = profit >= 0 ? 'profit-positive' : 'profit-negative';
