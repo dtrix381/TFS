@@ -349,7 +349,20 @@ menuToggle.addEventListener('click', () => {
 
 
 <div style="text-align:center; margin: 10px 0;">
-  <input id="huntTitle" placeholder="Enter Hunt Title (e.g. TFS Mega Bonus Hunt)" style="font-size: 18px; padding: 6px 12px; width: 95%; max-width: 480px;" />
+  <input id="huntTitle" placeholder="Enter Hunt Title" style="
+  font-size: 24px;
+  text-align: center;
+  font-family: 'Orbitron', sans-serif;
+  font-weight: bold;
+  color: #00ffff;
+  text-shadow: 0 0 5px #00ffff;
+  border: 2px solid gold;
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.7);
+  padding: 10px 20px;
+  width: 95%;
+  max-width: 480px;
+" />
 </div>
 
 <div class="stats-box">
@@ -620,9 +633,11 @@ syncToFirebase();
 function syncToFirebase() {
   const data = {
     startingBalance: parseFloat(document.getElementById('startingBalance').value) || 0,
-    title: document.getElementById('huntTitle').value.trim(),
     slots: []
   };
+
+  // 🔽 ADD THIS LINE:
+  data.title = document.getElementById('huntTitle').value.trim();
 
   const rows = document.querySelectorAll('#huntTable tr');
   rows.forEach(row => {
