@@ -149,7 +149,7 @@
     db.collection("hunts").doc(userId).onSnapshot(doc => {
       if (!doc.exists) return;
       const data = doc.data();
-	document.getElementById("huntTitleHeader").textContent = data.title || "TFS BONUS HUNT LIVE";
+	document.getElementById("huntTitleHeader").textContent = (data.title || "TFS BONUS HUNT LIVE").trim();
       const slots = data.slots || [];
 
       let totalPay = 0;
