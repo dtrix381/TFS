@@ -206,7 +206,7 @@ allEntries.forEach(entry => {
       if (currentSlot) {
         const current = `<span>${currentSlot.slotName}</span>`;
         const next = nextSlot ? `<span>${nextSlot.slotName}</span>` : `<em>No more bonuses to open</em>`;
-        upcoming.innerHTML = `🎰 Opening: ${current}<br>⏭️ Next: ${next}`;
+        upcoming.innerHTML = ` Opening: ${current}<br> Next: ${next}`;
       } else {
         upcoming.innerHTML = `✅ All bonuses opened`;
       }
