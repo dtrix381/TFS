@@ -348,8 +348,8 @@ menuToggle.addEventListener('click', () => {
 </script>
 
 
-<div style="text-align:center; margin-bottom: 15px;">
-  <input id="huntTitle" placeholder="Enter Hunt Title (e.g. TFS’s Mega Bonus Hunt)" style="font-size: 18px; padding: 5px 10px; width: 90%; max-width: 500px;" />
+<div style="text-align:center; margin: 10px 0;">
+  <input id="huntTitle" placeholder="Enter Hunt Title (e.g. TFS Mega Bonus Hunt)" style="font-size: 18px; padding: 6px 12px; width: 95%; max-width: 480px;" />
 </div>
 
 <div class="stats-box">
@@ -452,6 +452,7 @@ menuToggle.addEventListener('click', () => {
         if (doc.exists) {
           const data = doc.data();
           document.getElementById('startingBalance').value = data.startingBalance || 0;
+	  document.getElementById('huntTitle').value = data.title || '';
           (data.slots || []).forEach(addRow); // Call your existing addRow(slotData) function
           updateStats(); // Refresh calculations/UI
         } else {
@@ -619,6 +620,7 @@ syncToFirebase();
 function syncToFirebase() {
   const data = {
     startingBalance: parseFloat(document.getElementById('startingBalance').value) || 0,
+    title: document.getElementById('huntTitle').value.trim(),
     slots: []
   };
 
