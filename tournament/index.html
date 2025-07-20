@@ -1,22 +1,8 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
-
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
-<script>
-  const firebaseConfig = {
-    apiKey: "AIzaSyCGCiv3p9KgjXR7yCA8Z2JYMhPweDRnQPk",
-    authDomain: "tfs-hunt-tracker.firebaseapp.com",
-    projectId: "tfs-hunt-tracker",
-  };
-  firebase.initializeApp(firebaseConfig);
-  const db = firebase.firestore();
-</script>
-
-
- <meta charset="UTF-8" />
+  <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>TFS | Tournament</title>
   <link rel="stylesheet" href="../styles.css" />
@@ -45,7 +31,7 @@
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap');
 
-    
+
     body {
       font-family: 'Orbitron', sans-serif;
       background-size: cover;
@@ -529,15 +515,15 @@ body.modal-open {
 
 </head>
 <body>
-    
+
   <header>
     <div class="header-container">
-      
+
       <!-- Left -->
       <div class="header-left">
         <a href="/" style="text-decoration: none;"><h1>TeamFullSend</h1></a>
       </div>
-      
+
 	<!-- Menu button (only visible on mobile) -->
     <button class="menu-button" aria-label="Toggle Menu">☰</button>
 
@@ -672,6 +658,7 @@ menuToggle.addEventListener('click', () => {
     <div id="bracketContainer"></div>
     <h2 id="champion" class="hidden">🏆 Champion: <span id="championName"></span></h2>
 
+<a href="/tournament/auth/discord" style="
 <a href="https://tfs-widget-auth.onrender.com/tournament/auth/discord" style="
   display: inline-block;
   background-color: #5865F2;
@@ -749,34 +736,6 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 }
 
-// 🔄 Realtime save to Firebase
-syncToFirebase();
-  }
-
-async function syncTournamentToFirebase() {
-  const urlParams = new URLSearchParams(window.location.search);
-  const user = urlParams.get("user");
-  if (!user) {
-    console.warn("⚠️ No user ID found in URL.");
-    return;
-  }
-
-  const data = {
-    players,
-    rounds,
-    champion: document.getElementById("championName")?.textContent || "",
-    updatedAt: new Date()
-  };
-
-  try {
-    await db.collection("tournaments").doc(user).set(data);
-    console.log("✅ Tournament synced to Firebase");
-  } catch (err) {
-    console.error("❌ Failed to sync tournament:", err);
-  }
-}
-
-
 
 let players = [];
 let rounds = [];
@@ -796,11 +755,7 @@ function addPlayer() {
 
   document.getElementById("kickUsername").value = "";
   document.getElementById("slot").value = "";
-
-syncTournamentToFirebase();
 }
-
-
 
 function startTournament() {
   if (players.length !== 8) return alert("Exactly 8 players are required to start the tournament.");
@@ -813,7 +768,6 @@ function startTournament() {
     [players[1], players[6]],
   ];
   generateBracket();
-syncTournamentToFirebase();
 }
 
 function shuffle(array) {
@@ -928,7 +882,6 @@ function saveEdit(button, roundIndex, matchIndex, playerIndex) {
   });
 
   generateBracket();
-syncTournamentToFirebase();
 }
 
 function addLiveTotalXListeners() {
@@ -994,7 +947,6 @@ function generateWinner(button, roundIndex, matchIndex, code) {
   }
 
   generateBracket();
-syncTournamentToFirebase();
 }
 
 function resetMatch(roundIndex, matchIndex) {
@@ -1015,7 +967,6 @@ function resetMatch(roundIndex, matchIndex) {
   }
 
   generateBracket();
-syncTournamentToFirebase();
 }
 
 function clearDownstream(roundIndex, matchIndex) {
@@ -1028,7 +979,6 @@ function clearDownstream(roundIndex, matchIndex) {
     }
     matchIndex = nextMatchIndex;
   }
-syncTournamentToFirebase();
 }
 </script>
 
