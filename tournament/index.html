@@ -31,7 +31,7 @@
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap');
 
-    
+
     body {
       font-family: 'Orbitron', sans-serif;
       background-size: cover;
@@ -515,15 +515,15 @@ body.modal-open {
 
 </head>
 <body>
-    
+
   <header>
     <div class="header-container">
-      
+
       <!-- Left -->
       <div class="header-left">
         <a href="/" style="text-decoration: none;"><h1>TeamFullSend</h1></a>
       </div>
-      
+
 	<!-- Menu button (only visible on mobile) -->
     <button class="menu-button" aria-label="Toggle Menu">☰</button>
 
@@ -701,6 +701,7 @@ menuToggle.addEventListener('click', () => {
 </div>
 
 <script>
+<script type="module">
 
 const urlParams = new URLSearchParams(window.location.search);
 const authorizedUser = urlParams.get("user");
@@ -738,23 +739,42 @@ document.addEventListener("DOMContentLoaded", () => {
 
 let players = [];
 let rounds = [];
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 function addPlayer() {
   const kickUsername = document.getElementById("kickUsername").value.trim();
   const slot = document.getElementById("slot").value.trim();
   const playersList = document.getElementById("playersList");
+  const firebaseConfig = {
+    apiKey: "AIzaSyApxGZBzzjmyRBFlGf_2H7WhBL9-XWqAyk",
+    authDomain: "tfs-hunt-tracker.firebaseapp.com",
+    projectId: "tfs-hunt-tracker",
+    storageBucket: "tfs-hunt-tracker.appspot.com",
+    messagingSenderId: "155413789479",
+    appId: "1:155413789479:web:9f152ddfc19e66d1b5d7f5"
+  };
 
   if (!kickUsername || !slot) return alert("Please fill in both Kick Username and Slot.");
   if (players.length >= 8) return alert("You can only add 8 players.");
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
 
   players.push({ kickUsername, slot });
   const li = document.createElement("li");
   li.textContent = `${kickUsername} (${slot})`;
   playersList.appendChild(li);
+  let players = [];
+  let rounds = [];
+  const urlParams = new URLSearchParams(window.location.search);
+  const userId = urlParams.get("user");
 
   document.getElementById("kickUsername").value = "";
   document.getElementById("slot").value = "";
 }
+  if (userId) {
+    loadTournament(userId);
+  }
 
 function startTournament() {
   if (players.length !== 8) return alert("Exactly 8 players are required to start the tournament.");
@@ -768,14 +788,80 @@ function startTournament() {
   ];
   generateBracket();
 }
+  window.addPlayer = function () {
+    const kickUsername = document.getElementById("kickUsername").value.trim();
+    const slot = document.getElementById("slot").value.trim();
+    const playersList = document.getElementById("playersList");
+
+    if (!kickUsername || !slot) return alert("Please fill in both Kick Username and Slot.");
+    if (players.length >= 8) return alert("You can only add 8 players.");
 
 function shuffle(array) {
   for (let i = array.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [array[i], array[j]] = [array[j], array[i]];
+    players.push({ kickUsername, slot });
+    const li = document.createElement("li");
+    li.textContent = `${kickUsername} (${slot})`;
+    playersList.appendChild(li);
+
+    document.getElementById("kickUsername").value = "";
+    document.getElementById("slot").value = "";
   }
 }
 
+  window.startTournament = function () {
+    if (players.length !== 8) return alert("Exactly 8 players are required to start the tournament.");
+    shuffle(players);
+    rounds = [];
+    rounds[0] = [
+      [players[0], players[7]],
+      [players[3], players[4]],
+      [players[2], players[5]],
+      [players[1], players[6]],
+    ];
+    generateBracket();
+    if (userId) saveTournament(userId); // Save to Firestore
+  }
+
+  function shuffle(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+  }
+
+  async function saveTournament(uid) {
+    try {
+      await setDoc(doc(db, "tournaments", uid), {
+        players,
+        rounds
+      });
+      console.log("✅ Tournament data saved.");
+    } catch (err) {
+      console.error("❌ Error saving tournament:", err);
+    }
+  }
+
+  async function loadTournament(uid) {
+    try {
+      const docSnap = await getDoc(doc(db, "tournaments", uid));
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        players = data.players || [];
+        rounds = data.rounds || [];
+        players.forEach(p => {
+          const li = document.createElement("li");
+          li.textContent = `${p.kickUsername} (${p.slot})`;
+          document.getElementById("playersList").appendChild(li);
+        });
+        generateBracket();
+        console.log("📦 Loaded tournament for", uid);
+      }
+    } catch (err) {
+      console.error("❌ Error loading tournament:", err);
+    }
+  }
 function generateBracket() {
   const bracketContainer = document.getElementById("bracketContainer");
   bracketContainer.innerHTML = "";
