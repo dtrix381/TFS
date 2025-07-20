@@ -256,7 +256,7 @@ body.modal-open {
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  gap: 60px;
+  gap: 55px;
   pointer-events: none;
   z-index: 1;
 }
@@ -269,7 +269,7 @@ body.modal-open {
 }
 
 .slider-spacer {
-  width: 540px; /* Same width as your .container to center it */
+  width: 500px; /* Same width as your .container to center it */
 }
 
 
@@ -657,19 +657,6 @@ menuToggle.addEventListener('click', () => {
     </div>
     <div id="bracketContainer"></div>
     <h2 id="champion" class="hidden">🏆 Champion: <span id="championName"></span></h2>
-
-<a href="https://tfs-widget-auth.onrender.com/tournament/auth/discord" style="
-  display: inline-block;
-  background-color: #5865F2;
-  color: white;
-  padding: 10px 20px;
-  border-radius: 8px;
-  font-weight: bold;
-  text-decoration: none;
-  font-family: 'Orbitron', sans-serif;
-  box-shadow: 0 0 10px #5865F2;
-">🔑 Login with Discord</a>
-
   </div>
 
 
@@ -701,41 +688,6 @@ menuToggle.addEventListener('click', () => {
 </div>
 
 <script>
-
-const urlParams = new URLSearchParams(window.location.search);
-const authorizedUser = urlParams.get("user");
-
-if (!authorizedUser) {
-  alert("🔒 Please login via Discord to access the tournament.");
-document.addEventListener("DOMContentLoaded", () => {
-  // Disable buttons except modals
-  document.querySelectorAll("button").forEach(btn => {
-    if (!btn.closest('.modal')) btn.disabled = true;
-  });
-
-  // Create a span warning message
-  const warning = document.createElement("span");
-  warning.textContent = "🚫 Tournament features disabled until login!";
-  warning.style = `
-    color: crimson;
-    font-weight: bold;
-    font-size: 14px;
-    margin-left: 12px;
-    font-family: 'Orbitron', sans-serif;
-    white-space: nowrap;
-  `;
-
-  // Inject inline next to header title or Kick button
-  const header = document.querySelector(".header-container");
-  const kickButton = header?.querySelector("button"); // Assuming button is the Kick one
-
-  if (kickButton && header) {
-    header.insertBefore(warning, kickButton);
-  }
-});
-}
-
-
 let players = [];
 let rounds = [];
 
