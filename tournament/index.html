@@ -965,18 +965,27 @@ function saveEdit(button, roundIndex, matchIndex, playerIndex) {
   generateBracket();
 
   // 🧠 Save to Firestore on every match result
-  if (userId) {
-    db.collection("tournaments").doc(userId).set({
-      players,
-      rounds,
-      timestamp: new Date().toISOString()
-    }).then(() => {
-      console.log("💾 Tournament autosaved.");
-    }).catch(error => {
-      console.error("❌ Failed to autosave tournament:", error);
-    });
-  }
+if (userId) {
+  // ✅ Convert nested arrays to Firestore-safe format
+  const safeRounds = rounds.map(round =>
+    round.map(match => ({
+      p1: match[0] || null,
+      p2: match[1] || null,
+      result: match[2] || null
+    }))
+  );
+
+  db.collection("tournaments").doc(userId).set({
+    players,
+    rounds: safeRounds,
+    timestamp: new Date().toISOString()
+  }).then(() => {
+    console.log("✅ Tournament data saved to Firestore.");
+  }).catch(error => {
+    console.error("❌ Error saving to Firestore:", error);
+  });
 }
+
 
 function addLiveTotalXListeners() {
   document.querySelectorAll(".match").forEach(matchDiv => {
@@ -1043,18 +1052,27 @@ function generateWinner(button, roundIndex, matchIndex, code) {
   generateBracket();
 
   // 🧠 Save to Firestore on every match result
-  if (userId) {
-    db.collection("tournaments").doc(userId).set({
-      players,
-      rounds,
-      timestamp: new Date().toISOString()
-    }).then(() => {
-      console.log("💾 Tournament autosaved.");
-    }).catch(error => {
-      console.error("❌ Failed to autosave tournament:", error);
-    });
-  }
+if (userId) {
+  // ✅ Convert nested arrays to Firestore-safe format
+  const safeRounds = rounds.map(round =>
+    round.map(match => ({
+      p1: match[0] || null,
+      p2: match[1] || null,
+      result: match[2] || null
+    }))
+  );
+
+  db.collection("tournaments").doc(userId).set({
+    players,
+    rounds: safeRounds,
+    timestamp: new Date().toISOString()
+  }).then(() => {
+    console.log("✅ Tournament data saved to Firestore.");
+  }).catch(error => {
+    console.error("❌ Error saving to Firestore:", error);
+  });
 }
+
 
 function resetMatch(roundIndex, matchIndex) {
   const match = rounds[roundIndex][matchIndex];
@@ -1076,18 +1094,27 @@ function resetMatch(roundIndex, matchIndex) {
   generateBracket();
 
   // 🧠 Save to Firestore on every match result
-  if (userId) {
-    db.collection("tournaments").doc(userId).set({
-      players,
-      rounds,
-      timestamp: new Date().toISOString()
-    }).then(() => {
-      console.log("💾 Tournament autosaved.");
-    }).catch(error => {
-      console.error("❌ Failed to autosave tournament:", error);
-    });
-  }
+if (userId) {
+  // ✅ Convert nested arrays to Firestore-safe format
+  const safeRounds = rounds.map(round =>
+    round.map(match => ({
+      p1: match[0] || null,
+      p2: match[1] || null,
+      result: match[2] || null
+    }))
+  );
+
+  db.collection("tournaments").doc(userId).set({
+    players,
+    rounds: safeRounds,
+    timestamp: new Date().toISOString()
+  }).then(() => {
+    console.log("✅ Tournament data saved to Firestore.");
+  }).catch(error => {
+    console.error("❌ Error saving to Firestore:", error);
+  });
 }
+
 
 function clearDownstream(roundIndex, matchIndex) {
   for (let r = roundIndex; r < rounds.length; r++) {
