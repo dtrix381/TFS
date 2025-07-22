@@ -805,19 +805,17 @@ function addPlayer() {
   const kickUsername = document.getElementById("kickUsername").value.trim();
   const slot = document.getElementById("slot").value.trim();
 
-  const playersList = document.getElementById("playersList");
-
   if (!kickUsername || !slot) return alert("Please fill in both Kick Username and Slot.");
   if (players.length >= 8) return alert("You can only add 8 players.");
 
-  players.push({ kickUsername, slot });
+  players.push({ kickUsername, slot }); // ✅ Add player first
 
-  updatePlayerList(); // ✅ Now called after the new player is added
+  updatePlayerList(); // ✅ Then re-render list
 
-  // Clear input fields
   document.getElementById("kickUsername").value = "";
   document.getElementById("slot").value = "";
 }
+
 
 
 function updatePlayerList() {
