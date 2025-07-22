@@ -830,26 +830,42 @@ function startTournament() {
   generateBracket();
 
 if (userId) {
-  // Convert rounds to Firestore-safe format
+  // Fully sanitize all round entries
   const safeRounds = rounds.map(round =>
     round.map(match => {
-      const p1 = match[0] || null;
-      const p2 = match[1] || null;
-      const result = match[2] || null;
+      const sanitizePlayer = (p) =>
+        (p && typeof p === "object" && !Array.isArray(p))
+          ? { kickUsername: p.kickUsername || "", slot: p.slot || "" }
+          : null;
 
-      // Ensure players are objects (not arrays)
+      const sanitizeResult = (res) => {
+        if (!res || typeof res !== "object" || Array.isArray(res)) return null;
+        return {
+          winner: sanitizePlayer(res.winner),
+          p1: {
+            buyAmount: Number(res.p1?.buyAmount) || 0,
+            totalPay: Number(res.p1?.totalPay) || 0,
+            totalX: Number(res.p1?.totalX) || 0,
+          },
+          p2: {
+            buyAmount: Number(res.p2?.buyAmount) || 0,
+            totalPay: Number(res.p2?.totalPay) || 0,
+            totalX: Number(res.p2?.totalX) || 0,
+          }
+        };
+      };
+
       return {
-        p1: (p1 && typeof p1 === "object" && !Array.isArray(p1)) ? p1 : null,
-        p2: (p2 && typeof p2 === "object" && !Array.isArray(p2)) ? p2 : null,
-        result: result || null
+        p1: sanitizePlayer(match[0]),
+        p2: sanitizePlayer(match[1]),
+        result: sanitizeResult(match[2])
       };
     })
   );
 
-  // Sanitize players too, just in case
   const safePlayers = players.map(p => ({
-    kickUsername: p.kickUsername || "",
-    slot: p.slot || ""
+    kickUsername: typeof p.kickUsername === "string" ? p.kickUsername : "",
+    slot: typeof p.slot === "string" ? p.slot : ""
   }));
 
   db.collection("tournaments").doc(userId).set({
@@ -980,26 +996,42 @@ function saveEdit(button, roundIndex, matchIndex, playerIndex) {
 
   // 🧠 Save to Firestore on every match result
 if (userId) {
-  // Convert rounds to Firestore-safe format
+  // Fully sanitize all round entries
   const safeRounds = rounds.map(round =>
     round.map(match => {
-      const p1 = match[0] || null;
-      const p2 = match[1] || null;
-      const result = match[2] || null;
+      const sanitizePlayer = (p) =>
+        (p && typeof p === "object" && !Array.isArray(p))
+          ? { kickUsername: p.kickUsername || "", slot: p.slot || "" }
+          : null;
 
-      // Ensure players are objects (not arrays)
+      const sanitizeResult = (res) => {
+        if (!res || typeof res !== "object" || Array.isArray(res)) return null;
+        return {
+          winner: sanitizePlayer(res.winner),
+          p1: {
+            buyAmount: Number(res.p1?.buyAmount) || 0,
+            totalPay: Number(res.p1?.totalPay) || 0,
+            totalX: Number(res.p1?.totalX) || 0,
+          },
+          p2: {
+            buyAmount: Number(res.p2?.buyAmount) || 0,
+            totalPay: Number(res.p2?.totalPay) || 0,
+            totalX: Number(res.p2?.totalX) || 0,
+          }
+        };
+      };
+
       return {
-        p1: (p1 && typeof p1 === "object" && !Array.isArray(p1)) ? p1 : null,
-        p2: (p2 && typeof p2 === "object" && !Array.isArray(p2)) ? p2 : null,
-        result: result || null
+        p1: sanitizePlayer(match[0]),
+        p2: sanitizePlayer(match[1]),
+        result: sanitizeResult(match[2])
       };
     })
   );
 
-  // Sanitize players too, just in case
   const safePlayers = players.map(p => ({
-    kickUsername: p.kickUsername || "",
-    slot: p.slot || ""
+    kickUsername: typeof p.kickUsername === "string" ? p.kickUsername : "",
+    slot: typeof p.slot === "string" ? p.slot : ""
   }));
 
   db.collection("tournaments").doc(userId).set({
@@ -1080,26 +1112,42 @@ function generateWinner(button, roundIndex, matchIndex, code) {
 
   // 🧠 Save to Firestore on every match result
 if (userId) {
-  // Convert rounds to Firestore-safe format
+  // Fully sanitize all round entries
   const safeRounds = rounds.map(round =>
     round.map(match => {
-      const p1 = match[0] || null;
-      const p2 = match[1] || null;
-      const result = match[2] || null;
+      const sanitizePlayer = (p) =>
+        (p && typeof p === "object" && !Array.isArray(p))
+          ? { kickUsername: p.kickUsername || "", slot: p.slot || "" }
+          : null;
 
-      // Ensure players are objects (not arrays)
+      const sanitizeResult = (res) => {
+        if (!res || typeof res !== "object" || Array.isArray(res)) return null;
+        return {
+          winner: sanitizePlayer(res.winner),
+          p1: {
+            buyAmount: Number(res.p1?.buyAmount) || 0,
+            totalPay: Number(res.p1?.totalPay) || 0,
+            totalX: Number(res.p1?.totalX) || 0,
+          },
+          p2: {
+            buyAmount: Number(res.p2?.buyAmount) || 0,
+            totalPay: Number(res.p2?.totalPay) || 0,
+            totalX: Number(res.p2?.totalX) || 0,
+          }
+        };
+      };
+
       return {
-        p1: (p1 && typeof p1 === "object" && !Array.isArray(p1)) ? p1 : null,
-        p2: (p2 && typeof p2 === "object" && !Array.isArray(p2)) ? p2 : null,
-        result: result || null
+        p1: sanitizePlayer(match[0]),
+        p2: sanitizePlayer(match[1]),
+        result: sanitizeResult(match[2])
       };
     })
   );
 
-  // Sanitize players too, just in case
   const safePlayers = players.map(p => ({
-    kickUsername: p.kickUsername || "",
-    slot: p.slot || ""
+    kickUsername: typeof p.kickUsername === "string" ? p.kickUsername : "",
+    slot: typeof p.slot === "string" ? p.slot : ""
   }));
 
   db.collection("tournaments").doc(userId).set({
@@ -1135,26 +1183,42 @@ function resetMatch(roundIndex, matchIndex) {
 
   // 🧠 Save to Firestore on every match result
 if (userId) {
-  // Convert rounds to Firestore-safe format
+  // Fully sanitize all round entries
   const safeRounds = rounds.map(round =>
     round.map(match => {
-      const p1 = match[0] || null;
-      const p2 = match[1] || null;
-      const result = match[2] || null;
+      const sanitizePlayer = (p) =>
+        (p && typeof p === "object" && !Array.isArray(p))
+          ? { kickUsername: p.kickUsername || "", slot: p.slot || "" }
+          : null;
 
-      // Ensure players are objects (not arrays)
+      const sanitizeResult = (res) => {
+        if (!res || typeof res !== "object" || Array.isArray(res)) return null;
+        return {
+          winner: sanitizePlayer(res.winner),
+          p1: {
+            buyAmount: Number(res.p1?.buyAmount) || 0,
+            totalPay: Number(res.p1?.totalPay) || 0,
+            totalX: Number(res.p1?.totalX) || 0,
+          },
+          p2: {
+            buyAmount: Number(res.p2?.buyAmount) || 0,
+            totalPay: Number(res.p2?.totalPay) || 0,
+            totalX: Number(res.p2?.totalX) || 0,
+          }
+        };
+      };
+
       return {
-        p1: (p1 && typeof p1 === "object" && !Array.isArray(p1)) ? p1 : null,
-        p2: (p2 && typeof p2 === "object" && !Array.isArray(p2)) ? p2 : null,
-        result: result || null
+        p1: sanitizePlayer(match[0]),
+        p2: sanitizePlayer(match[1]),
+        result: sanitizeResult(match[2])
       };
     })
   );
 
-  // Sanitize players too, just in case
   const safePlayers = players.map(p => ({
-    kickUsername: p.kickUsername || "",
-    slot: p.slot || ""
+    kickUsername: typeof p.kickUsername === "string" ? p.kickUsername : "",
+    slot: typeof p.slot === "string" ? p.slot : ""
   }));
 
   db.collection("tournaments").doc(userId).set({
