@@ -829,25 +829,39 @@ function startTournament() {
   ];
   generateBracket();
 
-  if (userId) {
-    const safeRounds = rounds.map(round =>
-      round.map(match => ({
-        p1: match[0] || null,
-        p2: match[1] || null,
-        result: match[2] || null
-      }))
-    );
+if (userId) {
+  // Convert rounds to Firestore-safe format
+  const safeRounds = rounds.map(round =>
+    round.map(match => {
+      const p1 = match[0] || null;
+      const p2 = match[1] || null;
+      const result = match[2] || null;
 
-    db.collection("tournaments").doc(userId).set({
-      players,
-      rounds: safeRounds,
-      timestamp: new Date().toISOString()
-    }).then(() => {
-      console.log("✅ Tournament data saved to Firestore.");
-    }).catch(error => {
-      console.error("❌ Error saving to Firestore:", error);
-    });
-  }
+      // Ensure players are objects (not arrays)
+      return {
+        p1: (p1 && typeof p1 === "object" && !Array.isArray(p1)) ? p1 : null,
+        p2: (p2 && typeof p2 === "object" && !Array.isArray(p2)) ? p2 : null,
+        result: result || null
+      };
+    })
+  );
+
+  // Sanitize players too, just in case
+  const safePlayers = players.map(p => ({
+    kickUsername: p.kickUsername || "",
+    slot: p.slot || ""
+  }));
+
+  db.collection("tournaments").doc(userId).set({
+    players: safePlayers,
+    rounds: safeRounds,
+    timestamp: new Date().toISOString()
+  }).then(() => {
+    console.log("✅ Tournament data saved to Firestore.");
+  }).catch(error => {
+    console.error("❌ Error saving to Firestore:", error);
+  });
+}
 }
 
 
@@ -966,17 +980,30 @@ function saveEdit(button, roundIndex, matchIndex, playerIndex) {
 
   // 🧠 Save to Firestore on every match result
 if (userId) {
-  // ✅ Convert nested arrays to Firestore-safe format
+  // Convert rounds to Firestore-safe format
   const safeRounds = rounds.map(round =>
-    round.map(match => ({
-      p1: match[0] || null,
-      p2: match[1] || null,
-      result: match[2] || null
-    }))
+    round.map(match => {
+      const p1 = match[0] || null;
+      const p2 = match[1] || null;
+      const result = match[2] || null;
+
+      // Ensure players are objects (not arrays)
+      return {
+        p1: (p1 && typeof p1 === "object" && !Array.isArray(p1)) ? p1 : null,
+        p2: (p2 && typeof p2 === "object" && !Array.isArray(p2)) ? p2 : null,
+        result: result || null
+      };
+    })
   );
 
+  // Sanitize players too, just in case
+  const safePlayers = players.map(p => ({
+    kickUsername: p.kickUsername || "",
+    slot: p.slot || ""
+  }));
+
   db.collection("tournaments").doc(userId).set({
-    players,
+    players: safePlayers,
     rounds: safeRounds,
     timestamp: new Date().toISOString()
   }).then(() => {
@@ -1053,17 +1080,30 @@ function generateWinner(button, roundIndex, matchIndex, code) {
 
   // 🧠 Save to Firestore on every match result
 if (userId) {
-  // ✅ Convert nested arrays to Firestore-safe format
+  // Convert rounds to Firestore-safe format
   const safeRounds = rounds.map(round =>
-    round.map(match => ({
-      p1: match[0] || null,
-      p2: match[1] || null,
-      result: match[2] || null
-    }))
+    round.map(match => {
+      const p1 = match[0] || null;
+      const p2 = match[1] || null;
+      const result = match[2] || null;
+
+      // Ensure players are objects (not arrays)
+      return {
+        p1: (p1 && typeof p1 === "object" && !Array.isArray(p1)) ? p1 : null,
+        p2: (p2 && typeof p2 === "object" && !Array.isArray(p2)) ? p2 : null,
+        result: result || null
+      };
+    })
   );
 
+  // Sanitize players too, just in case
+  const safePlayers = players.map(p => ({
+    kickUsername: p.kickUsername || "",
+    slot: p.slot || ""
+  }));
+
   db.collection("tournaments").doc(userId).set({
-    players,
+    players: safePlayers,
     rounds: safeRounds,
     timestamp: new Date().toISOString()
   }).then(() => {
@@ -1095,17 +1135,30 @@ function resetMatch(roundIndex, matchIndex) {
 
   // 🧠 Save to Firestore on every match result
 if (userId) {
-  // ✅ Convert nested arrays to Firestore-safe format
+  // Convert rounds to Firestore-safe format
   const safeRounds = rounds.map(round =>
-    round.map(match => ({
-      p1: match[0] || null,
-      p2: match[1] || null,
-      result: match[2] || null
-    }))
+    round.map(match => {
+      const p1 = match[0] || null;
+      const p2 = match[1] || null;
+      const result = match[2] || null;
+
+      // Ensure players are objects (not arrays)
+      return {
+        p1: (p1 && typeof p1 === "object" && !Array.isArray(p1)) ? p1 : null,
+        p2: (p2 && typeof p2 === "object" && !Array.isArray(p2)) ? p2 : null,
+        result: result || null
+      };
+    })
   );
 
+  // Sanitize players too, just in case
+  const safePlayers = players.map(p => ({
+    kickUsername: p.kickUsername || "",
+    slot: p.slot || ""
+  }));
+
   db.collection("tournaments").doc(userId).set({
-    players,
+    players: safePlayers,
     rounds: safeRounds,
     timestamp: new Date().toISOString()
   }).then(() => {
