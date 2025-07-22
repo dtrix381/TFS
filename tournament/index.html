@@ -728,23 +728,7 @@ function prepareSafeRounds(rounds) {
     });
   }
 
-  // 🔒 Handle unauthorized users
-  if (!isAuthorized) {
-    document.addEventListener("DOMContentLoaded", () => {
-      const startBtn = document.getElementById("startBtn");
-      const addPlayerBtn = document.getElementById("addPlayerBtn");
-
-      if (startBtn) startBtn.disabled = true;
-      if (addPlayerBtn) addPlayerBtn.disabled = true;
-
-      const warning = document.createElement("div");
-      warning.textContent = "🚫 Tournament features are disabled until you log in.";
-      warning.style = "text-align:center; color: crimson; font-weight: bold; font-size: 18px; margin-top: 8px;";
-      const headerContainer = document.querySelector(".header-container");
-      headerContainer.insertAdjacentElement("afterend", warning);
-    });
-  }
-</script>
+ </script>
 
 	
 
