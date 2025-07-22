@@ -631,8 +631,6 @@ menuToggle.addEventListener('click', () => {
 	
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
-
-
 <script>
   const firebaseConfig = {
     apiKey: "AIzaSyCGCiv3p9KgjXR7yCA8Z2JYMhPweDRnQPk",
@@ -641,14 +639,97 @@ menuToggle.addEventListener('click', () => {
   };
   firebase.initializeApp(firebaseConfig);
   const db = firebase.firestore();
-
-  // ⛔ Check for user ?user=DISCORD_ID
   const urlParams = new URLSearchParams(window.location.search);
   const userId = urlParams.get("user");
   const isAuthorized = !!userId;
 
+  // ✅ Helper to convert rounds into Firestore-safe object structure
+  // ✅ Helper to convert rounds into Firestore-safe object structure
+function prepareSafeRounds(rounds) {
+  return rounds.map((round) => {
+    const safeRound = {};
+    round.forEach((match, matchIndex) => {
+      const p1 = (match[0] && typeof match[0] === "object" && !Array.isArray(match[0]))
+        ? {
+            kickUsername: match[0].kickUsername || "",
+            slot: match[0].slot || ""
+          }
+        : null;
+
+      const p2 = (match[1] && typeof match[1] === "object" && !Array.isArray(match[1]))
+        ? {
+            kickUsername: match[1].kickUsername || "",
+            slot: match[1].slot || ""
+          }
+        : null;
+
+      const result = (match[2] && typeof match[2] === "object" && !Array.isArray(match[2]))
+        ? {
+            winner: (match[2].winner && typeof match[2].winner === "object")
+              ? {
+                  kickUsername: match[2].winner.kickUsername || "",
+                  slot: match[2].winner.slot || ""
+                }
+              : null,
+            p1: {
+              buyAmount: Number(match[2].p1?.buyAmount) || 0,
+              totalPay: Number(match[2].p1?.totalPay) || 0,
+              totalX: Number(match[2].p1?.totalX) || 0
+            },
+            p2: {
+              buyAmount: Number(match[2].p2?.buyAmount) || 0,
+              totalPay: Number(match[2].p2?.totalPay) || 0,
+              totalX: Number(match[2].p2?.totalX) || 0
+            }
+          }
+        : null;
+
+      safeRound[`match${matchIndex}`] = {
+        p1,
+        p2,
+        result
+      };
+    });
+    return safeRound;
+  });
+}
+
+
+  // ✅ Helper to load Firestore round format back into regular nested arrays
+  function loadSafeRounds(dataRounds) {
+    return dataRounds.map(roundObj => {
+      const matches = [];
+      const keys = Object.keys(roundObj).sort(); // sort match0, match1, ...
+      keys.forEach(key => {
+        const match = roundObj[key];
+        matches.push([match.p1 || null, match.p2 || null, match.result || null]);
+      });
+      return matches;
+    });
+  }
+
+  // ✅ Unified safe saving function
+  function saveTournamentData() {
+    const safePlayers = players.map(p => ({
+      kickUsername: typeof p.kickUsername === "string" ? p.kickUsername : "",
+      slot: typeof p.slot === "string" ? p.slot : ""
+    }));
+
+    const safeRounds = prepareSafeRounds(rounds);
+
+    db.collection("tournaments").doc(userId).set({
+      players: safePlayers,
+      rounds: safeRounds,
+      timestamp: new Date().toISOString()
+    }).then(() => {
+      console.log("✅ Tournament data saved to Firestore.");
+    }).catch(error => {
+      console.error("❌ Error saving to Firestore:", error);
+    });
+  }
+
+  // 🔒 Handle unauthorized users
   if (!isAuthorized) {
-    // 🔒 Hide tournament-only features (disable buttons etc.)
     document.addEventListener("DOMContentLoaded", () => {
       const startBtn = document.getElementById("startBtn");
       const addPlayerBtn = document.getElementById("addPlayerBtn");
@@ -664,6 +745,7 @@ menuToggle.addEventListener('click', () => {
     });
   }
 </script>
+
 	
 
 <div class="container">
@@ -774,11 +856,9 @@ document.addEventListener("DOMContentLoaded", () => {
         updatePlayerList();
       }
       if (data.rounds && data.rounds.length > 0) {
-        rounds = data.rounds.map(round =>
-    round.map(match => [match.p1, match.p2, match.result])
-  );
-        generateBracket();
-      }
+  rounds = loadSafeRounds(data.rounds);
+  generateBracket();
+}
       console.log("✅ Loaded saved tournament data.");
     } else {
       console.log("📭 No saved tournament found for this user.");
@@ -829,55 +909,8 @@ function startTournament() {
   ];
   generateBracket();
 
-if (userId) {
-  // Fully sanitize all round entries
-  const safeRounds = rounds.map(round =>
-    round.map(match => {
-      const sanitizePlayer = (p) =>
-        (p && typeof p === "object" && !Array.isArray(p))
-          ? { kickUsername: p.kickUsername || "", slot: p.slot || "" }
-          : null;
+if (userId) saveTournamentData();
 
-      const sanitizeResult = (res) => {
-        if (!res || typeof res !== "object" || Array.isArray(res)) return null;
-        return {
-          winner: sanitizePlayer(res.winner),
-          p1: {
-            buyAmount: Number(res.p1?.buyAmount) || 0,
-            totalPay: Number(res.p1?.totalPay) || 0,
-            totalX: Number(res.p1?.totalX) || 0,
-          },
-          p2: {
-            buyAmount: Number(res.p2?.buyAmount) || 0,
-            totalPay: Number(res.p2?.totalPay) || 0,
-            totalX: Number(res.p2?.totalX) || 0,
-          }
-        };
-      };
-
-      return {
-        p1: sanitizePlayer(match[0]),
-        p2: sanitizePlayer(match[1]),
-        result: sanitizeResult(match[2])
-      };
-    })
-  );
-
-  const safePlayers = players.map(p => ({
-    kickUsername: typeof p.kickUsername === "string" ? p.kickUsername : "",
-    slot: typeof p.slot === "string" ? p.slot : ""
-  }));
-
-  db.collection("tournaments").doc(userId).set({
-    players: safePlayers,
-    rounds: safeRounds,
-    timestamp: new Date().toISOString()
-  }).then(() => {
-    console.log("✅ Tournament data saved to Firestore.");
-  }).catch(error => {
-    console.error("❌ Error saving to Firestore:", error);
-  });
-}
 }
 
 
@@ -994,56 +1027,8 @@ function saveEdit(button, roundIndex, matchIndex, playerIndex) {
 
   generateBracket();
 
-  // 🧠 Save to Firestore on every match result
-if (userId) {
-  // Fully sanitize all round entries
-  const safeRounds = rounds.map(round =>
-    round.map(match => {
-      const sanitizePlayer = (p) =>
-        (p && typeof p === "object" && !Array.isArray(p))
-          ? { kickUsername: p.kickUsername || "", slot: p.slot || "" }
-          : null;
+if (userId) saveTournamentData();
 
-      const sanitizeResult = (res) => {
-        if (!res || typeof res !== "object" || Array.isArray(res)) return null;
-        return {
-          winner: sanitizePlayer(res.winner),
-          p1: {
-            buyAmount: Number(res.p1?.buyAmount) || 0,
-            totalPay: Number(res.p1?.totalPay) || 0,
-            totalX: Number(res.p1?.totalX) || 0,
-          },
-          p2: {
-            buyAmount: Number(res.p2?.buyAmount) || 0,
-            totalPay: Number(res.p2?.totalPay) || 0,
-            totalX: Number(res.p2?.totalX) || 0,
-          }
-        };
-      };
-
-      return {
-        p1: sanitizePlayer(match[0]),
-        p2: sanitizePlayer(match[1]),
-        result: sanitizeResult(match[2])
-      };
-    })
-  );
-
-  const safePlayers = players.map(p => ({
-    kickUsername: typeof p.kickUsername === "string" ? p.kickUsername : "",
-    slot: typeof p.slot === "string" ? p.slot : ""
-  }));
-
-  db.collection("tournaments").doc(userId).set({
-    players: safePlayers,
-    rounds: safeRounds,
-    timestamp: new Date().toISOString()
-  }).then(() => {
-    console.log("✅ Tournament data saved to Firestore.");
-  }).catch(error => {
-    console.error("❌ Error saving to Firestore:", error);
-  });
-}
 }
 
 function addLiveTotalXListeners() {
@@ -1110,56 +1095,8 @@ function generateWinner(button, roundIndex, matchIndex, code) {
 
   generateBracket();
 
-  // 🧠 Save to Firestore on every match result
-if (userId) {
-  // Fully sanitize all round entries
-  const safeRounds = rounds.map(round =>
-    round.map(match => {
-      const sanitizePlayer = (p) =>
-        (p && typeof p === "object" && !Array.isArray(p))
-          ? { kickUsername: p.kickUsername || "", slot: p.slot || "" }
-          : null;
+if (userId) saveTournamentData();
 
-      const sanitizeResult = (res) => {
-        if (!res || typeof res !== "object" || Array.isArray(res)) return null;
-        return {
-          winner: sanitizePlayer(res.winner),
-          p1: {
-            buyAmount: Number(res.p1?.buyAmount) || 0,
-            totalPay: Number(res.p1?.totalPay) || 0,
-            totalX: Number(res.p1?.totalX) || 0,
-          },
-          p2: {
-            buyAmount: Number(res.p2?.buyAmount) || 0,
-            totalPay: Number(res.p2?.totalPay) || 0,
-            totalX: Number(res.p2?.totalX) || 0,
-          }
-        };
-      };
-
-      return {
-        p1: sanitizePlayer(match[0]),
-        p2: sanitizePlayer(match[1]),
-        result: sanitizeResult(match[2])
-      };
-    })
-  );
-
-  const safePlayers = players.map(p => ({
-    kickUsername: typeof p.kickUsername === "string" ? p.kickUsername : "",
-    slot: typeof p.slot === "string" ? p.slot : ""
-  }));
-
-  db.collection("tournaments").doc(userId).set({
-    players: safePlayers,
-    rounds: safeRounds,
-    timestamp: new Date().toISOString()
-  }).then(() => {
-    console.log("✅ Tournament data saved to Firestore.");
-  }).catch(error => {
-    console.error("❌ Error saving to Firestore:", error);
-  });
-}
 }
 
 function resetMatch(roundIndex, matchIndex) {
@@ -1181,56 +1118,8 @@ function resetMatch(roundIndex, matchIndex) {
 
   generateBracket();
 
-  // 🧠 Save to Firestore on every match result
-if (userId) {
-  // Fully sanitize all round entries
-  const safeRounds = rounds.map(round =>
-    round.map(match => {
-      const sanitizePlayer = (p) =>
-        (p && typeof p === "object" && !Array.isArray(p))
-          ? { kickUsername: p.kickUsername || "", slot: p.slot || "" }
-          : null;
+if (userId) saveTournamentData();
 
-      const sanitizeResult = (res) => {
-        if (!res || typeof res !== "object" || Array.isArray(res)) return null;
-        return {
-          winner: sanitizePlayer(res.winner),
-          p1: {
-            buyAmount: Number(res.p1?.buyAmount) || 0,
-            totalPay: Number(res.p1?.totalPay) || 0,
-            totalX: Number(res.p1?.totalX) || 0,
-          },
-          p2: {
-            buyAmount: Number(res.p2?.buyAmount) || 0,
-            totalPay: Number(res.p2?.totalPay) || 0,
-            totalX: Number(res.p2?.totalX) || 0,
-          }
-        };
-      };
-
-      return {
-        p1: sanitizePlayer(match[0]),
-        p2: sanitizePlayer(match[1]),
-        result: sanitizeResult(match[2])
-      };
-    })
-  );
-
-  const safePlayers = players.map(p => ({
-    kickUsername: typeof p.kickUsername === "string" ? p.kickUsername : "",
-    slot: typeof p.slot === "string" ? p.slot : ""
-  }));
-
-  db.collection("tournaments").doc(userId).set({
-    players: safePlayers,
-    rounds: safeRounds,
-    timestamp: new Date().toISOString()
-  }).then(() => {
-    console.log("✅ Tournament data saved to Firestore.");
-  }).catch(error => {
-    console.error("❌ Error saving to Firestore:", error);
-  });
-}
 }
 
 function clearDownstream(roundIndex, matchIndex) {
