@@ -804,19 +804,31 @@ let rounds = [];
 function addPlayer() {
   const kickUsername = document.getElementById("kickUsername").value.trim();
   const slot = document.getElementById("slot").value.trim();
-updatePlayerList();
+
   const playersList = document.getElementById("playersList");
 
   if (!kickUsername || !slot) return alert("Please fill in both Kick Username and Slot.");
   if (players.length >= 8) return alert("You can only add 8 players.");
 
   players.push({ kickUsername, slot });
-  const li = document.createElement("li");
-  li.textContent = `${kickUsername} (${slot})`;
-  playersList.appendChild(li);
 
+  updatePlayerList(); // ✅ Now called after the new player is added
+
+  // Clear input fields
   document.getElementById("kickUsername").value = "";
   document.getElementById("slot").value = "";
+}
+
+
+function updatePlayerList() {
+  const playersList = document.getElementById("playersList");
+  playersList.innerHTML = ""; // Clear current list
+
+  players.forEach(p => {
+    const li = document.createElement("li");
+    li.textContent = `${p.kickUsername} (${p.slot})`;
+    playersList.appendChild(li);
+  });
 }
 
 function startTournament() {
