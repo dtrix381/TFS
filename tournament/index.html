@@ -821,39 +821,35 @@ function updatePlayerList() {
 }
 
 function startTournament() {
-  if (players.length !== 8) return alert("Exactly 8 players are required to start the tournament.");
+  if (players.length !== 8) return alert("Exactly 8 players are required.");
+
   shuffle(players);
-  rounds = [];
-  rounds[0] = [
-    [players[0], players[7]],
-    [players[3], players[4]],
-    [players[2], players[5]],
-    [players[1], players[6]],
+  rounds = [
+    [ [players[0], players[7]], [players[3], players[4]], [players[2], players[5]], [players[1], players[6]] ]
   ];
   generateBracket();
 
-  // ✅ Save to Firestore after tournament is generated
   if (userId) {
-  // ✅ Convert rounds to safe object format before saving
-  const safeRounds = rounds.map(round =>
-    round.map(match => ({
-      p1: match[0] || null,
-      p2: match[1] || null,
-      result: match[2] || null
-    }))
-  );
+    const safeRounds = rounds.map(round =>
+      round.map(match => ({
+        p1: match[0] || null,
+        p2: match[1] || null,
+        result: match[2] || null
+      }))
+    );
 
-  db.collection("tournaments").doc(userId).set({
-    players,
-    rounds: safeRounds,
-    timestamp: new Date().toISOString()
-  }).then(() => {
-    console.log("✅ Tournament data saved to Firestore.");
-  }).catch(error => {
-    console.error("❌ Error saving to Firestore:", error);
-  });
+    db.collection("tournaments").doc(userId).set({
+      players,
+      rounds: safeRounds,
+      timestamp: new Date().toISOString()
+    }).then(() => {
+      console.log("✅ Tournament data saved to Firestore.");
+    }).catch(error => {
+      console.error("❌ Error saving to Firestore:", error);
+    });
+  }
 }
-}
+
 
 function shuffle(array) {
   for (let i = array.length - 1; i > 0; i--) {
