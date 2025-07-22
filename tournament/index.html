@@ -628,6 +628,43 @@ menuToggle.addEventListener('click', () => {
 </div>
 
 
+	
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+
+
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyCGCiv3p9KgjXR7yCA8Z2JYMhPweDRnQPk",
+    authDomain: "tfs-hunt-tracker.firebaseapp.com",
+    projectId: "tfs-hunt-tracker"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+
+  // ⛔ Check for user ?user=DISCORD_ID
+  const urlParams = new URLSearchParams(window.location.search);
+  const userId = urlParams.get("user");
+  const isAuthorized = !!userId;
+
+  if (!isAuthorized) {
+    // 🔒 Hide tournament-only features (disable buttons etc.)
+    document.addEventListener("DOMContentLoaded", () => {
+      const startBtn = document.getElementById("startBtn");
+      const addPlayerBtn = document.getElementById("addPlayerBtn");
+
+      if (startBtn) startBtn.disabled = true;
+      if (addPlayerBtn) addPlayerBtn.disabled = true;
+
+      const warning = document.createElement("div");
+      warning.textContent = "🚫 Tournament features are disabled until you log in.";
+      warning.style = "text-align:center; color: crimson; font-weight: bold; font-size: 18px; margin-top: 8px;";
+      const headerContainer = document.querySelector(".header-container");
+      headerContainer.insertAdjacentElement("afterend", warning);
+    });
+  }
+</script>
+	
 
 <div class="container">
   <div class="button-group-wrapper">
@@ -702,29 +739,54 @@ menuToggle.addEventListener('click', () => {
 
 <script>
 
-const urlParams = new URLSearchParams(window.location.search);
-const authorizedUser = urlParams.get("user");
-
-if (!authorizedUser) {
-  alert("🔒 Please login via Discord to access the tournament.");
 document.addEventListener("DOMContentLoaded", () => {
-  // Disable buttons except modals
-  document.querySelectorAll("button").forEach(btn => {
-    if (!btn.closest('.modal')) btn.disabled = true;
+  if (!userId) {
+    alert("🔒 Please login via Discord to access the tournament.");
+
+    // Disable all buttons except modal triggers
+    document.querySelectorAll("button").forEach(btn => {
+      if (!btn.closest('.modal')) btn.disabled = true;
+    });
+
+    // Add login warning message
+    const warning = document.createElement("span");
+    warning.textContent = "🚫 Tournament features disabled until login!";
+    warning.style = `
+      color: crimson;
+      font-weight: bold;
+      font-size: 14px;
+      margin-left: 12px;
+      font-family: 'Orbitron', sans-serif;
+      white-space: nowrap;
+    `;
+    const header = document.querySelector(".header-container");
+    const kickButton = header?.querySelector("button");
+    if (kickButton && header) header.insertBefore(warning, kickButton);
+    return; // ⛔ Stop further loading if unauthorized
+  }
+
+  // ✅ Load saved tournament data
+  db.collection("tournaments").doc(userId).get().then((doc) => {
+    if (doc.exists) {
+      const data = doc.data();
+      if (data.players && data.players.length === 8) {
+        players = data.players;
+        updatePlayerList();
+      }
+      if (data.rounds && data.rounds.length > 0) {
+        rounds = data.rounds;
+        generateBracket();
+      }
+      console.log("✅ Loaded saved tournament data.");
+    } else {
+      console.log("📭 No saved tournament found for this user.");
+    }
+  }).catch((error) => {
+    console.error("❌ Failed to load tournament data:", error);
   });
+});
 
-  // Create a span warning message
-  const warning = document.createElement("span");
-  warning.textContent = "🚫 Tournament features disabled until login!";
-  warning.style = `
-    color: crimson;
-    font-weight: bold;
-    font-size: 14px;
-    margin-left: 12px;
-    font-family: 'Orbitron', sans-serif;
-    white-space: nowrap;
-  `;
-
+	
   // Inject inline next to header title or Kick button
   const header = document.querySelector(".header-container");
   const kickButton = header?.querySelector("button"); // Assuming button is the Kick one
@@ -742,6 +804,7 @@ let rounds = [];
 function addPlayer() {
   const kickUsername = document.getElementById("kickUsername").value.trim();
   const slot = document.getElementById("slot").value.trim();
+updatePlayerList();
   const playersList = document.getElementById("playersList");
 
   if (!kickUsername || !slot) return alert("Please fill in both Kick Username and Slot.");
@@ -767,6 +830,19 @@ function startTournament() {
     [players[1], players[6]],
   ];
   generateBracket();
+
+  // ✅ Save to Firestore after tournament is generated
+  if (userId) {
+    db.collection("tournaments").doc(userId).set({
+      players,
+      rounds,
+      timestamp: new Date().toISOString()
+    }).then(() => {
+      console.log("✅ Tournament data saved to Firestore.");
+    }).catch(error => {
+      console.error("❌ Error saving to Firestore:", error);
+    });
+  }
 }
 
 function shuffle(array) {
@@ -881,6 +957,19 @@ function saveEdit(button, roundIndex, matchIndex, playerIndex) {
   });
 
   generateBracket();
+
+  // 🧠 Save to Firestore on every match result
+  if (userId) {
+    db.collection("tournaments").doc(userId).set({
+      players,
+      rounds,
+      timestamp: new Date().toISOString()
+    }).then(() => {
+      console.log("💾 Tournament autosaved.");
+    }).catch(error => {
+      console.error("❌ Failed to autosave tournament:", error);
+    });
+  }
 }
 
 function addLiveTotalXListeners() {
@@ -946,6 +1035,19 @@ function generateWinner(button, roundIndex, matchIndex, code) {
   }
 
   generateBracket();
+
+  // 🧠 Save to Firestore on every match result
+  if (userId) {
+    db.collection("tournaments").doc(userId).set({
+      players,
+      rounds,
+      timestamp: new Date().toISOString()
+    }).then(() => {
+      console.log("💾 Tournament autosaved.");
+    }).catch(error => {
+      console.error("❌ Failed to autosave tournament:", error);
+    });
+  }
 }
 
 function resetMatch(roundIndex, matchIndex) {
@@ -966,6 +1068,19 @@ function resetMatch(roundIndex, matchIndex) {
   }
 
   generateBracket();
+
+  // 🧠 Save to Firestore on every match result
+  if (userId) {
+    db.collection("tournaments").doc(userId).set({
+      players,
+      rounds,
+      timestamp: new Date().toISOString()
+    }).then(() => {
+      console.log("💾 Tournament autosaved.");
+    }).catch(error => {
+      console.error("❌ Failed to autosave tournament:", error);
+    });
+  }
 }
 
 function clearDownstream(roundIndex, matchIndex) {
