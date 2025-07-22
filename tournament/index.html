@@ -774,7 +774,9 @@ document.addEventListener("DOMContentLoaded", () => {
         updatePlayerList();
       }
       if (data.rounds && data.rounds.length > 0) {
-        rounds = data.rounds;
+        rounds = data.rounds.map(round =>
+    round.map(match => [match.p1, match.p2, match.result])
+  );
         generateBracket();
       }
       console.log("✅ Loaded saved tournament data.");
@@ -797,13 +799,13 @@ function addPlayer() {
   if (!kickUsername || !slot) return alert("Please fill in both Kick Username and Slot.");
   if (players.length >= 8) return alert("You can only add 8 players.");
 
-  players.push({ kickUsername, slot }); // ✅ Add player first
-
-  updatePlayerList(); // ✅ Then re-render list
+  players.push({ kickUsername, slot });
+  updatePlayerList();
 
   document.getElementById("kickUsername").value = "";
   document.getElementById("slot").value = "";
 }
+
 
 
 
