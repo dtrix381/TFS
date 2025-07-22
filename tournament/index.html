@@ -832,17 +832,26 @@ function startTournament() {
 
   // ✅ Save to Firestore after tournament is generated
   if (userId) {
-    db.collection("tournaments").doc(userId).set({
-      players,
-      rounds,
-      timestamp: new Date().toISOString()
-    }).then(() => {
-      console.log("✅ Tournament data saved to Firestore.");
-    }).catch(error => {
-      console.error("❌ Error saving to Firestore:", error);
-    });
-  }
+  // ✅ Convert rounds to safe object format before saving
+  const safeRounds = rounds.map(round =>
+    round.map(match => ({
+      p1: match[0] || null,
+      p2: match[1] || null,
+      result: match[2] || null
+    }))
+  );
+
+  db.collection("tournaments").doc(userId).set({
+    players,
+    rounds: safeRounds,
+    timestamp: new Date().toISOString()
+  }).then(() => {
+    console.log("✅ Tournament data saved to Firestore.");
+  }).catch(error => {
+    console.error("❌ Error saving to Firestore:", error);
+  });
 }
+
 
 function shuffle(array) {
   for (let i = array.length - 1; i > 0; i--) {
