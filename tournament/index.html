@@ -787,17 +787,6 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 	
-  // Inject inline next to header title or Kick button
-  const header = document.querySelector(".header-container");
-  const kickButton = header?.querySelector("button"); // Assuming button is the Kick one
-
-  if (kickButton && header) {
-    header.insertBefore(warning, kickButton);
-  }
-});
-}
-
-
 let players = [];
 let rounds = [];
 
