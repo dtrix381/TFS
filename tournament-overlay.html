@@ -365,8 +365,8 @@ rounds.forEach((round, rIdx) => {
     const isDone = !!result;
 
     // Optional result fields (example structure)
-    const p1Stats = result?.[p1.kickUsername];
-    const p2Stats = result?.[p2.kickUsername];
+    const p1Stats = result?.p1;
+    const p2Stats = result?.p2;
 
     const winner = result?.winner?.kickUsername;
     const getHighlight = name => name === winner ? "highlight" : "";
@@ -392,16 +392,16 @@ rounds.forEach((round, rIdx) => {
           <div class="result-bar">
             <div class="result">
               <strong>${p1.kickUsername}</strong><br>
-              Buys: ${p1Stats?.buys ?? '-'}<br>
-              Pays: ${p1Stats?.pays ?? '-'}<br>
-              X: ${p1Stats?.x ?? '-'}<br>
+              Buys: ${p1Stats?.buyAmount ?? '-'}<br>
+              Pays: ${p1Stats?.totalPay ?? '-'}<br>
+              X: ${p1Stats?.totalX ?? '-'}<br>
               Result: ${p1Stats?.result ?? '-'}
             </div>
             <div class="result">
               <strong>${p2.kickUsername}</strong><br>
-              Buys: ${p2Stats?.buys ?? '-'}<br>
-              Pays: ${p2Stats?.pays ?? '-'}<br>
-              X: ${p2Stats?.x ?? '-'}<br>
+              Buys: ${p2Stats?.buyAmount ?? '-'}<br>
+              Pays: ${p2Stats?.totalPay ?? '-'}<br>
+              X: ${p2Stats?.totalX ?? '-'}<br>
               Result: ${p2Stats?.result ?? '-'}
             </div>
           </div>
