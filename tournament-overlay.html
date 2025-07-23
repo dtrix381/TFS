@@ -62,6 +62,7 @@
     .highlight {
       color: gold;
       font-weight: bold;
+      text-shadow: 0 0 10px gold;
     }
 
 .tournament-title {
@@ -394,15 +395,15 @@ rounds.forEach((round, rIdx) => {
               <strong>${p1.kickUsername}</strong><br>
               Buys: ${p1Stats?.buyAmount ?? '-'}<br>
               Pays: ${p1Stats?.totalPay ?? '-'}<br>
-              X: ${p1Stats?.totalX ?? '-'}<br>
-              Result: ${p1Stats?.result ?? '-'}
+              Total x: ${p1Stats?.totalX ?? '-'}<br>
+              Result: ${winner === p1.kickUsername ? 'WINNER' : 'LOSER'}
             </div>
             <div class="result">
               <strong>${p2.kickUsername}</strong><br>
               Buys: ${p2Stats?.buyAmount ?? '-'}<br>
               Pays: ${p2Stats?.totalPay ?? '-'}<br>
-              X: ${p2Stats?.totalX ?? '-'}<br>
-              Result: ${p2Stats?.result ?? '-'}
+              Total x: ${p2Stats?.totalX ?? '-'}<br>
+              Result: ${winner === p2.kickUsername ? 'WINNER' : 'LOSER'}
             </div>
           </div>
         ` : ""}
