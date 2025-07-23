@@ -595,9 +595,8 @@ if (final && final[2] && final[2].winner) {
 }
 
 
-    setInterval(fetchAndRender, 5000); // Refresh every 5s
-    setInterval(nextSlide, 3000);      // Change slide every 3s
-    fetchAndRender(); // Initial load
+    setupRealtimeUpdates(); // 🔄 enable live Firebase updates
+    setInterval(nextSlide, 5000); // ⏩ auto-slide
   </script>
   
 <!-- Confetti library -->
