@@ -112,11 +112,10 @@
 
 .player-grid {
   display: grid;
-  grid-template-columns: repeat(2, 240px);
-  grid-template-rows: repeat(2, 120px);
+  grid-template-columns: repeat(2, 1fr); /* Use 1fr for flexible columns */
   gap: 30px;
-  width: 90%;
-  max-width: 1200px;
+  width: 100%; /* Fill parent */
+  padding: 0 40px; /* Optional: side padding inside gold frame */
 }
 
 .player-card {
@@ -126,7 +125,6 @@
   padding: 16px;
   text-align: center;
   width: 100%; /* 🔥 Make it stretch full width of grid cell */
-  max-width: 500px; /* Optional: control max stretch */
   color: white;
   font-family: 'Orbitron', sans-serif;
   box-shadow: 0 0 10px gold;
