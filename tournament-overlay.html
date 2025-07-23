@@ -4,17 +4,15 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Tournament Overlay</title>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap" rel="stylesheet">
   <style>
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      font-family: 'Orbitron', sans-serif;
     }
-
     body {
       background: black;
+      font-family: 'Orbitron', sans-serif;
       color: white;
       overflow: hidden;
       display: flex;
@@ -22,44 +20,44 @@
       align-items: center;
       height: 100vh;
     }
-
-    .slider {
-      width: 90vw;
-      height: 25vh;
-      position: relative;
+    .gold-frame {
+      width: 1600px;
+      height: 400px;
+      border: 5px solid gold;
+      border-radius: 20px;
+      box-shadow: 0 0 30px gold;
       display: flex;
       justify-content: center;
       align-items: center;
+      background: rgba(0, 0, 0, 0.8);
+      position: relative;
     }
-
     .slide {
       position: absolute;
       opacity: 0;
-      transition: opacity 0.6s ease-in-out;
+      transition: opacity 1s ease-in-out;
       text-align: center;
-      font-size: 1.6rem;
       width: 100%;
     }
-
     .slide.active {
       opacity: 1;
     }
-
-    .highlight {
-      color: #00ff00;
-      font-weight: bold;
+    .slide h1, .slide h2, .slide h3 {
+      margin-bottom: 10px;
     }
-
     .bracket {
-      display: flex;
-      justify-content: center;
-      gap: 25px;
-      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+    .highlight {
+      color: gold;
+      font-weight: bold;
     }
   </style>
 </head>
 <body>
-  <div class="slider" id="slider"></div>
+  <div class="gold-frame">
+    <div id="slides"></div>
+  </div>
 
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
@@ -74,89 +72,95 @@
 
     const urlParams = new URLSearchParams(window.location.search);
     const userId = urlParams.get("user");
-    const slider = document.getElementById("slider");
-    let slides = [];
-    let currentIndex = 0;
+    const slidesContainer = document.getElementById("slides");
 
-    async function fetchTournamentData() {
-      if (!userId) return;
-      const doc = await db.collection("tournaments").doc(userId).get();
-      if (!doc.exists) return;
+    let slideIndex = 0;
+    let slideData = [];
 
-      const data = doc.data();
-      const players = data.players || [];
+    function renderSlides(data) {
+      slideData = [];
+
       const title = data.title || "Tournament";
-      const rounds = (data.rounds || []).map(roundObj => {
-        return Object.values(roundObj).map(match => {
-          return [match.p1, match.p2, match.result];
-        });
-      });
+      const players = data.players || [];
+      const rounds = data.rounds || [];
 
-      slides = [];
-
-      // 1. Current Matchup (30s)
-      const current = rounds.flat().find(match => match[0] && match[1] && !match[2]);
-      if (current) {
-        slides.push({
-          html: `<div><h1>🎯 Current Match-Up</h1><br>${current[0].kickUsername} vs ${current[1].kickUsername}</div>`,
-          duration: 30000
-        });
+      // 1. Current match-up
+      const currentMatch = rounds[0]?.find(m => !m[2] && m[0] && m[1]);
+      if (currentMatch) {
+        slideData.push(`<div class="slide"><h1>Current Match-up</h1><h2>${currentMatch[0].kickUsername} vs ${currentMatch[1].kickUsername}</h2></div>`);
       }
 
-      // 2. Tournament Title
-      slides.push({ html: `<div><h1>${title}</h1></div>`, duration: 3000 });
+      // 2. Title
+      slideData.push(`<div class="slide"><h1>${title}</h1></div>`);
 
-      // 3. Players (first 4)
-      slides.push({
-        html: `<div><h2>👥 Players</h2><div class="bracket">${players.slice(0, 4).map(p => `<div>${p.kickUsername}</div>`).join('')}</div></div>`,
-        duration: 3000
-      });
+      // 3. Players 1-4
+      if (players.length >= 1) {
+        const chunk1 = players.slice(0, 4).map(p => `${p.kickUsername} (${p.slot})`).join("<br>");
+        slideData.push(`<div class="slide"><h2>Players</h2><h3>${chunk1}</h3></div>`);
+      }
+      // 4. Players 5-8
+      if (players.length > 4) {
+        const chunk2 = players.slice(4).map(p => `${p.kickUsername} (${p.slot})`).join("<br>");
+        slideData.push(`<div class="slide"><h2>Players</h2><h3>${chunk2}</h3></div>`);
+      }
 
-      // 4. Players (last 4)
-      slides.push({
-        html: `<div><h2>👥 Players</h2><div class="bracket">${players.slice(4).map(p => `<div>${p.kickUsername}</div>`).join('')}</div></div>`,
-        duration: 3000
-      });
-
-      // 5. Brackets (1A to 3A)
-      const bracketLabels = ["1A", "1B", "1C", "1D", "2A", "2B", "3A"];
-      rounds.flat().forEach((match, idx) => {
-        if (match[0] && match[1]) {
-          const label = bracketLabels[idx] || `Bracket ${idx + 1}`;
-          const winner = match[2]?.winner?.kickUsername;
-          const p1 = match[0].kickUsername;
-          const p2 = match[1].kickUsername;
-          slides.push({
-            html: `<div><h2>${label}</h2>${p1} ${winner === p1 ? '<span class="highlight">(Winner)</span>' : ''} vs ${p2} ${winner === p2 ? '<span class="highlight">(Winner)</span>' : ''}</div>`,
-            duration: 3000
-          });
-        }
+      // 5. Brackets with result or valid pending
+      const bracketNames = ["1A", "1B", "1C", "1D", "2A", "2B", "3A"];
+      let bracketCount = 0;
+      rounds.forEach((round, rIdx) => {
+        round.forEach((match, mIdx) => {
+          const p1 = match[0];
+          const p2 = match[1];
+          const result = match[2];
+          if (p1 && p2) {
+            const code = bracketNames[bracketCount++] || `R${rIdx+1}M${mIdx+1}`;
+            const winner = result?.winner?.kickUsername;
+            const line1 = winner === p1.kickUsername ? `<span class='highlight'>${p1.kickUsername}</span>` : p1.kickUsername;
+            const line2 = winner === p2.kickUsername ? `<span class='highlight'>${p2.kickUsername}</span>` : p2.kickUsername;
+            slideData.push(`<div class="slide"><h2>Bracket ${code}</h2><div class='bracket'>${line1} vs ${line2}</div></div>`);
+          }
+        });
       });
 
       // 6. Champion
       const final = rounds[2]?.[0];
       if (final && final[2] && final[2].winner) {
-        slides.push({ html: `<div><h1>🏆 Champion: ${final[2].winner.kickUsername}</h1></div>`, duration: 3000 });
+        slideData.push(`<div class="slide"><h1>🏆 Champion</h1><h2>${final[2].winner.kickUsername}</h2></div>`);
       }
 
-      runSlider();
+      renderNextSlide();
     }
 
-    function runSlider() {
-      if (slides.length === 0) return;
-      slider.innerHTML = slides.map((s, i) => `<div class="slide${i === 0 ? ' active' : ''}">${s.html}</div>`).join("");
-      currentIndex = 0;
-
-      setInterval(() => {
-        const allSlides = document.querySelectorAll(".slide");
-        allSlides[currentIndex].classList.remove("active");
-        currentIndex = (currentIndex + 1) % slides.length;
-        allSlides[currentIndex].classList.add("active");
-      }, slides[currentIndex].duration);
+    function renderNextSlide() {
+      slidesContainer.innerHTML = slideData
+        .map((content, i) => `<div class="slide ${i === slideIndex ? 'active' : ''}">${content}</div>`)
+        .join("");
     }
 
-    fetchTournamentData();
-    setInterval(fetchTournamentData, 5000); // Auto-refresh overlay every 5 seconds
+    function nextSlide() {
+      if (slideData.length === 0) return;
+      slideIndex = (slideIndex + 1) % slideData.length;
+      renderNextSlide();
+    }
+
+    function fetchAndRender() {
+      if (!userId) return;
+      db.collection("tournaments").doc(userId).get().then(doc => {
+        if (doc.exists) {
+          renderSlides(doc.data());
+        }
+      });
+    }
+
+    setInterval(() => {
+      fetchAndRender();
+    }, 5000); // Refresh every 5s
+
+    setInterval(() => {
+      nextSlide();
+    }, 3000); // Slide change every 3s
+
+    fetchAndRender();
   </script>
 </body>
 </html>
