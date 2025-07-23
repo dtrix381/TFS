@@ -855,12 +855,13 @@ document.addEventListener("DOMContentLoaded", () => {
   if (!userId) {
     alert("🔒 Please login via Discord to access the tournament.");
 
-    // Disable all buttons except modal triggers
-    document.querySelectorAll("button").forEach(btn => {
-      if (!btn.closest('.modal')) btn.disabled = true;
+    // Disable relevant buttons only
+    ["addPlayerBtn", "startBtn"].forEach(id => {
+      const btn = document.getElementById(id);
+      if (btn) btn.disabled = true;
     });
 
-    // Add login warning message
+    // Add login warning
     const warning = document.createElement("span");
     warning.textContent = "🚫 Tournament features disabled until login!";
     warning.style = `
@@ -874,38 +875,36 @@ document.addEventListener("DOMContentLoaded", () => {
     const header = document.querySelector(".header-container");
     const kickButton = header?.querySelector("button");
     if (kickButton && header) header.insertBefore(warning, kickButton);
-    return; // ⛔ Stop further loading if unauthorized
+    return;
   }
 
   // ✅ Load saved tournament data
   db.collection("tournaments").doc(userId).get().then((doc) => {
     if (doc.exists) {
-  const data = doc.data();
-  currentTournamentData = data;
+      const data = doc.data();
+      currentTournamentData = data;
 
-  // Handle players and bracket
-  if (data.players && data.players.length === 8) {
-    players = data.players;
-    updatePlayerList();
-  }
-  if (data.rounds && data.rounds.length > 0) {
-    rounds = loadSafeRounds(data.rounds);
-    generateBracket();
-  }
+      // Re-enable buttons just to be safe
+      document.getElementById("addPlayerBtn")?.removeAttribute("disabled");
+      document.getElementById("startBtn")?.removeAttribute("disabled");
 
-  // Handle custom title
-  document.getElementById("defaultTitle").style.display = "none";
-  document.getElementById("customTitleEditor").style.display = "flex";
-  if (data.title) {
-    document.getElementById("titleInput").value = data.title;
-  }
+      if (data.players && data.players.length === 8) {
+        players = data.players;
+        updatePlayerList();
+      }
+      if (data.rounds && data.rounds.length > 0) {
+        rounds = loadSafeRounds(data.rounds);
+        generateBracket();
+      }
 
-  // Hide login button
-  const loginBtn = document.querySelector("a[href*='auth/discord']");
-  if (loginBtn) loginBtn.style.display = "none";
+      document.getElementById("defaultTitle").style.display = "none";
+      document.getElementById("customTitleEditor").style.display = "flex";
+      if (data.title) {
+        document.getElementById("titleInput").value = data.title;
+      }
 
-  console.log("✅ Loaded saved tournament data.");
-}
+      const loginBtn = document.querySelector("a[href*='auth/discord']");
+      if (loginBtn) loginBtn.style.display = "none";
 
       console.log("✅ Loaded saved tournament data.");
     } else {
@@ -915,6 +914,7 @@ document.addEventListener("DOMContentLoaded", () => {
     console.error("❌ Failed to load tournament data:", error);
   });
 });
+
 
 	
 let players = [];
