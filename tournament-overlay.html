@@ -228,7 +228,7 @@
 
 
 .player-box-alt .name {
-  font-size: 32px;
+  font-size: 34px;
   font-weight: bold;
   color: #00fff7;
   text-shadow: 0 0 6px #00fff7;
@@ -236,13 +236,13 @@
 }
 
 .player-box-alt .slot {
-  font-size: 20px;
+  font-size: 22px;
   margin-bottom: 10px;
   opacity: 0.9;
 }
 
 .result-info {
-  font-size: 16px;
+  font-size: 18px;
   margin-top: 10px;
   line-height: 1.5;
 }
@@ -499,16 +499,18 @@ slideData.push(`
 // 6. Champion Slide with Confetti + Animation
 const final = rounds[2]?.[0];
 if (final && final[2] && final[2].winner) {
-  const championName = final[2].winner.kickUsername;
+  const winner = final[2].winner;
   slideData.push(`
     <div class="champion-slide">
       <div class="champion-glow">
         <h1 class="champion-title">🏆 CHAMPION 🏆</h1>
-        <h2 class="champion-name">${championName}</h2>
+        <h2 class="champion-name">${winner.kickUsername}</h2>
+        <p class="champion-slot">${winner.slot}</p>
       </div>
     </div>
   `);
 }
+
 
 
   renderNextSlide();
