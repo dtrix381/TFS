@@ -76,9 +76,11 @@
 
     let slideIndex = 0;
     let slideData = [];
+    let slideDelays = [];
 
     function renderSlides(data) {
       slideData = [];
+      slideDelays = [];
 
       const title = data.title || "Tournament";
       const players = data.players || [];
@@ -88,20 +90,25 @@
       const currentMatch = rounds[0]?.find(m => !m[2] && m[0] && m[1]);
       if (currentMatch) {
         slideData.push(`<div class="slide"><h1>Current Match-up</h1><h2>${currentMatch[0].kickUsername} vs ${currentMatch[1].kickUsername}</h2></div>`);
+        slideDelays.push(30000); // 30s for current matchup
       }
 
       // 2. Title
       slideData.push(`<div class="slide"><h1>${title}</h1></div>`);
+      slideDelays.push(3000);
 
-      // 3. Players 1-4
+      // 3. Players 1–4
       if (players.length >= 1) {
         const chunk1 = players.slice(0, 4).map(p => `${p.kickUsername} (${p.slot})`).join("<br>");
         slideData.push(`<div class="slide"><h2>Players</h2><h3>${chunk1}</h3></div>`);
+        slideDelays.push(3000);
       }
-      // 4. Players 5-8
+
+      // 4. Players 5–8
       if (players.length > 4) {
         const chunk2 = players.slice(4).map(p => `${p.kickUsername} (${p.slot})`).join("<br>");
         slideData.push(`<div class="slide"><h2>Players</h2><h3>${chunk2}</h3></div>`);
+        slideDelays.push(3000);
       }
 
       // 5. Brackets with result or valid pending
@@ -118,6 +125,7 @@
             const line1 = winner === p1.kickUsername ? `<span class='highlight'>${p1.kickUsername}</span>` : p1.kickUsername;
             const line2 = winner === p2.kickUsername ? `<span class='highlight'>${p2.kickUsername}</span>` : p2.kickUsername;
             slideData.push(`<div class="slide"><h2>Bracket ${code}</h2><div class='bracket'>${line1} vs ${line2}</div></div>`);
+            slideDelays.push(3000);
           }
         });
       });
@@ -126,9 +134,12 @@
       const final = rounds[2]?.[0];
       if (final && final[2] && final[2].winner) {
         slideData.push(`<div class="slide"><h1>🏆 Champion</h1><h2>${final[2].winner.kickUsername}</h2></div>`);
+        slideDelays.push(3000);
       }
 
+      slideIndex = 0;
       renderNextSlide();
+      scheduleNextSlide();
     }
 
     function renderNextSlide() {
@@ -137,10 +148,15 @@
         .join("");
     }
 
-    function nextSlide() {
-      if (slideData.length === 0) return;
-      slideIndex = (slideIndex + 1) % slideData.length;
-      renderNextSlide();
+    let slideTimeout = null;
+    function scheduleNextSlide() {
+      if (slideTimeout) clearTimeout(slideTimeout);
+      const delay = slideDelays[slideIndex] || 3000;
+      slideTimeout = setTimeout(() => {
+        slideIndex = (slideIndex + 1) % slideData.length;
+        renderNextSlide();
+        scheduleNextSlide();
+      }, delay);
     }
 
     function fetchAndRender() {
@@ -152,16 +168,8 @@
       });
     }
 
-    setInterval(() => {
-      fetchAndRender();
-    }, 5000); // Refresh every 5s
-
-    setInterval(() => {
-      nextSlide();
-    }, 3000); // Slide change every 3s
-
+    setInterval(fetchAndRender, 5000);
     fetchAndRender();
   </script>
 </body>
-  
 </html>
