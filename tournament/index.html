@@ -917,7 +917,8 @@ function generateBracket() {
 
     round.forEach((match, matchIndex) => {
       const code = `${roundIndex + 1}${String.fromCharCode(65 + matchIndex)}`;
-      const [p1 = { kickUsername: "TBD", slot: "" }, p2 = { kickUsername: "TBD", slot: "" }] = match;
+      const p1 = (match[0] && typeof match[0] === "object") ? match[0] : { kickUsername: "TBD", slot: "" };
+      const p2 = (match[1] && typeof match[1] === "object") ? match[1] : { kickUsername: "TBD", slot: "" };
       const matchDiv = document.createElement("div");
       matchDiv.className = "match";
 
@@ -1078,7 +1079,7 @@ function generateWinner(button, roundIndex, matchIndex, code) {
     clearDownstream(roundIndex + 1, nextIndex);
   } else if (code === "3A") {
     document.getElementById("champion").classList.remove("hidden");
-    document.getElementById("championName").textContent = winner.kickUsername;
+    document.getElementById("championName").textContent = winner?.kickUsername || "TBD";
   }
 
   generateBracket();
@@ -1115,9 +1116,11 @@ function clearDownstream(roundIndex, matchIndex) {
     const nextMatchIndex = Math.floor(matchIndex / 2);
     const pos = matchIndex % 2;
     if (rounds[r + 1]?.[nextMatchIndex]) {
-      rounds[r + 1][nextMatchIndex][pos] = null;
-      delete rounds[r + 1][nextMatchIndex][2];
-    }
+  if (!rounds[r + 1][nextMatchIndex]) rounds[r + 1][nextMatchIndex] = [];
+  if (rounds[r + 1][nextMatchIndex][pos]) rounds[r + 1][nextMatchIndex][pos] = null;
+  if (rounds[r + 1][nextMatchIndex][2]) delete rounds[r + 1][nextMatchIndex][2];
+}
+
     matchIndex = nextMatchIndex;
   }
 }
