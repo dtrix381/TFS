@@ -95,6 +95,52 @@
   }
 }
 
+.player-slide {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+}
+
+.player-slide h2 {
+  font-size: 36px;
+  color: gold;
+  text-shadow: 0 0 5px gold;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.player-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 240px);
+  grid-template-rows: repeat(2, 120px);
+  gap: 30px;
+}
+
+.player-card {
+  background: rgba(255, 215, 0, 0.1);
+  border: 2px solid gold;
+  border-radius: 12px;
+  padding: 16px;
+  text-align: center;
+  color: white;
+  font-family: 'Orbitron', sans-serif;
+  box-shadow: 0 0 10px gold;
+}
+
+.player-card .name {
+  font-weight: 800;
+  font-size: 20px;
+  margin-bottom: 6px;
+  color: #00fff7;
+  text-shadow: 0 0 3px #00fff7;
+}
+
+.player-card .slot {
+  font-size: 16px;
+  color: #fff;
+  opacity: 0.85;
+}
 
   </style>
 </head>
@@ -152,15 +198,41 @@
 
   // 3. Players 1-4
   if (players.length >= 1) {
-    const chunk1 = players.slice(0, 4).map(p => `${p.kickUsername} (${p.slot})`).join("<br>");
-    slideData.push(`<div><h2>Players</h2><h3>${chunk1}</h3></div>`);
-  }
+  const chunk1 = players.slice(0, 4);
+  const html = `
+    <div class="player-slide">
+      <h2>Players</h2>
+      <div class="player-grid">
+        ${chunk1.map(p => `
+          <div class="player-card">
+            <div class="name">${p.kickUsername}</div>
+            <div class="slot">${p.slot}</div>
+          </div>
+        `).join("")}
+      </div>
+    </div>
+  `;
+  slideData.push(html);
+}
 
   // 4. Players 5-8
   if (players.length > 4) {
-    const chunk2 = players.slice(4).map(p => `${p.kickUsername} (${p.slot})`).join("<br>");
-    slideData.push(`<div><h2>Players</h2><h3>${chunk2}</h3></div>`);
-  }
+  const chunk2 = players.slice(4, 8);
+  const html = `
+    <div class="player-slide">
+      <h2>Players</h2>
+      <div class="player-grid">
+        ${chunk2.map(p => `
+          <div class="player-card">
+            <div class="name">${p.kickUsername}</div>
+            <div class="slot">${p.slot}</div>
+          </div>
+        `).join("")}
+      </div>
+    </div>
+  `;
+  slideData.push(html);
+}
 
   // 5. Brackets
   const bracketNames = ["1A", "1B", "1C", "1D", "2A", "2B", "3A"];
