@@ -147,7 +147,7 @@
 }
 
 .player-card .name {
-  font-size: 28px;
+  font-size: 32px;
   font-weight: bold;
   color: #00fff7;
   text-shadow: 0 0 5px #00fff7;
@@ -158,7 +158,7 @@
 }
 
 .player-card .slot {
-  font-size: 20px;
+  font-size: 24px;
   opacity: 0.9;
   white-space: nowrap;
   overflow: hidden;
@@ -167,7 +167,26 @@
 }
 
 
+.bracket-slide {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  gap: 20px;
+  padding: 20px;
+  box-sizing: border-box;
+}
 
+.round-title {
+  font-size: 36px;
+  color: gold;
+  text-shadow: 0 0 5px gold;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 10px;
+}
 
   </style>
 </head>
@@ -261,23 +280,34 @@
   slideData.push(html);
 }
 
-  // 5. Brackets
-  const bracketNames = ["1A", "1B", "1C", "1D", "2A", "2B", "3A"];
-  let bracketCount = 0;
-  rounds.forEach((round, rIdx) => {
-    round.forEach((match, mIdx) => {
-      const p1 = match[0];
-      const p2 = match[1];
-      const result = match[2];
-      if (p1 && p2) {
-        const code = bracketNames[bracketCount++] || `R${rIdx + 1}M${mIdx + 1}`;
-        const winner = result?.winner?.kickUsername;
-        const line1 = winner === p1.kickUsername ? `<span class='highlight'>${p1.kickUsername}</span>` : p1.kickUsername;
-        const line2 = winner === p2.kickUsername ? `<span class='highlight'>${p2.kickUsername}</span>` : p2.kickUsername;
-        slideData.push(`<div><h2>Bracket ${code}</h2><div class='bracket'>${line1} vs ${line2}</div></div>`);
-      }
-    });
-  });
+  // 5. Brackets with round labels
+const bracketRounds = ["FIRST ROUND", "SEMI-FINALS", "GRAND FINALS"];
+
+rounds.forEach((round, rIdx) => {
+  const roundTitle = bracketRounds[rIdx] || `ROUND ${rIdx + 1}`;
+  const matchesHtml = round.map((match) => {
+    const p1 = match[0];
+    const p2 = match[1];
+    const result = match[2];
+    if (p1 && p2) {
+      const winner = result?.winner?.kickUsername;
+      const line1 = winner === p1.kickUsername ? `<span class='highlight'>${p1.kickUsername}</span>` : p1.kickUsername;
+      const line2 = winner === p2.kickUsername ? `<span class='highlight'>${p2.kickUsername}</span>` : p2.kickUsername;
+      return `<div class='bracket'>${line1} vs ${line2}</div>`;
+    }
+    return '';
+  }).join("");
+
+  if (matchesHtml.trim()) {
+    slideData.push(`
+      <div class="bracket-slide">
+        <h2 class="round-title">${roundTitle}</h2>
+        ${matchesHtml}
+      </div>
+    `);
+  }
+});
+
 
   // 6. Champion
   const final = rounds[2]?.[0];
