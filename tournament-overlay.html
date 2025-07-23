@@ -3,53 +3,54 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TFS | Tournament Overlay</title>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap" rel="stylesheet" />
+  <title>Tournament Overlay</title>
   <style>
     body {
       margin: 0;
-      background: #0f0f0f;
-      color: white;
+      padding: 0;
       font-family: 'Orbitron', sans-serif;
+      background-color: #000;
+      color: #fff;
       overflow: hidden;
-    }
-    .title {
-      text-align: center;
-      font-size: 36px;
-      margin-top: 20px;
-      text-shadow: 0 0 8px #f00;
-    }
-    .players {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 20px;
-      padding: 20px;
-      justify-items: center;
+      display: flex;
+      justify-content: center;
       align-items: center;
-      max-width: 800px;
-      margin: 0 auto;
+      height: 100vh;
     }
-    .player {
+    .overlay-container {
+      width: 95vw;
+      height: 15vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .slide {
+      display: none;
+      font-size: 1.5rem;
+      padding: 10px 20px;
+      border-radius: 10px;
       background: rgba(255, 255, 255, 0.05);
-      padding: 15px 25px;
-      border-radius: 12px;
-      border: 2px solid crimson;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
       text-align: center;
-      font-size: 20px;
-      width: 100%;
+      animation: fade 0.6s ease-in-out;
     }
-    .fade {
-      animation: fadeIn 0.5s ease-in-out;
+    .slide.active {
+      display: block;
     }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: scale(0.95); }
-      to { opacity: 1; transform: scale(1); }
+    .winner {
+      color: #0f0;
+      font-weight: bold;
+    }
+    @keyframes fade {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
     }
   </style>
 </head>
 <body>
-  <div class="title" id="overlayTitle">𝗧𝗲𝗮𝗺𝗙𝘂𝗹𝗹𝗦𝗲𝗻𝗱 𝗧𝗼𝘂𝗿𝗻𝗮𝗺𝗲𝗻𝘁</div>
-  <div class="players" id="overlayPlayers"></div>
+  <div class="overlay-container">
+    <div id="slides"></div>
+  </div>
 
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
@@ -62,31 +63,108 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
-    const urlParams = new URLSearchParams(window.location.search);
-    const userId = urlParams.get("user");
-    if (!userId) {
-      document.body.innerHTML = "<h2 style='text-align:center;color:red;'>No user ID provided in URL.</h2>";
-      throw new Error("Missing user ID");
+    const userId = new URLSearchParams(window.location.search).get('user');
+    const slidesContainer = document.getElementById('slides');
+
+    function createSlide(text) {
+      const div = document.createElement('div');
+      div.className = 'slide';
+      div.innerHTML = text;
+      return div;
     }
 
-    const overlayTitle = document.getElementById("overlayTitle");
-    const overlayPlayers = document.getElementById("overlayPlayers");
+    let allSlides = [];
+    let slideIndex = 0;
+    let slideInterval;
 
-    db.collection("tournaments").doc(userId).onSnapshot((doc) => {
-      if (!doc.exists) return;
-      const data = doc.data();
-      overlayTitle.textContent = data.title || "𝗧𝗲𝗮𝗺𝗙𝘂𝗹𝗹𝗦𝗲𝗻𝗱 𝗧𝗼𝘂𝗿𝗻𝗮𝗺𝗲𝗻𝘁";
+    function updateSlides(data) {
+      allSlides = [];
+      const { title, players = [], rounds = [] } = data;
 
-      overlayPlayers.innerHTML = "";
-      if (!data.players || data.players.length === 0) return;
+      if (!title) return;
 
-      data.players.slice(0, 4).forEach(player => {
-        const div = document.createElement("div");
-        div.className = "player fade";
-        div.innerHTML = `<strong>${player.kickUsername}</strong><br><span>${player.slot}</span>`;
-        overlayPlayers.appendChild(div);
+      // 1. Current Match (30s)
+      const current = findCurrentMatch(rounds);
+      if (current) {
+        const [p1, p2] = current;
+        allSlides.push(createSlide(`🎯 CURRENT MATCH-UP:<br><strong>${p1.kickUsername}</strong> vs <strong>${p2.kickUsername}</strong>`));
+      }
+
+      // 2. Tournament Title
+      allSlides.push(createSlide(`🏆 TOURNAMENT TITLE:<br>${title}`));
+
+      // 3 & 4. Players
+      if (players.length) {
+        allSlides.push(createSlide(`🎮 PLAYERS:<br>${players.slice(0, 4).map(p => p.kickUsername).join(' | ')}`));
+        if (players.length > 4) {
+          allSlides.push(createSlide(`🎮 PLAYERS:<br>${players.slice(4, 8).map(p => p.kickUsername).join(' | ')}`));
+        }
+      }
+
+      // 5. Brackets with complete data
+      rounds.forEach((round, rIdx) => {
+        round.forEach((match, mIdx) => {
+          if (!match[0] || !match[1]) return; // skip if incomplete
+          const p1 = match[0].kickUsername;
+          const p2 = match[1].kickUsername;
+          const result = match[2];
+          const code = `${rIdx + 1}${String.fromCharCode(65 + mIdx)}`;
+
+          if (result?.winner) {
+            const winner = result.winner.kickUsername;
+            const highlight = (name) => name === winner ? `<span class="winner">${name}</span>` : name;
+            allSlides.push(createSlide(`🎯 ${code}: ${highlight(p1)} vs ${highlight(p2)}`));
+          } else {
+            allSlides.push(createSlide(`🎯 ${code}: ${p1} vs ${p2}`));
+          }
+        });
       });
-    });
+
+      // 6. Champion
+      const final = rounds[2]?.[0];
+      if (final?.[2]?.winner) {
+        allSlides.push(createSlide(`👑 CHAMPION:<br><span class="winner">${final[2].winner.kickUsername}</span>`));
+      }
+
+      // Display and cycle
+      slidesContainer.innerHTML = '';
+      allSlides.forEach(slide => slidesContainer.appendChild(slide));
+      startSlider();
+    }
+
+    function startSlider() {
+      const all = document.querySelectorAll('.slide');
+      if (!all.length) return;
+      clearInterval(slideInterval);
+      slideIndex = 0;
+      all.forEach(s => s.classList.remove('active'));
+      all[slideIndex].classList.add('active');
+
+      slideInterval = setInterval(() => {
+        all[slideIndex].classList.remove('active');
+        slideIndex = (slideIndex + 1) % all.length;
+        all[slideIndex].classList.add('active');
+      }, slideIndex === 0 ? 30000 : 3000); // 30s for current, 3s for others
+    }
+
+    function findCurrentMatch(rounds) {
+      for (const round of rounds) {
+        for (const match of round) {
+          if (match[0] && match[1] && !match[2]) {
+            return [match[0], match[1]];
+          }
+        }
+      }
+      return null;
+    }
+
+    if (userId) {
+      db.collection("tournaments").doc(userId).onSnapshot(doc => {
+        if (doc.exists) {
+          updateSlides(doc.data());
+        }
+      });
+    }
   </script>
 </body>
 </html>
