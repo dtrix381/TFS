@@ -99,22 +99,22 @@
       // 1. Current match-up
       const currentMatch = rounds[0]?.find(m => !m[2] && m[0] && m[1]);
       if (currentMatch) {
-        slideData.push(`<div class="slide"><h1>Current Match-up</h1><h2>${currentMatch[0].kickUsername} vs ${currentMatch[1].kickUsername}</h2></div>`);
+        slideData.push(`<h1>Current Match-up</h1><h2>${currentMatch[0].kickUsername} vs ${currentMatch[1].kickUsername}</h2>`);
       }
 
       // 2. Title
-      slideData.push(`<div class="slide"><h1>${title}</h1></div>`);
+      slideData.push(`<h1>${title}</h1>`);
 
       // 3. Players 1-4
       if (players.length >= 1) {
         const chunk1 = players.slice(0, 4).map(p => `${p.kickUsername} (${p.slot})`).join("<br>");
-        slideData.push(`<div class="slide"><h2>Players</h2><h3>${chunk1}</h3></div>`);
+        slideData.push(`<h2>Players</h2><h3>${chunk1}</h3>`);
       }
 
       // 4. Players 5-8
       if (players.length > 4) {
         const chunk2 = players.slice(4).map(p => `${p.kickUsername} (${p.slot})`).join("<br>");
-        slideData.push(`<div class="slide"><h2>Players</h2><h3>${chunk2}</h3></div>`);
+        slideData.push(`<h2>Players</h2><h3>${chunk2}</h3>`);
       }
 
       // 5. Brackets
@@ -130,7 +130,7 @@
             const winner = result?.winner?.kickUsername;
             const line1 = winner === p1.kickUsername ? `<span class='highlight'>${p1.kickUsername}</span>` : p1.kickUsername;
             const line2 = winner === p2.kickUsername ? `<span class='highlight'>${p2.kickUsername}</span>` : p2.kickUsername;
-            slideData.push(`<div class="slide"><h2>Bracket ${code}</h2><div class='bracket'>${line1} vs ${line2}</div></div>`);
+            slideData.push(`<h2>Bracket ${code}</h2><div class='bracket'>${line1} vs ${line2}</div>`);
           }
         });
       });
@@ -138,7 +138,7 @@
       // 6. Champion
       const final = rounds[2]?.[0];
       if (final && final[2] && final[2].winner) {
-        slideData.push(`<div class="slide"><h1>🏆 Champion</h1><h2>${final[2].winner.kickUsername}</h2></div>`);
+        slideData.push(`<h1>🏆 Champion</h1><h2>${final[2].winner.kickUsername}</h2>`);
       }
 
       renderNextSlide();
@@ -165,9 +165,9 @@
       });
     }
 
-    setInterval(fetchAndRender, 5000); // Live Firestore updates
-    setInterval(nextSlide, 3000);      // Slide rotation
-    fetchAndRender(); // initial load
+    setInterval(fetchAndRender, 5000); // Refresh every 5s
+    setInterval(nextSlide, 3000);      // Change slide every 3s
+    fetchAndRender(); // Initial load
   </script>
 </body>
 </html>
