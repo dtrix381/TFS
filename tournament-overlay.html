@@ -391,11 +391,32 @@
     return matches;
   });
 
-  // 1. Current match-up
-  const currentMatch = rounds[0]?.find(m => !m[2] && m[0] && m[1]);
-  if (currentMatch) {
-    slideData.push(`<div><h1>Current Match-up</h1><h2>${currentMatch[0].kickUsername} vs ${currentMatch[1].kickUsername}</h2></div>`);
-  }
+// 1. Current match-up
+const currentMatch = rounds[0]?.find(m => !m[2] && m[0] && m[1]);
+if (currentMatch) {
+  const p1 = currentMatch[0];
+  const p2 = currentMatch[1];
+
+  slideData.push(`
+    <div class="match-slide">
+      <h2 class="round-label">CURRENT MATCH-UP</h2>
+      <div class="match-container alt-match">
+        <div class="player-box-alt">
+          <div class="name">${p1.kickUsername}</div>
+          <div class="slot">${p1.slot}</div>
+        </div>
+
+        <div class="vs-text">VS</div>
+
+        <div class="player-box-alt">
+          <div class="name">${p2.kickUsername}</div>
+          <div class="slot">${p2.slot}</div>
+        </div>
+      </div>
+    </div>
+  `);
+}
+
 
   // 2. Title
   slideData.push(`<div><h1 class="tournament-title">${title}</h1></div>`);
