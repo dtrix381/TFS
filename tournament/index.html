@@ -693,6 +693,8 @@ function prepareSafeRounds(rounds) {
     return safeRound;
   });
 }
+	
+let currentTournamentData = {};
 
 
   // ✅ Helper to load Firestore round format back into regular nested arrays
@@ -728,6 +730,41 @@ function prepareSafeRounds(rounds) {
     });
   }
 
+function saveTournamentTitle() {
+  const title = document.getElementById("titleInput").value.trim();
+  if (!userId || !title) return;
+
+  db.collection("tournaments").doc(userId).set({
+    ...currentTournamentData, // maintain players/rounds
+    title: title,
+    timestamp: new Date().toISOString()
+  }, { merge: true }).then(() => {
+    console.log("✅ Title saved.");
+  }).catch(err => {
+    console.error("❌ Failed to save title:", err);
+  });
+}
+
+function startNewTournament() {
+  if (!userId) return;
+
+  players = [];
+  rounds = [];
+  updatePlayerList();
+  generateBracket();
+  document.getElementById("champion")?.classList.add("hidden");
+
+  db.collection("tournaments").doc(userId).set({
+    players: [],
+    rounds: [],
+    title: "",
+    timestamp: new Date().toISOString()
+  }).then(() => {
+    document.getElementById("titleInput").value = "";
+    console.log("♻️ Started new tournament.");
+  });
+}
+
  </script>
 
 	
@@ -744,10 +781,19 @@ function prepareSafeRounds(rounds) {
     </div>
   </div>
 
-    <h1 style="text-align: center; display: flex; align-items: center; justify-content: center; gap: 1px;">
-  <img src="../assets/tourney.png" alt="Logo" style="height: 150px;">
-  𝗧𝗲𝗮𝗺𝗙𝘂𝗹𝗹𝗦𝗲𝗻𝗱 𝗧𝗼𝘂𝗿𝗻𝗮𝗺𝗲𝗻𝘁
-</h1>
+<div id="titleContainer" style="text-align: center; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 8px;">
+  <div id="defaultTitle" style="display: flex; align-items: center; gap: 10px;">
+    <img src="../assets/tourney.png" alt="Logo" style="height: 150px;">
+    <h1>𝗧𝗲𝗮𝗺𝗙𝘂𝗹𝗹𝗦𝗲𝗻𝗱 𝗧𝗼𝘂𝗿𝗻𝗮𝗺𝗲𝗻𝘁</h1>
+  </div>
+
+  <div id="customTitleEditor" style="display: none; flex-direction: column; align-items: center; gap: 6px;">
+    <input id="titleInput" type="text" placeholder="Put Tournament Title here" style="font-size: 24px; padding: 6px 12px; width: 100%; max-width: 500px; text-align: center;" />
+    <button onclick="saveTournamentTitle()">💾 Save Title</button>
+    <button onclick="startNewTournament()" style="background: crimson; color: white; margin-top: 4px;">♻️ Start New Tournament</button>
+  </div>
+</div>
+
     <div style="text-align:center; margin-bottom: 15px;">
       <input type="text" id="kickUsername" placeholder="Kick Username" />
       <input type="text" id="slot" placeholder="Slot" />
@@ -834,15 +880,33 @@ document.addEventListener("DOMContentLoaded", () => {
   // ✅ Load saved tournament data
   db.collection("tournaments").doc(userId).get().then((doc) => {
     if (doc.exists) {
-      const data = doc.data();
-      if (data.players && data.players.length === 8) {
-        players = data.players;
-        updatePlayerList();
-      }
-      if (data.rounds && data.rounds.length > 0) {
-  rounds = loadSafeRounds(data.rounds);
-  generateBracket();
+  const data = doc.data();
+  currentTournamentData = data;
+
+  // Handle players and bracket
+  if (data.players && data.players.length === 8) {
+    players = data.players;
+    updatePlayerList();
+  }
+  if (data.rounds && data.rounds.length > 0) {
+    rounds = loadSafeRounds(data.rounds);
+    generateBracket();
+  }
+
+  // Handle custom title
+  document.getElementById("defaultTitle").style.display = "none";
+  document.getElementById("customTitleEditor").style.display = "flex";
+  if (data.title) {
+    document.getElementById("titleInput").value = data.title;
+  }
+
+  // Hide login button
+  const loginBtn = document.querySelector("a[href*='auth/discord']");
+  if (loginBtn) loginBtn.style.display = "none";
+
+  console.log("✅ Loaded saved tournament data.");
 }
+
       console.log("✅ Loaded saved tournament data.");
     } else {
       console.log("📭 No saved tournament found for this user.");
