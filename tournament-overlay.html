@@ -63,6 +63,32 @@
       color: gold;
       font-weight: bold;
     }
+
+.tournament-title {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 64px;
+  font-weight: 900;
+  color: #00fff7;
+  text-shadow:
+    0 0 6px #00fff7,
+    0 0 12px #00fff7,
+    0 0 24px #00fff7,
+    0 0 36px #00fff7;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  animation: flicker 2.5s infinite alternate;
+  margin-bottom: 20px;
+}
+
+@keyframes flicker {
+  0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+    opacity: 1;
+  }
+  20%, 24%, 55% {
+    opacity: 0.5;
+  }
+}
+
   </style>
 </head>
 <body>
@@ -114,7 +140,8 @@
   }
 
   // 2. Title
-  slideData.push(`<div><h1>${title}</h1></div>`);
+  slideData.push(`<div><h1 class="tournament-title">${title}</h1></div>`);
+
 
   // 3. Players 1-4
   if (players.length >= 1) {
