@@ -208,7 +208,9 @@
 
 .player-box-alt {
   flex: 1;
-  height: 90%;
+  min-width: 0;
+  height: 320px;
+  max-height: 320px;
   background: rgba(255, 215, 0, 0.1);
   border: 3px solid gold;
   border-radius: 15px;
@@ -221,7 +223,9 @@
   box-shadow: 0 0 15px gold;
   color: white;
   text-align: center;
+  transition: all 0.3s ease;
 }
+
 
 .player-box-alt .name {
   font-size: 32px;
@@ -258,6 +262,21 @@
   to {
     opacity: 1;
   }
+}
+
+.vs-text {
+  font-size: 48px;
+  font-weight: bold;
+  color: gold;
+  text-shadow: 0 0 10px gold, 0 0 20px #ffcc00;
+  animation: pulse-vs 1.5s infinite;
+  margin: 0 30px;
+}
+
+@keyframes pulse-vs {
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.2); opacity: 0.7; }
+  100% { transform: scale(1); opacity: 1; }
 }
 
 
