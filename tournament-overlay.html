@@ -33,12 +33,18 @@
       position: relative;
     }
     .slide {
-      position: absolute;
-      opacity: 0;
-      transition: opacity 1s ease-in-out;
-      text-align: center;
-      width: 100%;
-    }
+  position: absolute;
+  opacity: 0;
+  transition: opacity 1s ease-in-out;
+  width: 100%;
+
+  /* ✅ NEW: Flex centering */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
     .slide.active {
       opacity: 1;
     }
