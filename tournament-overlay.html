@@ -408,9 +408,9 @@ slideData.push(`
             <span class="${winner === p1.kickUsername ? 'winner' : 'loser'}">
               ${winner === p1.kickUsername ? 'WINNER' : 'LOSER'}
             </span><br>
-            Buys: ${p1Stats?.buyAmount ?? '-'}<br>
-            Pays: ${p1Stats?.totalPay ?? '-'}<br>
-            X: ${p1Stats?.totalX ?? '-'}
+            Buys: ${p1Stats?.buyAmount != null ? `$${p1Stats.buyAmount}` : '-'}<br>
+            Pays: ${p1Stats?.totalPay != null ? `$${p1Stats.totalPay}` : '-'}<br>
+            Total x: ${p1Stats?.totalX != null ? `${p1Stats.totalX}x` : '-'}
           </div>
         ` : ""}
       </div>
@@ -425,9 +425,9 @@ slideData.push(`
             <span class="${winner === p2.kickUsername ? 'winner' : 'loser'}">
               ${winner === p2.kickUsername ? 'WINNER' : 'LOSER'}
             </span><br>
-            Buys: ${p2Stats?.buyAmount ?? '-'}<br>
-            Pays: ${p2Stats?.totalPay ?? '-'}<br>
-            X: ${p2Stats?.totalX ?? '-'}
+            Buys: ${p2Stats?.buyAmount != null ? `$${p2Stats.buyAmount}` : '-'}<br>
+            Pays: ${p2Stats?.totalPay != null ? `$${p2Stats.totalPay}` : '-'}<br>
+            Total x: ${p2Stats?.totalX != null ? `${p2Stats.totalX}x` : '-'}
           </div>
         ` : ""}
       </div>
