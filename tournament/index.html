@@ -643,7 +643,7 @@ menuToggle.addEventListener('click', () => {
   const userId = urlParams.get("user");
   const isAuthorized = !!userId;
 
-  // ✅ Helper to convert rounds into Firestore-safe object structure
+
   // ✅ Helper to convert rounds into Firestore-safe object structure
 function prepareSafeRounds(rounds) {
   return rounds.map((round) => {
@@ -710,22 +710,7 @@ function prepareSafeRounds(rounds) {
     });
   }
 
-  // Prepare rounds to be stored safely in Firestore (as objects)
-  function prepareSafeRounds(rounds) {
-    return rounds.map(roundArr => {
-      const roundObj = {};
-      roundArr.forEach((match, index) => {
-        roundObj[`match${index}`] = {
-          p1: match[0] || null,
-          p2: match[1] || null,
-          result: match[2] || null
-        };
-      });
-      return roundObj;
-    });
-  }
-
-  // Save title only
+// Save title only
   function saveTournamentTitle() {
     const title = document.getElementById("titleInput").value.trim();
     if (!userId || !title) return;
