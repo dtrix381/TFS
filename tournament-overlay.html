@@ -1,127 +1,92 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TFS Tournament Overlay</title>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TFS | Tournament Overlay</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap" rel="stylesheet" />
   <style>
     body {
       margin: 0;
-      background: #000;
-      color: #fff;
+      background: #0f0f0f;
+      color: white;
       font-family: 'Orbitron', sans-serif;
       overflow: hidden;
     }
-    .slide {
-      display: none;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
+    .title {
       text-align: center;
+      font-size: 36px;
+      margin-top: 20px;
+      text-shadow: 0 0 8px #f00;
     }
-    .slide.active {
-      display: flex;
+    .players {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+      padding: 20px;
+      justify-items: center;
+      align-items: center;
+      max-width: 800px;
+      margin: 0 auto;
     }
-    .matchup {
-      font-size: 2em;
-      margin-bottom: 20px;
+    .player {
+      background: rgba(255, 255, 255, 0.05);
+      padding: 15px 25px;
+      border-radius: 12px;
+      border: 2px solid crimson;
+      text-align: center;
+      font-size: 20px;
+      width: 100%;
     }
-    .bracket {
-      font-size: 1.2em;
-      margin-bottom: 10px;
+    .fade {
+      animation: fadeIn 0.5s ease-in-out;
     }
-    .winner {
-      color: gold;
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
     }
   </style>
 </head>
 <body>
-  <div id="slidesContainer"></div>
+  <div class="title" id="overlayTitle">𝗧𝗲𝗮𝗺𝗙𝘂𝗹𝗹𝗦𝗲𝗻𝗱 𝗧𝗼𝘂𝗿𝗻𝗮𝗺𝗲𝗻𝘁</div>
+  <div class="players" id="overlayPlayers"></div>
 
-  <script type="module">
-    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
-    import { getFirestore, doc, getDoc } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
-
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+  <script>
     const firebaseConfig = {
       apiKey: "AIzaSyCGCiv3p9KgjXR7yCA8Z2JYMhPweDRnQPk",
       authDomain: "tfs-hunt-tracker.firebaseapp.com",
-      projectId: "tfs-hunt-tracker",
+      projectId: "tfs-hunt-tracker"
     };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
 
     const urlParams = new URLSearchParams(window.location.search);
-    const userId = urlParams.get('user');
-
+    const userId = urlParams.get("user");
     if (!userId) {
-      document.body.innerHTML = '<h2 style="color:red;text-align:center;">Missing ?user= param</h2>';
-      throw new Error('Missing ?user= param');
+      document.body.innerHTML = "<h2 style='text-align:center;color:red;'>No user ID provided in URL.</h2>";
+      throw new Error("Missing user ID");
     }
 
-    const slidesContainer = document.getElementById('slidesContainer');
-    let slideIndex = 0;
-    let slideData = [];
+    const overlayTitle = document.getElementById("overlayTitle");
+    const overlayPlayers = document.getElementById("overlayPlayers");
 
-    async function loadTournamentData() {
-      const docRef = doc(db, 'tournaments', userId);
-      const snap = await getDoc(docRef);
+    db.collection("tournaments").doc(userId).onSnapshot((doc) => {
+      if (!doc.exists) return;
+      const data = doc.data();
+      overlayTitle.textContent = data.title || "𝗧𝗲𝗮𝗺𝗙𝘂𝗹𝗹𝗦𝗲𝗻𝗱 𝗧𝗼𝘂𝗿𝗻𝗮𝗺𝗲𝗻𝘁";
 
-      if (!snap.exists()) {
-        slidesContainer.innerHTML = '<h2 style="color:red;">No tournament found for this user.</h2>';
-        return;
-      }
+      overlayPlayers.innerHTML = "";
+      if (!data.players || data.players.length === 0) return;
 
-      const data = snap.data();
-      const rounds = data.rounds || [];
-      const slides = [];
-
-      rounds.forEach((round, rIndex) => {
-        round.forEach((match, mIndex) => {
-          const code = `Round ${rIndex + 1} - Match ${String.fromCharCode(65 + mIndex)}`;
-          const p1 = match[0] || { kickUsername: 'TBD', slot: '' };
-          const p2 = match[1] || { kickUsername: 'TBD', slot: '' };
-          const outcome = match[2];
-
-          let content = `
-            <div class="matchup">${p1.kickUsername} (${p1.slot}) vs ${p2.kickUsername} (${p2.slot})</div>
-            <div class="bracket">${code}</div>
-          `;
-
-          if (outcome && outcome.winner) {
-            content += `
-              <div class="winner">🏆 Winner: ${outcome.winner.kickUsername}</div>
-              <div>${p1.kickUsername}: $${outcome.p1.totalPay} (${outcome.p1.totalX}x)</div>
-              <div>${p2.kickUsername}: $${outcome.p2.totalPay} (${outcome.p2.totalX}x)</div>
-            `;
-          }
-
-          const slide = document.createElement('div');
-          slide.classList.add('slide');
-          slide.innerHTML = content;
-          slides.push(slide);
-        });
+      data.players.slice(0, 4).forEach(player => {
+        const div = document.createElement("div");
+        div.className = "player fade";
+        div.innerHTML = `<strong>${player.kickUsername}</strong><br><span>${player.slot}</span>`;
+        overlayPlayers.appendChild(div);
       });
-
-      slideData = slides;
-      slides.forEach(slide => slidesContainer.appendChild(slide));
-      startSlideShow();
-    }
-
-    function startSlideShow() {
-      if (slideData.length === 0) return;
-
-      slideData.forEach(s => s.classList.remove('active'));
-      slideData[slideIndex].classList.add('active');
-
-      const duration = slideIndex === 0 ? 30000 : 3000;
-      slideIndex = (slideIndex + 1) % slideData.length;
-      setTimeout(startSlideShow, duration);
-    }
-
-    loadTournamentData();
+    });
   </script>
 </body>
 </html>
