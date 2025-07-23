@@ -396,14 +396,18 @@ rounds.forEach((round, rIdx) => {
               Buys: ${p1Stats?.buyAmount ?? '-'}<br>
               Pays: ${p1Stats?.totalPay ?? '-'}<br>
               Total x: ${p1Stats?.totalX ?? '-'}<br>
-              Result: ${winner === p1.kickUsername ? 'WINNER' : 'LOSER'}
+              Result: ${winner === p1.kickUsername 
+                ? '<span style="color: #00ff00; font-weight: bold;">WINNER</span>' 
+                : '<span style="color: #ff4444; font-weight: bold;">LOSER</span>'}
             </div>
             <div class="result">
               <strong>${p2.kickUsername}</strong><br>
               Buys: ${p2Stats?.buyAmount ?? '-'}<br>
               Pays: ${p2Stats?.totalPay ?? '-'}<br>
               Total x: ${p2Stats?.totalX ?? '-'}<br>
-              Result: ${winner === p2.kickUsername ? 'WINNER' : 'LOSER'}
+              Result: ${winner === p2.kickUsername 
+                ? '<span style="color: #00ff00; font-weight: bold;">WINNER</span>' 
+                : '<span style="color: #ff4444; font-weight: bold;">LOSER</span>'}
             </div>
           </div>
         ` : ""}
