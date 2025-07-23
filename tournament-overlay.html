@@ -409,26 +409,53 @@ for (let rIdx = 0; rIdx < rounds.length; rIdx++) {
 if (currentMatch) {
   const p1 = currentMatch[0];
   const p2 = currentMatch[1];
+  const result = currentMatch[2];
+  const p1Stats = result?.p1;
+  const p2Stats = result?.p2;
+  const winner = result?.winner?.kickUsername;
+
+  const getHighlight = name => name === winner ? "highlight" : "";
 
   slideData.push(`
     <div class="match-slide">
       <h2 class="round-label">CURRENT MATCH-UP • ${currentRoundTitle}</h2>
       <div class="match-container alt-match">
-        <div class="player-box-alt">
+        <div class="player-box-alt ${getHighlight(p1.kickUsername)}">
           <div class="name">${p1.kickUsername}</div>
           <div class="slot">${p1.slot}</div>
+          ${p1Stats ? `
+            <div class="result-info fade-in">
+              <span class="${winner === p1.kickUsername ? 'winner' : 'loser'}">
+                ${winner === p1.kickUsername ? 'WINNER' : 'LOSER'}
+              </span><br>
+              Buys: $${p1Stats.buyAmount ?? '-'}<br>
+              Pays: $${p1Stats.totalPay ?? '-'}<br>
+              Total x: ${p1Stats.totalX ?? '-'}x
+            </div>
+          ` : ""}
         </div>
 
         <div class="vs-text">VS</div>
 
-        <div class="player-box-alt">
+        <div class="player-box-alt ${getHighlight(p2.kickUsername)}">
           <div class="name">${p2.kickUsername}</div>
           <div class="slot">${p2.slot}</div>
+          ${p2Stats ? `
+            <div class="result-info fade-in">
+              <span class="${winner === p2.kickUsername ? 'winner' : 'loser'}">
+                ${winner === p2.kickUsername ? 'WINNER' : 'LOSER'}
+              </span><br>
+              Buys: $${p2Stats.buyAmount ?? '-'}<br>
+              Pays: $${p2Stats.totalPay ?? '-'}<br>
+              Total x: ${p2Stats.totalX ?? '-'}x
+            </div>
+          ` : ""}
         </div>
       </div>
     </div>
   `);
 }
+
 
   // 2. Title
   slideData.push(`<div><h1 class="tournament-title">${title}</h1></div>`);
@@ -580,16 +607,15 @@ if (final && final[2] && final[2].winner) {
 
       // If it's a new current match or it was just updated, jump to that slide
       const matchSlideIndex = slideData.findIndex(slide => slide.includes("CURRENT MATCH-UP"));
-      if (matchSlideIndex !== -1 && prevSlide !== matchSlideIndex) {
-        slideIndex = matchSlideIndex;
-        renderNextSlide();
+      if (matchSlideIndex !== -1) {
+  slideIndex = matchSlideIndex;
+  renderNextSlide();
 
-        // Pause auto-scroll temporarily
-        clearInterval(autoSlideInterval);
-        setTimeout(() => {
-          autoSlideInterval = setInterval(nextSlide, 3000);
-        }, 6000); // pause for 6s
-      }
+  clearInterval(autoSlideInterval);
+  setTimeout(() => {
+    autoSlideInterval = setInterval(nextSlide, 5000);
+  }, 10000); // pause for 8s so it feels like a "focus"
+}
     }
   });
 }
