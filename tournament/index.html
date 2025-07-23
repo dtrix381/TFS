@@ -694,14 +694,14 @@ function prepareSafeRounds(rounds) {
   });
 }
 	
-let currentTournamentData = {};
 
+  let currentTournamentData = {};
 
-  // ✅ Helper to load Firestore round format back into regular nested arrays
+  // Convert Firestore round objects to nested arrays
   function loadSafeRounds(dataRounds) {
     return dataRounds.map(roundObj => {
       const matches = [];
-      const keys = Object.keys(roundObj).sort(); // sort match0, match1, ...
+      const keys = Object.keys(roundObj).filter(k => k.startsWith("match")).sort();
       keys.forEach(key => {
         const match = roundObj[key];
         matches.push([match.p1 || null, match.p2 || null, match.result || null]);
@@ -710,62 +710,86 @@ let currentTournamentData = {};
     });
   }
 
-  // ✅ Unified safe saving function
+  // Prepare rounds to be stored safely in Firestore (as objects)
+  function prepareSafeRounds(rounds) {
+    return rounds.map(roundArr => {
+      const roundObj = {};
+      roundArr.forEach((match, index) => {
+        roundObj[`match${index}`] = {
+          p1: match[0] || null,
+          p2: match[1] || null,
+          result: match[2] || null
+        };
+      });
+      return roundObj;
+    });
+  }
+
+  // Save title only
+  function saveTournamentTitle() {
+    const title = document.getElementById("titleInput").value.trim();
+    if (!userId || !title) return;
+
+    db.collection("tournaments").doc(userId).set({
+      ...currentTournamentData,
+      title: title,
+      timestamp: new Date().toISOString()
+    }, { merge: true }).then(() => {
+      console.log("✅ Title saved.");
+      currentTournamentData.title = title;
+    }).catch(err => {
+      console.error("❌ Failed to save title:", err);
+    });
+  }
+
+  // Unified full save: players, rounds, title
   function saveTournamentData() {
     const safePlayers = players.map(p => ({
       kickUsername: typeof p.kickUsername === "string" ? p.kickUsername : "",
       slot: typeof p.slot === "string" ? p.slot : ""
     }));
-
     const safeRounds = prepareSafeRounds(rounds);
+    const title = document.getElementById("titleInput")?.value?.trim() || currentTournamentData.title || "Tournament";
 
-    db.collection("tournaments").doc(userId).set({
+    const updatedData = {
       players: safePlayers,
       rounds: safeRounds,
+      title: title,
       timestamp: new Date().toISOString()
-    }).then(() => {
-      console.log("✅ Tournament data saved to Firestore.");
+    };
+
+    db.collection("tournaments").doc(userId).set(updatedData).then(() => {
+      currentTournamentData = updatedData;
+      console.log("✅ Full tournament data saved.");
     }).catch(error => {
-      console.error("❌ Error saving to Firestore:", error);
+      console.error("❌ Error saving full data:", error);
     });
   }
 
-function saveTournamentTitle() {
-  const title = document.getElementById("titleInput").value.trim();
-  if (!userId || !title) return;
+  // Reset tournament
+  function startNewTournament() {
+    if (!userId) return;
 
-  db.collection("tournaments").doc(userId).set({
-    ...currentTournamentData, // maintain players/rounds
-    title: title,
-    timestamp: new Date().toISOString()
-  }, { merge: true }).then(() => {
-    console.log("✅ Title saved.");
-  }).catch(err => {
-    console.error("❌ Failed to save title:", err);
-  });
-}
+    players = [];
+    rounds = [];
+    updatePlayerList?.();
+    generateBracket?.();
+    document.getElementById("champion")?.classList.add("hidden");
 
-function startNewTournament() {
-  if (!userId) return;
+    const resetData = {
+      players: [],
+      rounds: [],
+      title: "",
+      timestamp: new Date().toISOString()
+    };
 
-  players = [];
-  rounds = [];
-  updatePlayerList();
-  generateBracket();
-  document.getElementById("champion")?.classList.add("hidden");
-
-  db.collection("tournaments").doc(userId).set({
-    players: [],
-    rounds: [],
-    title: "",
-    timestamp: new Date().toISOString()
-  }).then(() => {
-    document.getElementById("titleInput").value = "";
-    console.log("♻️ Started new tournament.");
-  });
-}
-
- </script>
+    db.collection("tournaments").doc(userId).set(resetData).then(() => {
+      document.getElementById("titleInput").value = "";
+      currentTournamentData = resetData;
+      console.log("♻️ Started new tournament.");
+    });
+  }
+</script>
 
 	
 
