@@ -79,92 +79,77 @@
     let slideDelays = [];
 
     function renderSlides(data) {
-      slideData = [];
-      slideDelays = [];
+  slideData = [];
 
-      const title = data.title || "Tournament";
-      const players = data.players || [];
-      const rounds = data.rounds || [];
+  const title = data.title || "Tournament";
+  const players = data.players || [];
+  const roundsRaw = data.rounds || [];
 
-      // 1. Current match-up
-      const currentMatch = rounds[0]?.find(m => !m[2] && m[0] && m[1]);
-      if (currentMatch) {
-        slideData.push(`<div class="slide"><h1>Current Match-up</h1><h2>${currentMatch[0].kickUsername} vs ${currentMatch[1].kickUsername}</h2></div>`);
-        slideDelays.push(30000); // 30s for current matchup
-      }
-
-      // 2. Title
-      slideData.push(`<div class="slide"><h1>${title}</h1></div>`);
-      slideDelays.push(3000);
-
-      // 3. Players 1–4
-      if (players.length >= 1) {
-        const chunk1 = players.slice(0, 4).map(p => `${p.kickUsername} (${p.slot})`).join("<br>");
-        slideData.push(`<div class="slide"><h2>Players</h2><h3>${chunk1}</h3></div>`);
-        slideDelays.push(3000);
-      }
-
-      // 4. Players 5–8
-      if (players.length > 4) {
-        const chunk2 = players.slice(4).map(p => `${p.kickUsername} (${p.slot})`).join("<br>");
-        slideData.push(`<div class="slide"><h2>Players</h2><h3>${chunk2}</h3></div>`);
-        slideDelays.push(3000);
-      }
-
-      // 5. Brackets with result or valid pending
-      const bracketNames = ["1A", "1B", "1C", "1D", "2A", "2B", "3A"];
-      let bracketCount = 0;
-      rounds.forEach((round, rIdx) => {
-        round.forEach((match, mIdx) => {
-          const p1 = match[0];
-          const p2 = match[1];
-          const result = match[2];
-          if (p1 && p2) {
-            const code = bracketNames[bracketCount++] || `R${rIdx+1}M${mIdx+1}`;
-            const winner = result?.winner?.kickUsername;
-            const line1 = winner === p1.kickUsername ? `<span class='highlight'>${p1.kickUsername}</span>` : p1.kickUsername;
-            const line2 = winner === p2.kickUsername ? `<span class='highlight'>${p2.kickUsername}</span>` : p2.kickUsername;
-            slideData.push(`<div class="slide"><h2>Bracket ${code}</h2><div class='bracket'>${line1} vs ${line2}</div></div>`);
-            slideDelays.push(3000);
-          }
-        });
-      });
-
-      // 6. Champion
-      const final = rounds[2]?.[0];
-      if (final && final[2] && final[2].winner) {
-        slideData.push(`<div class="slide"><h1>🏆 Champion</h1><h2>${final[2].winner.kickUsername}</h2></div>`);
-        slideDelays.push(3000);
-      }
-
-      slideIndex = 0;
-      renderNextSlide();
-      scheduleNextSlide();
+  // 🔁 Convert object-based rounds into array-based
+  const rounds = roundsRaw.map((roundObj) => {
+    if (Array.isArray(roundObj)) return roundObj;
+    const matches = [];
+    const keys = Object.keys(roundObj).filter(k => k.startsWith("match"));
+    keys.sort((a, b) => {
+      const aNum = parseInt(a.replace("match", ""));
+      const bNum = parseInt(b.replace("match", ""));
+      return aNum - bNum;
+    });
+    for (const key of keys) {
+      const match = roundObj[key];
+      if (match) matches.push([match.p1 || null, match.p2 || null, match.result || null]);
     }
+    return matches;
+  });
 
-    function renderNextSlide() {
-      slidesContainer.innerHTML = slideData
-        .map((content, i) => `<div class="slide ${i === slideIndex ? 'active' : ''}">${content}</div>`)
-        .join("");
-    }
+  // 1. Current match-up
+  const currentMatch = rounds[0]?.find(m => !m[2] && m[0] && m[1]);
+  if (currentMatch) {
+    slideData.push(`<div class="slide"><h1>Current Match-up</h1><h2>${currentMatch[0].kickUsername} vs ${currentMatch[1].kickUsername}</h2></div>`);
+  }
 
-    let slideTimeout = null;
-    function scheduleNextSlide() {
-      if (slideTimeout) clearTimeout(slideTimeout);
-      const delay = slideDelays[slideIndex] || 3000;
-      slideTimeout = setTimeout(() => {
-        slideIndex = (slideIndex + 1) % slideData.length;
-        renderNextSlide();
-        scheduleNextSlide();
-      }, delay);
-    }
+  // 2. Title
+  slideData.push(`<div class="slide"><h1>${title}</h1></div>`);
 
-    function fetchAndRender() {
-      if (!userId) return;
-      db.collection("tournaments").doc(userId).get().then(doc => {
-        if (doc.exists) {
-          renderSlides(doc.data());
-        }
+  // 3. Players 1-4
+  if (players.length >= 1) {
+    const chunk1 = players.slice(0, 4).map(p => `${p.kickUsername} (${p.slot})`).join("<br>");
+    slideData.push(`<div class="slide"><h2>Players</h2><h3>${chunk1}</h3></div>`);
+  }
+
+  // 4. Players 5-8
+  if (players.length > 4) {
+    const chunk2 = players.slice(4).map(p => `${p.kickUsername} (${p.slot})`).join("<br>");
+    slideData.push(`<div class="slide"><h2>Players</h2><h3>${chunk2}</h3></div>`);
+  }
+
+  // 5. Brackets
+  const bracketNames = ["1A", "1B", "1C", "1D", "2A", "2B", "3A"];
+  let bracketCount = 0;
+  rounds.forEach((round, rIdx) => {
+    round.forEach((match, mIdx) => {
+      const p1 = match[0];
+      const p2 = match[1];
+      const result = match[2];
+      if (p1 && p2) {
+        const code = bracketNames[bracketCount++] || `R${rIdx+1}M${mIdx+1}`;
+        const winner = result?.winner?.kickUsername;
+        const line1 = winner === p1.kickUsername ? `<span class='highlight'>${p1.kickUsername}</span>` : p1.kickUsername;
+        const line2 = winner === p2.kickUsername ? `<span class='highlight'>${p2.kickUsername}</span>` : p2.kickUsername;
+        slideData.push(`<div class="slide"><h2>Bracket ${code}</h2><div class='bracket'>${line1} vs ${line2}</div></div>`);
+      }
+    });
+  });
+
+  // 6. Champion
+  const final = rounds[2]?.[0];
+  if (final && final[2] && final[2].winner) {
+    slideData.push(`<div class="slide"><h1>🏆 Champion</h1><h2>${final[2].winner.kickUsername}</h2></div>`);
+  }
+
+  renderNextSlide();
+}
+
       });
     }
 
