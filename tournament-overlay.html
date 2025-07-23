@@ -112,37 +112,45 @@
 
 .player-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr); /* Use 1fr for flexible columns */
+  grid-template-columns: repeat(2, 1fr); /* 2 equal columns */
+  grid-template-rows: repeat(2, 1fr);    /* 2 equal rows */
   gap: 30px;
-  width: 100%; /* Fill parent */
-  padding: 0 40px; /* Optional: side padding inside gold frame */
+  width: 100%;
+  height: 100%;      /* Fill the gold frame height */
+  padding: 20px 40px; /* Add gap from frame borders */
 }
 
 .player-card {
-  background: rgba(255, 215, 0, 0.1);
+  background: rgba(255, 215, 0, 0.15);
   border: 2px solid gold;
   border-radius: 12px;
-  padding: 16px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   text-align: center;
-  width: 100%; /* 🔥 Make it stretch full width of grid cell */
+  width: 100%;
+  height: 100%;
   color: white;
   font-family: 'Orbitron', sans-serif;
   box-shadow: 0 0 10px gold;
 }
 
 .player-card .name {
-  font-weight: 800;
-  font-size: 20px;
-  margin-bottom: 6px;
+  font-weight: 900;
+  font-size: 32px;
+  margin-bottom: 10px;
   color: #00fff7;
-  text-shadow: 0 0 3px #00fff7;
+  text-shadow: 0 0 5px #00fff7;
 }
 
 .player-card .slot {
-  font-size: 16px;
+  font-size: 24px;
   color: #fff;
-  opacity: 0.85;
+  opacity: 0.9;
 }
+
 
   </style>
 </head>
