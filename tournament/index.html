@@ -989,7 +989,7 @@ function saveEdit(button, roundIndex, matchIndex, playerIndex) {
   const oldName = old.kickUsername;
   const oldSlot = old.slot;
 
-  // Update in players list
+  // ✅ Update in players list
   players.forEach(p => {
     if (p.kickUsername === oldName && p.slot === oldSlot) {
       p.kickUsername = username;
@@ -997,11 +997,16 @@ function saveEdit(button, roundIndex, matchIndex, playerIndex) {
     }
   });
 
-  // Update in all rounds
+  // ✅ Update in all rounds, safely
   rounds.forEach(round => {
     round.forEach(match => {
       match.forEach(p => {
-        if (p && p.kickUsername === oldName && p.slot === oldSlot) {
+        if (
+          p &&
+          typeof p === "object" &&
+          p.kickUsername === oldName &&
+          p.slot === oldSlot
+        ) {
           p.kickUsername = username;
           p.slot = slot;
         }
@@ -1010,10 +1015,9 @@ function saveEdit(button, roundIndex, matchIndex, playerIndex) {
   });
 
   generateBracket();
-
-if (userId) saveTournamentData();
-
+  if (userId) saveTournamentData();
 }
+
 
 function addLiveTotalXListeners() {
   document.querySelectorAll(".match").forEach(matchDiv => {
