@@ -112,44 +112,58 @@
 
 .player-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr); /* 2 equal columns */
-  grid-template-rows: repeat(2, 1fr);    /* 2 equal rows */
+  grid-template-columns: repeat(2, 1fr); /* 2 columns equally wide */
+  grid-template-rows: repeat(2, 1fr);    /* 2 rows equally tall */
   gap: 30px;
-  width: 100%;
-  height: 100%;      /* Fill the gold frame height */
-  padding: 20px 40px; /* Add gap from frame borders */
+  width: 95%;
+  height: 80%; /* Take most of gold container */
+  padding: 10px;
 }
 
 .player-card {
-  background: rgba(255, 215, 0, 0.15);
+  background: rgba(255, 215, 0, 0.1);
   border: 2px solid gold;
   border-radius: 12px;
-  padding: 12px;
+  text-align: center;
+  color: white;
+  font-family: 'Orbitron', sans-serif;
+  box-shadow: 0 0 10px gold;
+
+  /* ✅ Fixed dimensions via grid */
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  text-align: center;
+
+  /* ✅ Fixed size regardless of text */
   width: 100%;
   height: 100%;
-  color: white;
-  font-family: 'Orbitron', sans-serif;
-  box-shadow: 0 0 10px gold;
+
+  /* Prevent text from overflowing */
+  overflow: hidden;
+  padding: 10px;
 }
 
 .player-card .name {
-  font-weight: 900;
-  font-size: 32px;
-  margin-bottom: 10px;
+  font-weight: 800;
+  font-size: 24px;
   color: #00fff7;
-  text-shadow: 0 0 5px #00fff7;
+  text-shadow: 0 0 3px #00fff7;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 90%;
 }
 
 .player-card .slot {
-  font-size: 24px;
-  color: #fff;
-  opacity: 0.9;
+  font-size: 18px;
+  opacity: 0.85;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 90%;
 }
+
 
 
   </style>
