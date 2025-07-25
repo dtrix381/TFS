@@ -637,22 +637,31 @@ function setupRealtimeUpdates() {
     renderSlides(data);
 
     const currentMatchIndex = slideData.findIndex(s => s.includes("CURRENT MATCH-UP"));
+
+    // ✅ Always clear the previous interval first!
+    if (autoSlideInterval) clearInterval(autoSlideInterval);
+
     if (currentMatchIndex !== -1) {
       slideIndex = currentMatchIndex;
       renderNextSlide();
 
-      if (autoSlideInterval) clearInterval(autoSlideInterval);
-
       slideResetCooldown = true;
 
-      // ⏳ Wait 30s before restarting
       setTimeout(() => {
         autoSlideInterval = setInterval(nextSlide, 5000);
         slideResetCooldown = false;
       }, 30000);
+    } else {
+      // ✅ fallback if no "CURRENT MATCH-UP"
+      slideIndex = 0;
+      renderNextSlide();
+
+      // ✅ Restart normal interval
+      autoSlideInterval = setInterval(nextSlide, 5000);
     }
   });
 }
+
 
 function handleInputFocus() {
   const currentMatchIndex = slideData.findIndex(s => s.includes("CURRENT MATCH-UP"));
