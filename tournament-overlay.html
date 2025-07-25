@@ -626,20 +626,7 @@ let hasFocusedCurrentMatch = false;
 let lastFocusedMatchKey = null; // 🆕 Track last match
 let slideResumeTimeout = null;
 
-function playWinnerAnimation() {
-      const activeSlide = document.querySelector('.slide.active');
-      if (!activeSlide) return;
-
-      const winnerBox = activeSlide.querySelector('.winner-box');
-      const loserBox = activeSlide.querySelector('.loser-box');
-
-      if (winnerBox && loserBox) {
-        winnerBox.classList.add('animate');
-        loserBox.classList.add('animate');
-      }
-    }
-
-    function setupRealtimeUpdates() {
+function setupRealtimeUpdates() {
   if (!userId) return;
 
   db.collection("tournaments").doc(userId).onSnapshot(doc => {
@@ -650,7 +637,6 @@ function playWinnerAnimation() {
 
     const currentMatchIndex = slideData.findIndex(s => s.includes("CURRENT MATCH-UP"));
 
-    // 🆕 Extract current match ID or signature (e.g., player names) from HTML
     let currentMatchKey = null;
     if (currentMatchIndex !== -1) {
       const matchSlide = slideData[currentMatchIndex];
@@ -659,47 +645,51 @@ function playWinnerAnimation() {
       currentMatchKey = matchKeyMatch ? matchKeyMatch[1] : null;
     }
 
-    // ✅ Clear old timers
+    // ✅ Clear timers
     if (autoSlideInterval) clearInterval(autoSlideInterval);
     if (slideResumeTimeout) clearTimeout(slideResumeTimeout);
 
-    // ✅ If it's a new current match, allow focus again
-    if (currentMatchKey && currentMatchKey !== lastFocusedMatchKey) {
-      hasFocusedCurrentMatch = false;
-      lastFocusedMatchKey = currentMatchKey;
+    const slide = document.querySelector('.slide.active');
+    const hasResult = slide && slide.innerHTML.includes('WINNER') && slide.innerHTML.includes('LOSER');
+
+    // ✅ FORCE re-show current match when a result appears
+    if (currentMatchIndex !== -1 && hasResult) {
+      slideIndex = currentMatchIndex;
+      renderNextSlide();
+      playWinnerAnimation();
+
+      slideResetCooldown = true;
+      hasFocusedCurrentMatch = true;
+
+      slideResumeTimeout = setTimeout(() => {
+        autoSlideInterval = setInterval(nextSlide, 5000);
+        slideResetCooldown = false;
+      }, 35000); // Give time for animation
     }
 
-    if (currentMatchIndex !== -1 && !hasFocusedCurrentMatch) {
+    // 🔁 Fallback: show Current Match when not yet focused
+    else if (currentMatchIndex !== -1 && !hasFocusedCurrentMatch) {
       slideIndex = currentMatchIndex;
       renderNextSlide();
 
       hasFocusedCurrentMatch = true;
-          slideResetCooldown = true;
+      slideResetCooldown = true;
 
-          const slide = document.querySelector('.slide.active');
-          const hasResult = slide && slide.innerHTML.includes('WINNER') && slide.innerHTML.includes('LOSER');
-
-          if (hasResult) {
-            setTimeout(() => playWinnerAnimation(), 500); // Let the DOM settle
-            slideResumeTimeout = setTimeout(() => {
-              autoSlideInterval = setInterval(nextSlide, 5000);
-              slideResetCooldown = false;
-            }, 35000); // 30s + 5s delay after animation
-          } else {
-            slideResumeTimeout = setTimeout(() => {
-              autoSlideInterval = setInterval(nextSlide, 5000);
-              slideResetCooldown = false;
-            }, 30000);
-          }
-        } else {
-          if (!slideResetCooldown) {
-            slideIndex = (slideIndex + 1) % slideData.length;
-            renderNextSlide();
-            autoSlideInterval = setInterval(nextSlide, 5000);
-          }
-        }
-      });
+      slideResumeTimeout = setTimeout(() => {
+        autoSlideInterval = setInterval(nextSlide, 5000);
+        slideResetCooldown = false;
+      }, 30000);
     }
+
+    // 🌐 Normal auto-slide mode
+    else if (!slideResetCooldown) {
+      slideIndex = (slideIndex + 1) % slideData.length;
+      renderNextSlide();
+      autoSlideInterval = setInterval(nextSlide, 5000);
+    }
+  });
+}
+
 
 
 function handleInputFocus() {
