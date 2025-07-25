@@ -729,27 +729,29 @@ function prepareSafeRounds(rounds) {
 
   // Unified full save: players, rounds, title
   function saveTournamentData() {
-    const safePlayers = players.map(p => ({
-      kickUsername: typeof p.kickUsername === "string" ? p.kickUsername : "",
-      slot: typeof p.slot === "string" ? p.slot : ""
-    }));
-    const safeRounds = prepareSafeRounds(rounds);
-    const title = document.getElementById("titleInput")?.value?.trim() || currentTournamentData.title || "Tournament";
+  const safePlayers = players.map(p => ({
+    kickUsername: typeof p.kickUsername === "string" ? p.kickUsername : "",
+    slot: typeof p.slot === "string" ? p.slot : ""
+  }));
 
-    const updatedData = {
-      players: safePlayers,
-      rounds: safeRounds,
-      title: title,
-      timestamp: new Date().toISOString()
-    };
+  const safeRounds = prepareSafeRounds(rounds); // <-- this must be here
 
-    db.collection("tournaments").doc(userId).set(updatedData).then(() => {
-      currentTournamentData = updatedData;
-      console.log("✅ Full tournament data saved.");
-    }).catch(error => {
-      console.error("❌ Error saving full data:", error);
-    });
-  }
+  const title = document.getElementById("titleInput")?.value?.trim() || currentTournamentData.title || "Tournament";
+
+  const updatedData = {
+    players: safePlayers,
+    rounds: safeRounds,
+    title: title,
+    timestamp: new Date().toISOString()
+  };
+
+  db.collection("tournaments").doc(userId).set(updatedData).then(() => {
+    currentTournamentData = updatedData;
+    console.log("✅ Full tournament data saved.");
+  }).catch(error => {
+    console.error("❌ Error saving full data:", error);
+  });
+}
 
   // Reset tournament
   function startNewTournament() {
@@ -1113,14 +1115,22 @@ function addLiveTotalXListeners() {
         const totalX = (!isNaN(buy) && !isNaN(pay) && buy > 0) ? (pay / buy).toFixed(2) : 0;
         totalXSpan.textContent = `Total X: ${totalX}x`;
 
-        // ✅ Now update the rounds data directly
+        // ✅ Update rounds array correctly
         if (
           rounds?.[roundIndex]?.[matchIndex] &&
           Array.isArray(rounds[roundIndex][matchIndex])
         ) {
-          const result = rounds[roundIndex][matchIndex][2] || { p1: {}, p2: {} };
-          const key = playerIdx === 0 ? 'p1' : 'p2';
+          let result = rounds[roundIndex][matchIndex][2];
 
+          if (!result || typeof result !== 'object') {
+            result = {
+              winner: null,
+              p1: {},
+              p2: {}
+            };
+          }
+
+          const key = playerIdx === 0 ? 'p1' : 'p2';
           result[key] = {
             buyAmount: buy || 0,
             totalPay: pay || 0,
@@ -1129,7 +1139,7 @@ function addLiveTotalXListeners() {
 
           rounds[roundIndex][matchIndex][2] = result;
 
-          // ✅ Now this will save correctly
+          // ✅ Now safely save it to Firestore
           if (userId) saveTournamentData();
         }
       };
@@ -1139,7 +1149,6 @@ function addLiveTotalXListeners() {
     });
   });
 }
-
 
 
 function generateWinner(button, roundIndex, matchIndex, code) {
