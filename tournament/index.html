@@ -1110,38 +1110,31 @@ function addLiveTotalXListeners() {
       if (!buyInput || !payInput || !totalXSpan) return;
 
       const updateTotalX = () => {
-        const buy = parseFloat(buyInput.value);
-        const pay = parseFloat(payInput.value);
-        const totalX = (!isNaN(buy) && !isNaN(pay) && buy > 0) ? (pay / buy).toFixed(2) : 0;
+        const buy = parseFloat(buyInput.value) || 0;
+        const pay = parseFloat(payInput.value) || 0;
+        const totalX = (buy > 0) ? (pay / buy).toFixed(2) : "0";
         totalXSpan.textContent = `Total X: ${totalX}x`;
 
-        // ✅ Update rounds array correctly
-        if (
-          rounds?.[roundIndex]?.[matchIndex] &&
-          Array.isArray(rounds[roundIndex][matchIndex])
-        ) {
-          let result = rounds[roundIndex][matchIndex][2];
+        // ✅ Update rounds in memory
+        if (!rounds[roundIndex]) rounds[roundIndex] = [];
+        if (!rounds[roundIndex][matchIndex]) rounds[roundIndex][matchIndex] = [null, null, null];
 
-          if (!result || typeof result !== 'object') {
-            result = {
-              winner: null,
-              p1: {},
-              p2: {}
-            };
-          }
-
-          const key = playerIdx === 0 ? 'p1' : 'p2';
-          result[key] = {
-            buyAmount: buy || 0,
-            totalPay: pay || 0,
-            totalX: parseFloat(totalX) || 0
-          };
-
-          rounds[roundIndex][matchIndex][2] = result;
-
-          // ✅ Now safely save it to Firestore
-          if (userId) saveTournamentData();
+        let result = rounds[roundIndex][matchIndex][2];
+        if (!result || typeof result !== "object") {
+          result = { winner: null, p1: {}, p2: {} };
         }
+
+        const key = playerIdx === 0 ? "p1" : "p2";
+        result[key] = {
+          buyAmount: buy,
+          totalPay: pay,
+          totalX: parseFloat(totalX)
+        };
+
+        rounds[roundIndex][matchIndex][2] = result;
+
+        // ✅ Trigger save
+        if (userId) saveTournamentData();
       };
 
       buyInput.addEventListener("input", updateTotalX);
