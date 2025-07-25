@@ -428,24 +428,23 @@ if (currentMatch) {
   const p2Stats = result?.p2;
   const winner = result?.winner?.kickUsername;
 
-  const p1HasX = p1Stats?.totalX > 0;
-  const p2HasX = p2Stats?.totalX > 0;
+  const bothFinished = p1Stats?.totalX > 0 && p2Stats?.totalX > 0 && winner;
 
-  const getMatchStatus = (playerName) => {
-    if (!p1HasX || !p2HasX) return ""; // No label if not both finished
-    return playerName === winner ? 'WINNER' : 'LOSER';
+  const getMatchStatus = (username) => {
+    if (!bothFinished) return "";
+    return username === winner ? 'WINNER' : 'LOSER';
   };
 
-  const getStatusClass = (playerName) => {
-    if (!p1HasX || !p2HasX) return "";
-    return playerName === winner ? "highlight" : "loser";
+  const getBoxClass = (username) => {
+    if (!bothFinished) return "";
+    return username === winner ? 'winner-box' : 'loser-box';
   };
 
   slideData.push(`
     <div class="match-slide">
       <h2 class="round-label">CURRENT MATCH-UP • ${currentRoundTitle}</h2>
       <div class="match-container alt-match">
-        <div class="player-box-alt ${getStatusClass(p1.kickUsername)}">
+        <div class="player-box-alt ${getBoxClass(p1.kickUsername)}">
           <div class="name">${p1.kickUsername}</div>
           <div class="slot">${p1.slot}</div>
           ${p1Stats ? `
@@ -458,7 +457,7 @@ if (currentMatch) {
           ` : ''}
         </div>
         <div class="vs-text">VS</div>
-        <div class="player-box-alt ${getStatusClass(p2.kickUsername)}">
+        <div class="player-box-alt ${getBoxClass(p2.kickUsername)}">
           <div class="name">${p2.kickUsername}</div>
           <div class="slot">${p2.slot}</div>
           ${p2Stats ? `
