@@ -504,7 +504,6 @@ if (currentMatch) {
 // 5. Bracket slides — one per match
 rounds.forEach((round, rIdx) => {
   const roundTitle = bracketRounds[rIdx] || `ROUND ${rIdx + 1}`;
-
   const isDone = !!result && result.p1 && result.p2 && result.winner;
   round.forEach(match => {
     const p1 = match[0];
