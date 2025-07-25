@@ -719,7 +719,19 @@ function handleInputFocus() {
 
 
     document.addEventListener('input', handleInputFocus);
+    
+function playWinnerAnimation() {
+  const slide = document.querySelector('.slide.active');
+  if (!slide) return;
 
+  const winnerBox = slide.querySelector('.winner-box');
+  const loserBox = slide.querySelector('.loser-box');
+
+  if (winnerBox) winnerBox.classList.add("animate");
+  if (loserBox) loserBox.classList.add("animate");
+
+  // Optional: Add extra effects like sound or confetti if you want
+}
     setupRealtimeUpdates();
   </script>
 </body>
