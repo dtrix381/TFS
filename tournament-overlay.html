@@ -638,8 +638,9 @@ function setupRealtimeUpdates() {
 
     const currentMatchIndex = slideData.findIndex(s => s.includes("CURRENT MATCH-UP"));
 
-    // ✅ Always clear the previous interval first!
+    // ✅ Clear any existing timers and intervals
     if (autoSlideInterval) clearInterval(autoSlideInterval);
+    if (slideResumeTimeout) clearTimeout(slideResumeTimeout);
 
     if (currentMatchIndex !== -1) {
       slideIndex = currentMatchIndex;
@@ -647,16 +648,16 @@ function setupRealtimeUpdates() {
 
       slideResetCooldown = true;
 
-      setTimeout(() => {
+      // ✅ Set new delayed interval with safety
+      slideResumeTimeout = setTimeout(() => {
         autoSlideInterval = setInterval(nextSlide, 5000);
         slideResetCooldown = false;
       }, 30000);
     } else {
-      // ✅ fallback if no "CURRENT MATCH-UP"
       slideIndex = 0;
       renderNextSlide();
 
-      // ✅ Restart normal interval
+      // ✅ Start regular interval
       autoSlideInterval = setInterval(nextSlide, 5000);
     }
   });
@@ -670,10 +671,11 @@ function handleInputFocus() {
     renderNextSlide();
 
     if (autoSlideInterval) clearInterval(autoSlideInterval);
+    if (slideResumeTimeout) clearTimeout(slideResumeTimeout);
+
     slideResetCooldown = true;
 
-    // ⏳ Wait 30s before restarting
-    setTimeout(() => {
+    slideResumeTimeout = setTimeout(() => {
       autoSlideInterval = setInterval(nextSlide, 5000);
       slideResetCooldown = false;
     }, 30000);
