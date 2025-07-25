@@ -376,11 +376,15 @@
       50% { background: rgba(255, 0, 0, 0.4); }
     }
     .winner-box.animate {
-      animation: fillGreenBorder 1.5s ease forwards;
-    }
-    .loser-box.animate {
-      animation: fillRedBorder 1.5s ease forwards, crackShake 0.6s ease-in-out 1s forwards, crackFlash 0.6s ease-in-out 1s forwards;
-    }
+  animation: fillGreenBorder 1.5s ease forwards;
+}
+.loser-box.animate {
+  animation:
+    fillRedBorder 1.5s ease forwards,
+    crackShake 0.6s ease-in-out 1s forwards,
+    crackFlash 0.6s ease-in-out 1s forwards;
+}
+
   </style>
 </head>
 <body>
@@ -635,68 +639,68 @@ function setupRealtimeUpdates() {
     if (!doc.exists) return;
     const data = doc.data();
 
-    renderSlides(data);
+    renderSlides(data); // re-render all slides from Firestore
 
     const currentMatchIndex = slideData.findIndex(s => s.includes("CURRENT MATCH-UP"));
 
-    // Clear previous timers
-    if (autoSlideInterval) {
-      clearInterval(autoSlideInterval);
-      autoSlideInterval = null;
-    }
-    if (slideResumeTimeout) {
-      clearTimeout(slideResumeTimeout);
-      slideResumeTimeout = null;
-    }
+    // 🔄 Clear previous timers
+    clearInterval(autoSlideInterval);
+    clearTimeout(slideResumeTimeout);
+    autoSlideInterval = null;
+    slideResumeTimeout = null;
 
     const slideIsMatch = currentMatchIndex !== -1;
-if (slideIsMatch) {
-  slideIndex = currentMatchIndex;
-  renderNextSlide();
 
-  setTimeout(() => {
-    requestAnimationFrame(() => {
-      const slide = document.querySelector(".slide.active");
-      if (!slide) return;
+    if (slideIsMatch) {
+      slideIndex = currentMatchIndex;
+      renderNextSlide();
 
-      const winnerBox = slide.querySelector(".winner-box");
-      const loserBox = slide.querySelector(".loser-box");
+      // Wait a bit to ensure DOM is updated
+      setTimeout(() => {
+        const slide = document.querySelector(".slide.active");
+        const winnerBox = slide?.querySelector(".winner-box");
+        const loserBox = slide?.querySelector(".loser-box");
+        const currentWinnerName = winnerBox?.querySelector(".name")?.textContent;
 
-      const currentWinnerName = winnerBox?.querySelector(".name")?.textContent;
+        const animationNeeded =
+          winnerBox &&
+          loserBox &&
+          currentWinnerName &&
+          currentWinnerName !== lastWinner;
 
-      if (winnerBox && loserBox && currentWinnerName && currentWinnerName !== lastWinner) {
-        lastWinner = currentWinnerName;
-        playWinnerAnimation();
+        if (animationNeeded) {
+          lastWinner = currentWinnerName;
+          playWinnerAnimation();
 
-        slideResetCooldown = true;
-        hasFocusedCurrentMatch = true;
+          slideResetCooldown = true;
+          hasFocusedCurrentMatch = true;
 
-        slideResumeTimeout = setTimeout(() => {
+          slideResumeTimeout = setTimeout(() => {
+            autoSlideInterval = setInterval(nextSlide, 5000);
+            slideResetCooldown = false;
+            hasFocusedCurrentMatch = false;
+          }, 35000); // ⏱ 5s animation + 30s wait
+        } else if (!hasFocusedCurrentMatch) {
+          slideResetCooldown = true;
+          hasFocusedCurrentMatch = true;
+
+          slideResumeTimeout = setTimeout(() => {
+            autoSlideInterval = setInterval(nextSlide, 5000);
+            slideResetCooldown = false;
+            hasFocusedCurrentMatch = false;
+          }, 30000);
+        } else {
           autoSlideInterval = setInterval(nextSlide, 5000);
-          slideResetCooldown = false;
-          hasFocusedCurrentMatch = false;
-        }, 35000); // 5s anim + 30s wait
-      } else if (!hasFocusedCurrentMatch) {
-        slideResetCooldown = true;
-        hasFocusedCurrentMatch = true;
-
-        slideResumeTimeout = setTimeout(() => {
-          autoSlideInterval = setInterval(nextSlide, 5000);
-          slideResetCooldown = false;
-          hasFocusedCurrentMatch = false;
-        }, 30000);
-      } else {
-        autoSlideInterval = setInterval(nextSlide, 5000);
-      }
-    });
-  }, 100); // Let DOM render before querying elements
-} else {
-  slideResetCooldown = false;
-  autoSlideInterval = setInterval(nextSlide, 5000);
-}
-
+        }
+      }, 300); // ✅ Wait 300ms for DOM to render properly
+    } else {
+      // Not on current match-up — normal rotation
+      slideResetCooldown = false;
+      autoSlideInterval = setInterval(nextSlide, 5000);
+    }
   });
 }
+
 
 function handleInputFocus() {
   const currentMatchIndex = slideData.findIndex(s => s.includes("CURRENT MATCH-UP"));
