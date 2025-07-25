@@ -695,17 +695,7 @@ function setupRealtimeUpdates() {
 
 
 
-  slideResetCooldown = true;
-  hasFocusedCurrentMatch = true;
-
-  slideResumeTimeout = setTimeout(() => {
-    autoSlideInterval = setInterval(nextSlide, 5000);
-    slideResetCooldown = false;
-  }, 35000); // Enough time for animations
-}
-
-
-    // 🔁 Fallback: show Current Match when not yet focused
+  / 🔁 Fallback: show Current Match when not yet focused
     else if (currentMatchIndex !== -1 && !hasFocusedCurrentMatch) {
       slideIndex = currentMatchIndex;
       renderNextSlide();
