@@ -712,27 +712,26 @@ setTimeout(() => {
 function handleInputFocus() {
   const currentMatchIndex = slideData.findIndex(s => s.includes("CURRENT MATCH-UP"));
 
-  // Always clear timers when user types
   if (autoSlideInterval) clearInterval(autoSlideInterval);
   if (slideResumeTimeout) clearTimeout(slideResumeTimeout);
 
-  // If current match exists, jump to it and wait 30s
   if (currentMatchIndex !== -1) {
     slideIndex = currentMatchIndex;
     renderNextSlide();
 
     slideResetCooldown = true;
+    hasFocusedCurrentMatch = false; // ✅ allow new results to refocus
 
     slideResumeTimeout = setTimeout(() => {
       autoSlideInterval = setInterval(nextSlide, 5000);
       slideResetCooldown = false;
     }, 30000);
   } else {
-    // If no current match, resume normal sliding immediately
     slideResetCooldown = false;
     autoSlideInterval = setInterval(nextSlide, 5000);
   }
 }
+
 
 
     document.addEventListener('input', handleInputFocus);
