@@ -688,34 +688,6 @@ function setupRealtimeUpdates() {
   });
 }
 
-
-
-
-  // 🔁 Fallback: show Current Match when not yet focused
-    else if (currentMatchIndex !== -1 && !hasFocusedCurrentMatch) {
-      slideIndex = currentMatchIndex;
-      renderNextSlide();
-
-      hasFocusedCurrentMatch = true;
-      slideResetCooldown = true;
-
-      slideResumeTimeout = setTimeout(() => {
-        autoSlideInterval = setInterval(nextSlide, 5000);
-        slideResetCooldown = false;
-      }, 30000);
-    }
-
-    // 🌐 Normal auto-slide mode
-    else if (!slideResetCooldown) {
-      slideIndex = (slideIndex + 1) % slideData.length;
-      renderNextSlide();
-      autoSlideInterval = setInterval(nextSlide, 5000);
-    }
-  });
-}
-
-
-
 function handleInputFocus() {
   const currentMatchIndex = slideData.findIndex(s => s.includes("CURRENT MATCH-UP"));
 
