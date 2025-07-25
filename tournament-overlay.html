@@ -638,59 +638,56 @@ function setupRealtimeUpdates() {
 
     const currentMatchIndex = slideData.findIndex(s => s.includes("CURRENT MATCH-UP"));
 
-    let currentMatchKey = null;
-    if (currentMatchIndex !== -1) {
-      const matchSlide = slideData[currentMatchIndex];
-      const matchNameRegex = /CURRENT MATCH-UP\s*•\s*(.*?)<\/h2>/;
-      const matchKeyMatch = matchSlide.match(matchNameRegex);
-      currentMatchKey = matchKeyMatch ? matchKeyMatch[1] : null;
-    }
-
-    // ✅ Clear timers
+    // Clear previous timers
     if (autoSlideInterval) clearInterval(autoSlideInterval);
     if (slideResumeTimeout) clearTimeout(slideResumeTimeout);
 
-    const slide = document.querySelector('.slide.active');
-
-    // ✅ FORCE re-show current match when a result appears
+    // Handle current match-up
     if (currentMatchIndex !== -1) {
-  // Force current match-up display
-  slideIndex = currentMatchIndex;
-  renderNextSlide();
+      slideIndex = currentMatchIndex;
+      renderNextSlide();
 
-  // Wait a bit to ensure DOM is updated before checking for WINNER/LOSER
-  setTimeout(() => {
-    const activeSlide = document.querySelector('.slide.active');
-    const hasResult =
-      activeSlide &&
-      activeSlide.querySelector('.winner-box') &&
-      activeSlide.querySelector('.loser-box');
+      setTimeout(() => {
+        const activeSlide = document.querySelector('.slide.active');
+        const winnerBox = activeSlide?.querySelector('.winner-box');
+        const loserBox = activeSlide?.querySelector('.loser-box');
+        const hasResult = winnerBox && loserBox;
 
-    if (hasResult) {
-      console.log("✅ Winner detected. Starting animation...");
-      playWinnerAnimation();
+        if (hasResult) {
+          console.log("✅ Winner detected. Playing animation.");
+          playWinnerAnimation();
 
-      // Pause auto sliding for 35s
-      if (autoSlideInterval) clearInterval(autoSlideInterval);
-      if (slideResumeTimeout) clearTimeout(slideResumeTimeout);
-      slideResetCooldown = true;
-      hasFocusedCurrentMatch = true;
+          slideResetCooldown = true;
+          hasFocusedCurrentMatch = true;
 
-      slideResumeTimeout = setTimeout(() => {
-        autoSlideInterval = setInterval(nextSlide, 5000);
-        slideResetCooldown = false;
-      }, 35000);
-    } else if (!hasFocusedCurrentMatch) {
-      // Fallback: no result yet, but still show the current match
-      hasFocusedCurrentMatch = true;
-      slideResetCooldown = true;
-      slideResumeTimeout = setTimeout(() => {
-        autoSlideInterval = setInterval(nextSlide, 5000);
-        slideResetCooldown = false;
-      }, 30000);
+          slideResumeTimeout = setTimeout(() => {
+            autoSlideInterval = setInterval(nextSlide, 5000);
+            slideResetCooldown = false;
+            hasFocusedCurrentMatch = false;
+          }, 35000);
+        } else if (!hasFocusedCurrentMatch) {
+          console.log("⏳ No result yet, but focusing match.");
+          slideResetCooldown = true;
+          hasFocusedCurrentMatch = true;
+
+          slideResumeTimeout = setTimeout(() => {
+            autoSlideInterval = setInterval(nextSlide, 5000);
+            slideResetCooldown = false;
+            hasFocusedCurrentMatch = false;
+          }, 30000);
+        } else {
+          // Already focused, resume normal
+          autoSlideInterval = setInterval(nextSlide, 5000);
+        }
+      }, 200); // Wait DOM update
+    } else {
+      // No current match, resume normal slider
+      slideResetCooldown = false;
+      autoSlideInterval = setInterval(nextSlide, 5000);
     }
-  }, 200); // Small delay lets DOM apply .winner-box/.loser-box
+  });
 }
+
 
 
 
