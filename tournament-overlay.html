@@ -410,61 +410,70 @@
         return matches;
       });
 
-      // Current Match-Up
-      let currentMatch = null;
-      let currentRoundTitle = "";
-      for (let i = 0; i < rounds.length; i++) {
-        const match = rounds[i].find(m => m[0] && m[1] && (!m[2] || !m[2].winner));
-        if (match) {
-          currentMatch = match;
-          currentRoundTitle = bracketRounds[i] || `ROUND ${i + 1}`;
-          break;
-        }
-      }
+// Current Match-Up
+let currentMatch = null;
+let currentRoundTitle = "";
+for (let i = 0; i < rounds.length; i++) {
+  const match = rounds[i].find(m => m[0] && m[1] && (!m[2] || !m[2].winner));
+  if (match) {
+    currentMatch = match;
+    currentRoundTitle = bracketRounds[i] || `ROUND ${i + 1}`;
+    break;
+  }
+}
 
-      if (currentMatch) {
-        const [p1, p2, result] = currentMatch;
-        const p1Stats = result?.p1;
-        const p2Stats = result?.p2;
-        const winner = result?.winner?.kickUsername;
+if (currentMatch) {
+  const [p1, p2, result] = currentMatch;
+  const p1Stats = result?.p1;
+  const p2Stats = result?.p2;
+  const winner = result?.winner?.kickUsername;
 
-        slideData.push(`
-          <div class="match-slide">
-            <h2 class="round-label">CURRENT MATCH-UP • ${currentRoundTitle}</h2>
-            <div class="match-container alt-match">
-              <div class="player-box-alt ${getStatusClass(p1.kickUsername, winner)}">
-                <div class="name">${p1.kickUsername}</div>
-                <div class="slot">${p1.slot}</div>
-                ${p1Stats ? `
-                  <div class="result-info fade-in">
-                    <span class="${winner === p1.kickUsername ? 'winner' : 'loser'}">
-                      ${winner === p1.kickUsername ? 'WINNER' : 'LOSER'}
-                    </span><br>
-                    Buys: $${p1Stats.buyAmount ?? '-'}<br>
-                    Pays: $${p1Stats.totalPay ?? '-'}<br>
-                    Total x: ${p1Stats.totalX ?? '-'}x
-                  </div>
-                ` : ''}
-              </div>
-              <div class="vs-text">VS</div>
-              <div class="player-box-alt ${getStatusClass(p2.kickUsername, winner)}">
-                <div class="name">${p2.kickUsername}</div>
-                <div class="slot">${p2.slot}</div>
-                ${p2Stats ? `
-                  <div class="result-info fade-in">
-                    <span class="${winner === p2.kickUsername ? 'winner' : 'loser'}">
-                      ${winner === p2.kickUsername ? 'WINNER' : 'LOSER'}
-                    </span><br>
-                    Buys: $${p2Stats.buyAmount ?? '-'}<br>
-                    Pays: $${p2Stats.totalPay ?? '-'}<br>
-                    Total x: ${p2Stats.totalX ?? '-'}x
-                  </div>
-                ` : ''}
-              </div>
+  const p1HasX = p1Stats?.totalX > 0;
+  const p2HasX = p2Stats?.totalX > 0;
+
+  const getMatchStatus = (playerName) => {
+    if (!p1HasX || !p2HasX) return ""; // No label if not both finished
+    return playerName === winner ? 'WINNER' : 'LOSER';
+  };
+
+  const getStatusClass = (playerName) => {
+    if (!p1HasX || !p2HasX) return "";
+    return playerName === winner ? "highlight" : "loser";
+  };
+
+  slideData.push(`
+    <div class="match-slide">
+      <h2 class="round-label">CURRENT MATCH-UP • ${currentRoundTitle}</h2>
+      <div class="match-container alt-match">
+        <div class="player-box-alt ${getStatusClass(p1.kickUsername)}">
+          <div class="name">${p1.kickUsername}</div>
+          <div class="slot">${p1.slot}</div>
+          ${p1Stats ? `
+            <div class="result-info fade-in">
+              ${getMatchStatus(p1.kickUsername) ? `<span class="${getMatchStatus(p1.kickUsername).toLowerCase()}">${getMatchStatus(p1.kickUsername)}</span><br>` : ""}
+              Buys: $${p1Stats.buyAmount ?? '-'}<br>
+              Pays: $${p1Stats.totalPay ?? '-'}<br>
+              Total x: ${p1Stats.totalX ?? '-'}x
             </div>
-          </div>
-        `);
-      }
+          ` : ''}
+        </div>
+        <div class="vs-text">VS</div>
+        <div class="player-box-alt ${getStatusClass(p2.kickUsername)}">
+          <div class="name">${p2.kickUsername}</div>
+          <div class="slot">${p2.slot}</div>
+          ${p2Stats ? `
+            <div class="result-info fade-in">
+              ${getMatchStatus(p2.kickUsername) ? `<span class="${getMatchStatus(p2.kickUsername).toLowerCase()}">${getMatchStatus(p2.kickUsername)}</span><br>` : ""}
+              Buys: $${p2Stats.buyAmount ?? '-'}<br>
+              Pays: $${p2Stats.totalPay ?? '-'}<br>
+              Total x: ${p2Stats.totalX ?? '-'}x
+            </div>
+          ` : ''}
+        </div>
+      </div>
+    </div>
+  `);
+}
 
       // Tournament Title
       slideData.push(`<div><h1 class="tournament-title">${title}</h1></div>`);
