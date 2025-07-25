@@ -356,6 +356,36 @@
   box-shadow: 0 0 12px #ff4444;
 }
     
+    /* New animations for winner and loser cards */
+    @keyframes fillRedBorder {
+      0% {
+        border-color: gold;
+        box-shadow: 0 0 10px gold;
+      }
+      100% {
+        border-color: red;
+        box-shadow: 0 0 15px red;
+      }
+    }
+
+    @keyframes fillGreenBorder {
+      0% {
+        border-color: gold;
+        box-shadow: 0 0 10px gold;
+      }
+      100% {
+        border-color: #00ff00;
+        box-shadow: 0 0 15px #00ff00;
+      }
+    }
+
+    .winner-box.animate {
+      animation: fillGreenBorder 1.5s ease forwards;
+    }
+
+    .loser-box.animate {
+      animation: fillRedBorder 1.5s ease forwards;
+    }
   </style>
 </head>
 <body>
@@ -383,6 +413,8 @@
     const slidesContainer = document.getElementById("slides");
     let slideIndex = 0;
     let slideData = [];
+    let slideResetCooldown = false;
+    let autoSlideInterval = setInterval(nextSlide, 5000);
 
     const bracketRounds = ["FIRST ROUND", "SEMI-FINALS", "GRAND FINALS"];
 
@@ -595,33 +627,50 @@ if (currentMatch) {
       });
     }
 
-    let slideResetCooldown = false;
+    
 
 function setupRealtimeUpdates() {
-  if (!userId) return;
-  db.collection("tournaments").doc(userId).onSnapshot(doc => {
-    if (!doc.exists) return;
-    const data = doc.data();
-    const previousIndex = slideIndex;
-    renderSlides(data);
+      if (!userId) return;
+      db.collection("tournaments").doc(userId).onSnapshot(doc => {
+        if (!doc.exists) return;
+        const data = doc.data();
+        const wasCurrentIndex = slideIndex;
+        renderSlides(data);
 
-    const currentIndex = slideData.findIndex(s => s.includes("CURRENT MATCH-UP"));
-    if (currentIndex !== -1 && !slideResetCooldown) {
-      slideIndex = currentIndex;
-      renderNextSlide();
-      slideResetCooldown = true;
+        const currentMatchIndex = slideData.findIndex(s => s.includes("CURRENT MATCH-UP"));
+        if (currentMatchIndex !== -1) {
+          slideIndex = currentMatchIndex;
+          renderNextSlide();
 
-      setTimeout(() => {
-        clearInterval(autoSlideInterval);
-        autoSlideInterval = setInterval(nextSlide, 5000);
-        slideResetCooldown = false;
-      }, 10000); // Wait 10 seconds before allowing another reset
+          clearInterval(autoSlideInterval);
+          slideResetCooldown = true;
+
+          setTimeout(() => {
+            autoSlideInterval = setInterval(nextSlide, 5000);
+            slideResetCooldown = false;
+          }, 30000); // 30 seconds hold after typing
+        }
+      });
     }
-  });
-}
 
+    function handleInputFocus() {
+      const currentMatchIndex = slideData.findIndex(s => s.includes("CURRENT MATCH-UP"));
+      if (currentMatchIndex !== -1 && !slideResetCooldown) {
+        slideIndex = currentMatchIndex;
+        renderNextSlide();
 
-    let autoSlideInterval = setInterval(nextSlide, 5000);
+        clearInterval(autoSlideInterval);
+        slideResetCooldown = true;
+
+        setTimeout(() => {
+          autoSlideInterval = setInterval(nextSlide, 5000);
+          slideResetCooldown = false;
+        }, 30000);
+      }
+    }
+
+    document.addEventListener('input', handleInputFocus);
+
     setupRealtimeUpdates();
   </script>
 </body>
