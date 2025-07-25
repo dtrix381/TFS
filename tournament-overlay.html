@@ -627,6 +627,7 @@ if (currentMatch) {
     }
 
 let autoSlideInterval = null;
+let hasFocusedCurrentMatch = false
 
 function setupRealtimeUpdates() {
   if (!userId) return;
@@ -638,30 +639,33 @@ function setupRealtimeUpdates() {
 
     const currentMatchIndex = slideData.findIndex(s => s.includes("CURRENT MATCH-UP"));
 
-    // ✅ Clear any existing timers and intervals
+    // ✅ Clear timers
     if (autoSlideInterval) clearInterval(autoSlideInterval);
     if (slideResumeTimeout) clearTimeout(slideResumeTimeout);
 
-    if (currentMatchIndex !== -1) {
+    if (currentMatchIndex !== -1 && !hasFocusedCurrentMatch) {
       slideIndex = currentMatchIndex;
       renderNextSlide();
 
+      hasFocusedCurrentMatch = true;
       slideResetCooldown = true;
 
-      // ✅ Set new delayed interval with safety
       slideResumeTimeout = setTimeout(() => {
         autoSlideInterval = setInterval(nextSlide, 5000);
         slideResetCooldown = false;
+        hasFocusedCurrentMatch = false; // ✅ allow next update to focus again
       }, 30000);
     } else {
-      slideIndex = 0;
-      renderNextSlide();
-
-      // ✅ Start regular interval
-      autoSlideInterval = setInterval(nextSlide, 5000);
+      // Normal mode if no current match or already focused before
+      if (!slideResetCooldown) {
+        slideIndex = (slideIndex + 1) % slideData.length;
+        renderNextSlide();
+        autoSlideInterval = setInterval(nextSlide, 5000);
+      }
     }
   });
 }
+
 
 
 function handleInputFocus() {
