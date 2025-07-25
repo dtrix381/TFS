@@ -348,45 +348,44 @@
 }
 
 .winner-box {
-      border-color: #00ff00 !important;
-      box-shadow: 0 0 12px #00ff00;
-      transition: border-color 0.6s ease, box-shadow 0.6s ease, background 0.6s ease;
-    }
-    .loser-box {
-      border-color: #ff4444 !important;
-      box-shadow: 0 0 12px #ff4444;
-      transition: border-color 0.6s ease, box-shadow 0.6s ease, background 0.6s ease;
-    }
-
+  border-color: #00ff00 !important;
+  box-shadow: 0 0 12px #00ff00;
+}
+.loser-box {
+  border-color: #ff4444 !important;
+  box-shadow: 0 0 12px #ff4444;
+}
+    
+    /* New animations for winner and loser cards */
     @keyframes fillRedBorder {
-      0% { border-color: gold; box-shadow: 0 0 10px gold; }
-      100% { border-color: red; box-shadow: 0 0 15px red; }
+      0% {
+        border-color: gold;
+        box-shadow: 0 0 10px gold;
+      }
+      100% {
+        border-color: red;
+        box-shadow: 0 0 15px red;
+      }
     }
-    @keyframes fillGreenBorder {
-      0% { border-color: gold; box-shadow: 0 0 10px gold; }
-      100% { border-color: #00ff00; box-shadow: 0 0 15px #00ff00; }
-    }
-    @keyframes crackShake {
-      0% { transform: rotate(0deg); }
-      25% { transform: rotate(-1deg); }
-      50% { transform: rotate(1deg); }
-      75% { transform: rotate(-0.5deg); }
-      100% { transform: rotate(0deg); }
-    }
-    @keyframes crackFlash {
-      0%, 100% { background: rgba(255, 0, 0, 0.1); }
-      50% { background: rgba(255, 0, 0, 0.4); }
-    }
-    .winner-box.animate {
-  animation: fillGreenBorder 1.5s ease forwards;
-}
-.loser-box.animate {
-  animation:
-    fillRedBorder 1.5s ease forwards,
-    crackShake 0.6s ease-in-out 1s forwards,
-    crackFlash 0.6s ease-in-out 1s forwards;
-}
 
+    @keyframes fillGreenBorder {
+      0% {
+        border-color: gold;
+        box-shadow: 0 0 10px gold;
+      }
+      100% {
+        border-color: #00ff00;
+        box-shadow: 0 0 15px #00ff00;
+      }
+    }
+
+    .winner-box.animate {
+      animation: fillGreenBorder 1.5s ease forwards;
+    }
+
+    .loser-box.animate {
+      animation: fillRedBorder 1.5s ease forwards;
+    }
   </style>
 </head>
 <body>
@@ -453,7 +452,6 @@ for (let i = 0; i < rounds.length; i++) {
     break;
   }
 }
-
 
 if (currentMatch) {
   const [p1, p2, result] = currentMatch;
@@ -596,8 +594,7 @@ if (currentMatch) {
     }
 
     function renderNextSlide() {
-  if (!slideData.length) return;
-  slidesContainer.innerHTML = slideData.map((html, i) => `<div class="slide ${i === slideIndex ? 'active' : ''}">${html}</div>`).join('');
+      slidesContainer.innerHTML = slideData.map((html, i) => `<div class="slide ${i === slideIndex ? 'active' : ''}">${html}</div>`).join('');
       checkChampionSlideActive();
     }
 
@@ -631,98 +628,91 @@ if (currentMatch) {
 
 let autoSlideInterval = null;
 let hasFocusedCurrentMatch = false;
+let lastFocusedMatchKey = null; // 🆕 Track last match
 let slideResumeTimeout = null;
-let lastWinner = null;
 
- function setupRealtimeUpdates() {
-      if (!userId) return;
+function setupRealtimeUpdates() {
+  if (!userId) return;
 
-      db.collection("tournaments").doc(userId).onSnapshot(doc => {
-        if (!doc.exists) return;
-        const data = doc.data();
+  db.collection("tournaments").doc(userId).onSnapshot(doc => {
+    if (!doc.exists) return;
+    const data = doc.data();
 
-        renderSlides(data);
+    renderSlides(data);
 
-        const currentMatchIndex = slideData.findIndex(s => s.includes("CURRENT MATCH-UP"));
+    const currentMatchIndex = slideData.findIndex(s => s.includes("CURRENT MATCH-UP"));
 
-        clearInterval(autoSlideInterval);
-        clearTimeout(slideResumeTimeout);
-
-        if (currentMatchIndex !== -1) {
-          slideIndex = currentMatchIndex;
-          renderNextSlide();
-
-          setTimeout(() => {
-            const slide = document.querySelector(".slide.active");
-            const winnerBox = slide?.querySelector(".winner-box");
-            const loserBox = slide?.querySelector(".loser-box");
-
-            if (winnerBox && loserBox) {
-              playWinnerAnimation();
-              slideResetCooldown = true;
-              slideResumeTimeout = setTimeout(() => {
-                autoSlideInterval = setInterval(nextSlide, 5000);
-                slideResetCooldown = false;
-              }, 35000);
-            } else {
-              autoSlideInterval = setInterval(nextSlide, 5000);
-            }
-          }, 500);
-        } else {
-          autoSlideInterval = setInterval(nextSlide, 5000);
-        }
-      });
+    // 🆕 Extract current match ID or signature (e.g., player names) from HTML
+    let currentMatchKey = null;
+    if (currentMatchIndex !== -1) {
+      const matchSlide = slideData[currentMatchIndex];
+      const matchNameRegex = /CURRENT MATCH-UP\s*•\s*(.*?)<\/h2>/;
+      const matchKeyMatch = matchSlide.match(matchNameRegex);
+      currentMatchKey = matchKeyMatch ? matchKeyMatch[1] : null;
     }
+
+    // ✅ Clear old timers
+    if (autoSlideInterval) clearInterval(autoSlideInterval);
+    if (slideResumeTimeout) clearTimeout(slideResumeTimeout);
+
+    // ✅ If it's a new current match, allow focus again
+    if (currentMatchKey && currentMatchKey !== lastFocusedMatchKey) {
+      hasFocusedCurrentMatch = false;
+      lastFocusedMatchKey = currentMatchKey;
+    }
+
+    if (currentMatchIndex !== -1 && !hasFocusedCurrentMatch) {
+      slideIndex = currentMatchIndex;
+      renderNextSlide();
+
+      hasFocusedCurrentMatch = true;
+      slideResetCooldown = true;
+
+      slideResumeTimeout = setTimeout(() => {
+        autoSlideInterval = setInterval(nextSlide, 5000);
+        slideResetCooldown = false;
+      }, 30000);
+    } else {
+      // ✅ Resume normal sliding if allowed
+      if (!slideResetCooldown) {
+        slideIndex = (slideIndex + 1) % slideData.length;
+        renderNextSlide();
+        autoSlideInterval = setInterval(nextSlide, 5000);
+      }
+    }
+  });
+}
 
 
 function handleInputFocus() {
   const currentMatchIndex = slideData.findIndex(s => s.includes("CURRENT MATCH-UP"));
 
-  if (autoSlideInterval) {
-    clearInterval(autoSlideInterval);
-    autoSlideInterval = null;
-  }
-  if (slideResumeTimeout) {
-    clearTimeout(slideResumeTimeout);
-    slideResumeTimeout = null;
-  }
+  // Always clear timers when user types
+  if (autoSlideInterval) clearInterval(autoSlideInterval);
+  if (slideResumeTimeout) clearTimeout(slideResumeTimeout);
 
+  // If current match exists, jump to it and wait 30s
   if (currentMatchIndex !== -1) {
     slideIndex = currentMatchIndex;
     renderNextSlide();
 
     slideResetCooldown = true;
-    hasFocusedCurrentMatch = false;
 
     slideResumeTimeout = setTimeout(() => {
       autoSlideInterval = setInterval(nextSlide, 5000);
       slideResetCooldown = false;
     }, 30000);
   } else {
+    // If no current match, resume normal sliding immediately
     slideResetCooldown = false;
     autoSlideInterval = setInterval(nextSlide, 5000);
   }
 }
 
-function playWinnerAnimation() {
-      const slide = document.querySelector('.slide.active');
-      if (!slide) return;
 
-      const winnerBox = slide.querySelector('.winner-box');
-      const loserBox = slide.querySelector('.loser-box');
-
-      if (!winnerBox || !loserBox) return;
-
-      winnerBox.classList.remove("animate");
-      loserBox.classList.remove("animate");
-      void winnerBox.offsetWidth;
-      void loserBox.offsetWidth;
-      winnerBox.classList.add("animate");
-      loserBox.classList.add("animate");
-    }
+    document.addEventListener('input', handleInputFocus);
 
     setupRealtimeUpdates();
   </script>
 </body>
 </html>
-
