@@ -657,10 +657,21 @@ function setupRealtimeUpdates() {
   slideIndex = currentMatchIndex;
   renderNextSlide();
 
-  // ⏳ Wait for DOM to update before animating
-  setTimeout(() => {
-    playWinnerAnimation();
-  }, 200); // Adjust delay if needed
+ // ✅ Wait for DOM + ensure winner/loser boxes exist before animating
+setTimeout(() => {
+  requestAnimationFrame(() => {
+    const activeSlide = document.querySelector('.slide.active');
+    if (
+      activeSlide?.querySelector('.winner-box') &&
+      activeSlide?.querySelector('.loser-box')
+    ) {
+      playWinnerAnimation();
+    } else {
+      console.log("⚠️ Winner animation skipped — boxes not ready yet");
+    }
+  });
+}, 200);
+
 
   slideResetCooldown = true;
   hasFocusedCurrentMatch = true;
