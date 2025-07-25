@@ -363,8 +363,13 @@
     <div id="slides"></div>
   </div>
 
+  <!-- Firebase -->
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+
+  <!-- Confetti -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
   <script>
     const firebaseConfig = {
       apiKey: "AIzaSyCGCiv3p9KgjXR7yCA8Z2JYMhPweDRnQPk",
@@ -374,284 +379,236 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
-    const urlParams = new URLSearchParams(window.location.search);
-    const userId = urlParams.get("user");
+    const userId = new URLSearchParams(window.location.search).get("user");
     const slidesContainer = document.getElementById("slides");
-
     let slideIndex = 0;
     let slideData = [];
 
- function renderSlides(data) {
-  slideData = [];
+    const bracketRounds = ["FIRST ROUND", "SEMI-FINALS", "GRAND FINALS"];
 
-  const title = data.title || "Tournament";
-  const players = data.players || [];
-  const roundsRaw = data.rounds || [];
-
-  const rounds = roundsRaw.map((roundObj) => {
-    if (Array.isArray(roundObj)) return roundObj;
-    const matches = [];
-    const keys = Object.keys(roundObj).filter(k => k.startsWith("match"));
-    keys.sort((a, b) => parseInt(a.replace("match", "")) - parseInt(b.replace("match", "")));
-    for (const key of keys) {
-      const match = roundObj[key];
-      if (match) matches.push([match.p1 || null, match.p2 || null, match.result || null]);
+    function getStatusClass(username, winner) {
+      if (!winner) return "";
+      return username === winner ? "winner-box" : "loser-box";
     }
-    return matches;
-  });
 
-  const bracketRounds = ["FIRST ROUND", "SEMI-FINALS", "GRAND FINALS"];
+    function renderSlides(data) {
+      slideData = [];
 
-  // 1. Current match-up
-  let currentMatch = null;
-  let currentRoundTitle = "";
+      const title = data.title || "Tournament";
+      const players = data.players || [];
+      const roundsRaw = data.rounds || [];
 
-  for (let rIdx = 0; rIdx < rounds.length; rIdx++) {
-    const round = rounds[rIdx];
-    const match = round.find(m =>
-      m[0] && m[1] && (!m[2] || !m[2].winner)
-    );
-    if (match) {
-      currentMatch = match;
-      currentRoundTitle = bracketRounds[rIdx] || `ROUND ${rIdx + 1}`;
-      break;
-    }
-  }
+      const rounds = roundsRaw.map(roundObj => {
+        if (Array.isArray(roundObj)) return roundObj;
+        const matches = [];
+        const keys = Object.keys(roundObj).filter(k => k.startsWith("match"));
+        keys.sort((a, b) => parseInt(a.replace("match", "")) - parseInt(b.replace("match", "")));
+        for (const key of keys) {
+          const match = roundObj[key];
+          if (match) matches.push([match.p1 || null, match.p2 || null, match.result || null]);
+        }
+        return matches;
+      });
 
-  if (currentMatch) {
-    const p1 = currentMatch[0];
-    const p2 = currentMatch[1];
-    const result = currentMatch[2];
-    const p1Stats = result?.p1;
-    const p2Stats = result?.p2;
-    const winner = result?.winner?.kickUsername;
-    const getHighlight = name => name === winner ? "highlight" : "";
+      // Current Match-Up
+      let currentMatch = null;
+      let currentRoundTitle = "";
+      for (let i = 0; i < rounds.length; i++) {
+        const match = rounds[i].find(m => m[0] && m[1] && (!m[2] || !m[2].winner));
+        if (match) {
+          currentMatch = match;
+          currentRoundTitle = bracketRounds[i] || `ROUND ${i + 1}`;
+          break;
+        }
+      }
 
-    slideData.push(`
-      <div class="match-slide">
-        <h2 class="round-label">CURRENT MATCH-UP • ${currentRoundTitle}</h2>
-        <div class="match-container alt-match">
-          <div class="player-box-alt ${getStatusClass(p1.kickUsername)}">
-            <div class="name">${p1.kickUsername}</div>
-            <div class="slot">${p1.slot}</div>
-            ${p1Stats ? `
-              <div class="result-info fade-in">
-                <span class="${winner === p1.kickUsername ? 'winner' : 'loser'}">
-                  ${winner === p1.kickUsername ? 'WINNER' : 'LOSER'}
-                </span><br>
-                Buys: $${p1Stats?.buyAmount ?? '-'}<br>
-                Pays: $${p1Stats?.totalPay ?? '-'}<br>
-                Total x: ${p1Stats?.totalX ?? '-'}x
+      if (currentMatch) {
+        const [p1, p2, result] = currentMatch;
+        const p1Stats = result?.p1;
+        const p2Stats = result?.p2;
+        const winner = result?.winner?.kickUsername;
+
+        slideData.push(`
+          <div class="match-slide">
+            <h2 class="round-label">CURRENT MATCH-UP • ${currentRoundTitle}</h2>
+            <div class="match-container alt-match">
+              <div class="player-box-alt ${getStatusClass(p1.kickUsername, winner)}">
+                <div class="name">${p1.kickUsername}</div>
+                <div class="slot">${p1.slot}</div>
+                ${p1Stats ? `
+                  <div class="result-info fade-in">
+                    <span class="${winner === p1.kickUsername ? 'winner' : 'loser'}">
+                      ${winner === p1.kickUsername ? 'WINNER' : 'LOSER'}
+                    </span><br>
+                    Buys: $${p1Stats.buyAmount ?? '-'}<br>
+                    Pays: $${p1Stats.totalPay ?? '-'}<br>
+                    Total x: ${p1Stats.totalX ?? '-'}x
+                  </div>
+                ` : ''}
               </div>
-            ` : ""}
-          </div>
-          <div class="vs-text">VS</div>
-          <div class="player-box-alt ${getStatusClass(p2.kickUsername)}">
-            <div class="name">${p2.kickUsername}</div>
-            <div class="slot">${p2.slot}</div>
-            ${p2Stats ? `
-              <div class="result-info fade-in">
-                <span class="${winner === p2.kickUsername ? 'winner' : 'loser'}">
-                  ${winner === p2.kickUsername ? 'WINNER' : 'LOSER'}
-                </span><br>
-                Buys: $${p2Stats?.buyAmount ?? '-'}<br>
-                Pays: $${p2Stats?.totalPay ?? '-'}<br>
-                Total x: ${p2Stats?.totalX ?? '-'}x
+              <div class="vs-text">VS</div>
+              <div class="player-box-alt ${getStatusClass(p2.kickUsername, winner)}">
+                <div class="name">${p2.kickUsername}</div>
+                <div class="slot">${p2.slot}</div>
+                ${p2Stats ? `
+                  <div class="result-info fade-in">
+                    <span class="${winner === p2.kickUsername ? 'winner' : 'loser'}">
+                      ${winner === p2.kickUsername ? 'WINNER' : 'LOSER'}
+                    </span><br>
+                    Buys: $${p2Stats.buyAmount ?? '-'}<br>
+                    Pays: $${p2Stats.totalPay ?? '-'}<br>
+                    Total x: ${p2Stats.totalX ?? '-'}x
+                  </div>
+                ` : ''}
               </div>
-            ` : ""}
-          </div>
-        </div>
-      </div>
-    `);
-  }
-
-  // 2. Tournament Title
-  slideData.push(`<div><h1 class="tournament-title">${title}</h1></div>`);
-
-  // 3. Player Grid
-  if (players.length) {
-    const chunks = [players.slice(0, 4), players.slice(4, 8)];
-    chunks.forEach(chunk => {
-      slideData.push(`
-        <div class="player-slide">
-          <h2>Players</h2>
-          <div class="player-grid">
-            ${chunk.map(p => `
-              <div class="player-card">
-                <div class="name">${p.kickUsername}</div>
-                <div class="slot">${p.slot}</div>
-              </div>
-            `).join("")}
-          </div>
-        </div>
-      `);
-    });
-  }
-
-  // 4. Bracket slides
-  rounds.forEach((round, rIdx) => {
-    const roundTitle = bracketRounds[rIdx] || `ROUND ${rIdx + 1}`;
-    round.forEach(match => {
-      const p1 = match[0];
-      const p2 = match[1];
-      const result = match[2];
-      if (!p1 || !p2) return;
-
-      const p1Stats = result?.p1;
-      const p2Stats = result?.p2;
-      const winner = result?.winner?.kickUsername;
-      let getStatusClass = name => {
-  if (!winner) return "";
-  if (name === winner) return "winner-box";
-  return "loser-box";
-};
-      const isDone = result?.p1 && result?.p2 && result?.winner;
-
-      slideData.push(`
-        <div class="match-slide">
-          <h2 class="round-label">${roundTitle}</h2>
-          <div class="match-container alt-match">
-            <div class="player-box-alt ${getHighlight(p1.kickUsername)}">
-              <div class="name">${p1.kickUsername}</div>
-              <div class="slot">${p1.slot}</div>
-              ${isDone ? `
-                <div class="result-info fade-in">
-                  <span class="${winner === p1.kickUsername ? 'winner' : 'loser'}">
-                    ${winner === p1.kickUsername ? 'WINNER' : 'LOSER'}
-                  </span><br>
-                  Buys: $${p1Stats?.buyAmount ?? '-'}<br>
-                  Pays: $${p1Stats?.totalPay ?? '-'}<br>
-                  Total x: ${p1Stats?.totalX ?? '-'}x
-                </div>
-              ` : ""}
-            </div>
-            <div class="vs-text">VS</div>
-            <div class="player-box-alt ${getHighlight(p2.kickUsername)}">
-              <div class="name">${p2.kickUsername}</div>
-              <div class="slot">${p2.slot}</div>
-              ${isDone ? `
-                <div class="result-info fade-in">
-                  <span class="${winner === p2.kickUsername ? 'winner' : 'loser'}">
-                    ${winner === p2.kickUsername ? 'WINNER' : 'LOSER'}
-                  </span><br>
-                  Buys: $${p2Stats?.buyAmount ?? '-'}<br>
-                  Pays: $${p2Stats?.totalPay ?? '-'}<br>
-                  Total x: ${p2Stats?.totalX ?? '-'}x
-                </div>
-              ` : ""}
             </div>
           </div>
-        </div>
-      `);
-    });
-  });
+        `);
+      }
 
-  // 5. Champion
-  const final = rounds[2]?.[0];
-  if (final && final[2] && final[2].winner) {
-    const winner = final[2].winner;
-    slideData.push(`
-      <div class="champion-slide">
-        <div class="champion-glow">
-          <h1 class="champion-title">🏆 CHAMPION 🏆</h1>
-          <h2 class="champion-name">${winner.kickUsername}</h2>
-          <p class="champion-slot">${winner.slot}</p>
-        </div>
-      </div>
-    `);
-  }
+      // Tournament Title
+      slideData.push(`<div><h1 class="tournament-title">${title}</h1></div>`);
 
-  renderNextSlide();
-}
+      // Players
+      const chunks = [players.slice(0, 4), players.slice(4, 8)];
+      chunks.forEach(chunk => {
+        slideData.push(`
+          <div class="player-slide">
+            <h2>Players</h2>
+            <div class="player-grid">
+              ${chunk.map(p => `
+                <div class="player-card">
+                  <div class="name">${p.kickUsername}</div>
+                  <div class="slot">${p.slot}</div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        `);
+      });
 
+      // Bracket Slides
+      rounds.forEach((round, rIdx) => {
+        const roundTitle = bracketRounds[rIdx] || `ROUND ${rIdx + 1}`;
+        round.forEach(([p1, p2, result]) => {
+          if (!p1 || !p2) return;
+          const winner = result?.winner?.kickUsername;
+          const p1Stats = result?.p1;
+          const p2Stats = result?.p2;
+          const isDone = !!(p1Stats && p2Stats && winner);
 
+          slideData.push(`
+            <div class="match-slide">
+              <h2 class="round-label">${roundTitle}</h2>
+              <div class="match-container alt-match">
+                <div class="player-box-alt ${getStatusClass(p1.kickUsername, winner)}">
+                  <div class="name">${p1.kickUsername}</div>
+                  <div class="slot">${p1.slot}</div>
+                  ${isDone ? `
+                    <div class="result-info fade-in">
+                      <span class="${winner === p1.kickUsername ? 'winner' : 'loser'}">
+                        ${winner === p1.kickUsername ? 'WINNER' : 'LOSER'}
+                      </span><br>
+                      Buys: $${p1Stats.buyAmount ?? '-'}<br>
+                      Pays: $${p1Stats.totalPay ?? '-'}<br>
+                      Total x: ${p1Stats.totalX ?? '-'}x
+                    </div>
+                  ` : ''}
+                </div>
+                <div class="vs-text">VS</div>
+                <div class="player-box-alt ${getStatusClass(p2.kickUsername, winner)}">
+                  <div class="name">${p2.kickUsername}</div>
+                  <div class="slot">${p2.slot}</div>
+                  ${isDone ? `
+                    <div class="result-info fade-in">
+                      <span class="${winner === p2.kickUsername ? 'winner' : 'loser'}">
+                        ${winner === p2.kickUsername ? 'WINNER' : 'LOSER'}
+                      </span><br>
+                      Buys: $${p2Stats.buyAmount ?? '-'}<br>
+                      Pays: $${p2Stats.totalPay ?? '-'}<br>
+                      Total x: ${p2Stats.totalX ?? '-'}x
+                    </div>
+                  ` : ''}
+                </div>
+              </div>
+            </div>
+          `);
+        });
+      });
+
+      // Champion
+      const final = rounds[2]?.[0];
+      if (final?.[2]?.winner) {
+        const winner = final[2].winner;
+        slideData.push(`
+          <div class="champion-slide">
+            <div class="champion-glow">
+              <h1 class="champion-title">🏆 CHAMPION 🏆</h1>
+              <h2 class="champion-name">${winner.kickUsername}</h2>
+              <p class="champion-slot">${winner.slot}</p>
+            </div>
+          </div>
+        `);
+      }
+
+      renderNextSlide();
+    }
 
     function renderNextSlide() {
-      slidesContainer.innerHTML = slideData
-        .map((html, i) => `<div class="slide ${i === slideIndex ? 'active' : ''}">${html}</div>`)
-        .join("");
+      slidesContainer.innerHTML = slideData.map((html, i) => `<div class="slide ${i === slideIndex ? 'active' : ''}">${html}</div>`).join('');
+      checkChampionSlideActive();
     }
 
     function nextSlide() {
-      if (slideData.length === 0) return;
+      if (!slideData.length) return;
       slideIndex = (slideIndex + 1) % slideData.length;
       renderNextSlide();
     }
 
-    function setupRealtimeUpdates() {
-  if (!userId) return;
+    function fireChampionConfetti() {
+      const duration = 3000;
+      const end = Date.now() + duration;
+      const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 9999 };
 
-  db.collection("tournaments").doc(userId).onSnapshot(doc => {
-    if (doc.exists) {
-      const newData = doc.data();
-      const prevSlide = slideIndex;
-
-      renderSlides(newData);
-
-      // If it's a new current match or it was just updated, jump to that slide
-const matchSlideIndex = slideData.findIndex(slide => slide.includes("CURRENT MATCH-UP"));
-if (matchSlideIndex !== -1) {
-  slideIndex = matchSlideIndex;
-  renderNextSlide();
-
-  clearInterval(autoSlideInterval);
-  setTimeout(() => {
-    autoSlideInterval = setInterval(nextSlide, 5000);
-  }, 10000); // pause 10s on current match-up
-}
-    }
-  });
-}
-
-
-    setupRealtimeUpdates(); // 🔄 enable live Firebase updates
-    setInterval(nextSlide, 5000); // ⏩ auto-slide
-  </script>
-  
-<!-- Confetti library -->
-<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-<script>
-  function fireChampionConfetti() {
-    const duration = 3 * 1000;
-    const animationEnd = Date.now() + duration;
-    const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 9999 };
-
-    function randomInRange(min, max) {
-      return Math.random() * (max - min) + min;
+      const interval = setInterval(() => {
+        if (Date.now() > end) return clearInterval(interval);
+        confetti(Object.assign({}, defaults, {
+          particleCount: 6,
+          origin: { x: Math.random(), y: Math.random() - 0.2 }
+        }));
+      }, 250);
     }
 
-    const interval = setInterval(function () {
-      const timeLeft = animationEnd - Date.now();
-      if (timeLeft <= 0) {
-        return clearInterval(interval);
-      }
-
-      confetti(Object.assign({}, defaults, {
-        particleCount: 5,
-        origin: {
-          x: randomInRange(0.1, 0.9),
-          y: Math.random() - 0.2
+    function checkChampionSlideActive() {
+      document.querySelectorAll('.slide').forEach(slide => {
+        if (slide.classList.contains('active') && slide.querySelector('.champion-slide')) {
+          fireChampionConfetti();
         }
-      }));
-    }, 250);
-  }
+      });
+    }
 
-  function checkChampionSlideActive() {
-    const slides = document.querySelectorAll('.slide');
-    slides.forEach(slide => {
-      if (slide.classList.contains('active') && slide.querySelector('.champion-slide')) {
-        fireChampionConfetti();
-      }
-    });
-  }
+    function setupRealtimeUpdates() {
+      if (!userId) return;
+      db.collection("tournaments").doc(userId).onSnapshot(doc => {
+        if (!doc.exists) return;
+        const data = doc.data();
+        const previousIndex = slideIndex;
+        renderSlides(data);
+        const currentIndex = slideData.findIndex(s => s.includes("CURRENT MATCH-UP"));
+        if (currentIndex !== -1) {
+          slideIndex = currentIndex;
+          renderNextSlide();
+          clearInterval(autoSlideInterval);
+          setTimeout(() => {
+            autoSlideInterval = setInterval(nextSlide, 5000);
+          }, 10000);
+        }
+      });
+    }
 
-  // Trigger on every slide switch
-  const originalRender = renderNextSlide;
-  renderNextSlide = function () {
-    originalRender();
-    checkChampionSlideActive();
-  };
-</script>
-
+    let autoSlideInterval = setInterval(nextSlide, 5000);
+    setupRealtimeUpdates();
+  </script>
 </body>
 </html>
+
