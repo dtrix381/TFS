@@ -650,46 +650,51 @@ function setupRealtimeUpdates() {
     }
 
     const slideIsMatch = currentMatchIndex !== -1;
-    if (slideIsMatch) {
-      slideIndex = currentMatchIndex;
-      renderNextSlide();
+if (slideIsMatch) {
+  slideIndex = currentMatchIndex;
+  renderNextSlide();
 
-      setTimeout(() => {
-        const slide = document.querySelector(".slide.active");
-        const winnerBox = slide?.querySelector(".winner-box");
-        const loserBox = slide?.querySelector(".loser-box");
+  setTimeout(() => {
+    requestAnimationFrame(() => {
+      const slide = document.querySelector(".slide.active");
+      if (!slide) return;
 
-        const currentWinnerName = winnerBox?.querySelector(".name")?.textContent;
+      const winnerBox = slide.querySelector(".winner-box");
+      const loserBox = slide.querySelector(".loser-box");
 
-        if (winnerBox && loserBox && currentWinnerName && currentWinnerName !== lastWinner) {
-          lastWinner = currentWinnerName;
-          playWinnerAnimation();
+      const currentWinnerName = winnerBox?.querySelector(".name")?.textContent;
 
-          slideResetCooldown = true;
-          hasFocusedCurrentMatch = true;
+      if (winnerBox && loserBox && currentWinnerName && currentWinnerName !== lastWinner) {
+        lastWinner = currentWinnerName;
+        playWinnerAnimation();
 
-          slideResumeTimeout = setTimeout(() => {
-            autoSlideInterval = setInterval(nextSlide, 5000);
-            slideResetCooldown = false;
-            hasFocusedCurrentMatch = false;
-          }, 35000); // 5s animation + 30s pause
-        } else if (!hasFocusedCurrentMatch) {
-          slideResetCooldown = true;
-          hasFocusedCurrentMatch = true;
+        slideResetCooldown = true;
+        hasFocusedCurrentMatch = true;
 
-          slideResumeTimeout = setTimeout(() => {
-            autoSlideInterval = setInterval(nextSlide, 5000);
-            slideResetCooldown = false;
-            hasFocusedCurrentMatch = false;
-          }, 30000);
-        } else {
+        slideResumeTimeout = setTimeout(() => {
           autoSlideInterval = setInterval(nextSlide, 5000);
-        }
-      }, 500); // wait DOM update
-    } else {
-      slideResetCooldown = false;
-      autoSlideInterval = setInterval(nextSlide, 5000);
-    }
+          slideResetCooldown = false;
+          hasFocusedCurrentMatch = false;
+        }, 35000); // 5s anim + 30s wait
+      } else if (!hasFocusedCurrentMatch) {
+        slideResetCooldown = true;
+        hasFocusedCurrentMatch = true;
+
+        slideResumeTimeout = setTimeout(() => {
+          autoSlideInterval = setInterval(nextSlide, 5000);
+          slideResetCooldown = false;
+          hasFocusedCurrentMatch = false;
+        }, 30000);
+      } else {
+        autoSlideInterval = setInterval(nextSlide, 5000);
+      }
+    });
+  }, 100); // Let DOM render before querying elements
+} else {
+  slideResetCooldown = false;
+  autoSlideInterval = setInterval(nextSlide, 5000);
+}
+
   });
 }
 
