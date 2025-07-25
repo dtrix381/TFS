@@ -445,16 +445,15 @@ if (currentMatch) {
           <div class="name">${p2.kickUsername}</div>
           <div class="slot">${p2.slot}</div>
           ${p2Stats ? `
-            ${p1Stats ? `
   <div class="result-info fade-in">
-    <span class="${winner === p1.kickUsername ? 'winner' : 'loser'}">
-      ${winner === p1.kickUsername ? 'WINNER' : 'LOSER'}
+    <span class="${winner === p2.kickUsername ? 'winner' : 'loser'}">
+      ${winner === p2.kickUsername ? 'WINNER' : 'LOSER'}
     </span><br>
     Buys: ${p2Stats?.buyAmount != null ? `$${p2Stats.buyAmount}` : '-'}<br>
     Pays: ${p2Stats?.totalPay != null ? `$${p2Stats.totalPay}` : '-'}<br>
     Total x: ${p2Stats?.totalX != null ? `${p2Stats.totalX}x` : '-'}
   </div>
-          ` : ""}
+` : ""}
         </div>
       </div>
     </div>
