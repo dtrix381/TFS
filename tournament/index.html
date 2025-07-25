@@ -1094,26 +1094,46 @@ function saveEdit(button, roundIndex, matchIndex, playerIndex) {
 
 
 function addLiveTotalXListeners() {
-  document.querySelectorAll(".match").forEach(matchDiv => {
+  document.querySelectorAll(".match").forEach((matchDiv, matchIndex) => {
+    const roundDiv = matchDiv.closest(".bracket");
+    const roundIndex = Array.from(document.querySelectorAll(".bracket")).indexOf(roundDiv);
+
     const playerDivs = matchDiv.querySelectorAll(".player");
-    playerDivs.forEach(playerDiv => {
+
+    playerDivs.forEach((playerDiv, playerIdx) => {
       const buyInput = playerDiv.querySelector(".buyAmount");
       const payInput = playerDiv.querySelector(".totalPay");
       const totalXSpan = playerDiv.querySelector(".totalX");
 
-      if (buyInput && payInput && totalXSpan) {
-        const updateTotalX = () => {
-          const buy = parseFloat(buyInput.value);
-          const pay = parseFloat(payInput.value);
-          const totalX = (!isNaN(buy) && !isNaN(pay) && buy > 0) ? (pay / buy).toFixed(2) : 0;
-          totalXSpan.textContent = `Total X: ${totalX}x`;
+      const updateTotalX = () => {
+        const buy = parseFloat(buyInput.value);
+        const pay = parseFloat(payInput.value);
+        const totalX = (!isNaN(buy) && !isNaN(pay) && buy > 0) ? (pay / buy).toFixed(2) : 0;
+        totalXSpan.textContent = `Total X: ${totalX}x`;
+
+        const match = rounds?.[roundIndex]?.[matchIndex];
+        if (!match) return;
+
+        const result = match[2] || { p1: {}, p2: {} };
+
+        const playerKey = playerIdx === 0 ? 'p1' : 'p2';
+        result[playerKey] = {
+          buyAmount: buy || 0,
+          totalPay: pay || 0,
+          totalX: parseFloat(totalX) || 0
         };
-        buyInput.addEventListener("input", updateTotalX);
-        payInput.addEventListener("input", updateTotalX);
-      }
+
+        match[2] = result;
+
+        if (userId) saveTournamentData(); // ✅ Auto-save when typing
+      };
+
+      buyInput.addEventListener("input", updateTotalX);
+      payInput.addEventListener("input", updateTotalX);
     });
   });
 }
+
 
 function generateWinner(button, roundIndex, matchIndex, code) {
   const matchDiv = button.closest(".match");
