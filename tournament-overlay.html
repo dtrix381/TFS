@@ -428,14 +428,14 @@ if (currentMatch) {
           <div class="name">${p1.kickUsername}</div>
           <div class="slot">${p1.slot}</div>
           ${p1Stats ? `
-            <div class="result-info fade-in">
-              <span class="${winner === p1.kickUsername ? 'winner' : 'loser'}">
-                ${winner === p1.kickUsername ? 'WINNER' : 'LOSER'}
-              </span><br>
-              Buys: $${p1Stats.buyAmount ?? '-'}<br>
-              Pays: $${p1Stats.totalPay ?? '-'}<br>
-              Total x: ${p1Stats.totalX ?? '-'}x
-            </div>
+  <div class="result-info fade-in">
+    <span class="${winner === p1.kickUsername ? 'winner' : 'loser'}">
+      ${winner === p1.kickUsername ? 'WINNER' : 'LOSER'}
+    </span><br>
+    Buys: ${p1Stats?.buyAmount != null ? `$${p1Stats.buyAmount}` : '-'}<br>
+    Pays: ${p1Stats?.totalPay != null ? `$${p1Stats.totalPay}` : '-'}<br>
+    Total x: ${p1Stats?.totalX != null ? `${p1Stats.totalX}x` : '-'}
+  </div>
           ` : ""}
         </div>
 
@@ -445,14 +445,15 @@ if (currentMatch) {
           <div class="name">${p2.kickUsername}</div>
           <div class="slot">${p2.slot}</div>
           ${p2Stats ? `
-            <div class="result-info fade-in">
-              <span class="${winner === p2.kickUsername ? 'winner' : 'loser'}">
-                ${winner === p2.kickUsername ? 'WINNER' : 'LOSER'}
-              </span><br>
-              Buys: $${p2Stats.buyAmount ?? '-'}<br>
-              Pays: $${p2Stats.totalPay ?? '-'}<br>
-              Total x: ${p2Stats.totalX ?? '-'}x
-            </div>
+            ${p1Stats ? `
+  <div class="result-info fade-in">
+    <span class="${winner === p1.kickUsername ? 'winner' : 'loser'}">
+      ${winner === p1.kickUsername ? 'WINNER' : 'LOSER'}
+    </span><br>
+    Buys: ${p2Stats?.buyAmount != null ? `$${p2Stats.buyAmount}` : '-'}<br>
+    Pays: ${p2Stats?.totalPay != null ? `$${p2Stats.totalPay}` : '-'}<br>
+    Total x: ${p2Stats?.totalX != null ? `${p2Stats.totalX}x` : '-'}
+  </div>
           ` : ""}
         </div>
       </div>
@@ -513,8 +514,6 @@ rounds.forEach((round, rIdx) => {
     const result = match[2];
 
     if (!p1 || !p2) return;
-
-    const isDone = !!result;
 
     // Optional result fields (example structure)
     const p1Stats = result?.p1;
