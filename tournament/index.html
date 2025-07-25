@@ -1105,27 +1105,33 @@ function addLiveTotalXListeners() {
       const payInput = playerDiv.querySelector(".totalPay");
       const totalXSpan = playerDiv.querySelector(".totalX");
 
+      if (!buyInput || !payInput || !totalXSpan) return;
+
       const updateTotalX = () => {
         const buy = parseFloat(buyInput.value);
         const pay = parseFloat(payInput.value);
         const totalX = (!isNaN(buy) && !isNaN(pay) && buy > 0) ? (pay / buy).toFixed(2) : 0;
         totalXSpan.textContent = `Total X: ${totalX}x`;
 
-        const match = rounds?.[roundIndex]?.[matchIndex];
-        if (!match) return;
+        // ✅ Now update the rounds data directly
+        if (
+          rounds?.[roundIndex]?.[matchIndex] &&
+          Array.isArray(rounds[roundIndex][matchIndex])
+        ) {
+          const result = rounds[roundIndex][matchIndex][2] || { p1: {}, p2: {} };
+          const key = playerIdx === 0 ? 'p1' : 'p2';
 
-        const result = match[2] || { p1: {}, p2: {} };
+          result[key] = {
+            buyAmount: buy || 0,
+            totalPay: pay || 0,
+            totalX: parseFloat(totalX) || 0
+          };
 
-        const playerKey = playerIdx === 0 ? 'p1' : 'p2';
-        result[playerKey] = {
-          buyAmount: buy || 0,
-          totalPay: pay || 0,
-          totalX: parseFloat(totalX) || 0
-        };
+          rounds[roundIndex][matchIndex][2] = result;
 
-        match[2] = result;
-
-        if (userId) saveTournamentData(); // ✅ Auto-save when typing
+          // ✅ Now this will save correctly
+          if (userId) saveTournamentData();
+        }
       };
 
       buyInput.addEventListener("input", updateTotalX);
@@ -1133,6 +1139,7 @@ function addLiveTotalXListeners() {
     });
   });
 }
+
 
 
 function generateWinner(button, roundIndex, matchIndex, code) {
