@@ -439,6 +439,19 @@ menuToggle.addEventListener('click', () => {
   }
 </script>
 
+<script>
+  // Check if user is on their own hunt link and hide the button
+  window.addEventListener("DOMContentLoaded", () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const userIdFromUrl = urlParams.get("user");
+    const loggedInUserId = localStorage.getItem("discord_user_id"); // must be set on login success
+    const useWidgetBtn = document.getElementById("useWidgetButton");
+
+    if (userIdFromUrl && loggedInUserId && userIdFromUrl === loggedInUserId) {
+      if (useWidgetBtn) useWidgetBtn.style.display = "none";
+    }
+  });
+</script>
 
 
 <script>
