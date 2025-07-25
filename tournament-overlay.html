@@ -441,7 +441,7 @@ let currentMatch = null;
 let currentRoundTitle = "";
 for (let i = 0; i < rounds.length; i++) {
   const match = rounds[i].find(m => m[0] && m[1] && (!m[2] || !m[2].winner));
-  if (match) {
+  if (currentMatch) {
     currentMatch = match;
     currentRoundTitle = bracketRounds[i] || `ROUND ${i + 1}`;
     break;
