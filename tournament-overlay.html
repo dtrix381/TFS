@@ -634,70 +634,45 @@ let hasFocusedCurrentMatch = false;
 let slideResumeTimeout = null;
 let lastWinner = null;
 
-function setupRealtimeUpdates() {
-  if (!userId) return;
+ function setupRealtimeUpdates() {
+      if (!userId) return;
 
-  db.collection("tournaments").doc(userId).onSnapshot(doc => {
-    if (!doc.exists) return;
-    const data = doc.data();
+      db.collection("tournaments").doc(userId).onSnapshot(doc => {
+        if (!doc.exists) return;
+        const data = doc.data();
 
-    renderSlides(data); // re-render all slides from Firestore
+        renderSlides(data);
 
-    const currentMatchIndex = slideData.findIndex(s => s.includes("CURRENT MATCH-UP"));
+        const currentMatchIndex = slideData.findIndex(s => s.includes("CURRENT MATCH-UP"));
 
-    // 🔄 Clear previous timers
-    clearInterval(autoSlideInterval);
-    clearTimeout(slideResumeTimeout);
-    autoSlideInterval = null;
-    slideResumeTimeout = null;
+        clearInterval(autoSlideInterval);
+        clearTimeout(slideResumeTimeout);
 
-    const slideIsMatch = currentMatchIndex !== -1;
+        if (currentMatchIndex !== -1) {
+          slideIndex = currentMatchIndex;
+          renderNextSlide();
 
-    if (slideIsMatch) {
-      slideIndex = currentMatchIndex;
-      renderNextSlide();
+          setTimeout(() => {
+            const slide = document.querySelector(".slide.active");
+            const winnerBox = slide?.querySelector(".winner-box");
+            const loserBox = slide?.querySelector(".loser-box");
 
-      // Wait a bit to ensure DOM is updated
-      setTimeout(() => {
-        const slide = document.querySelector(".slide.active");
-        const winnerBox = slide?.querySelector(".winner-box");
-        const loserBox = slide?.querySelector(".loser-box");
-        const currentWinnerName = winnerBox?.querySelector(".name")?.textContent;
-
-        const animationNeeded = winnerBox && loserBox;
-
-        if (animationNeeded) {
-          lastWinner = currentWinnerName;
-          playWinnerAnimation();
-
-          slideResetCooldown = true;
-          hasFocusedCurrentMatch = true;
-
-          slideResumeTimeout = setTimeout(() => {
-            autoSlideInterval = setInterval(nextSlide, 5000);
-            slideResetCooldown = false;
-            hasFocusedCurrentMatch = false;
-          }, 35000); // ⏱ 5s animation + 30s wait
-        } else if (!hasFocusedCurrentMatch) {
-          slideResetCooldown = true;
-          hasFocusedCurrentMatch = true;
-
-          slideResumeTimeout = setTimeout(() => {
-            autoSlideInterval = setInterval(nextSlide, 5000);
-            slideResetCooldown = false;
-            hasFocusedCurrentMatch = false;
-          }, 30000);
+            if (winnerBox && loserBox) {
+              playWinnerAnimation();
+              slideResetCooldown = true;
+              slideResumeTimeout = setTimeout(() => {
+                autoSlideInterval = setInterval(nextSlide, 5000);
+                slideResetCooldown = false;
+              }, 35000);
+            } else {
+              autoSlideInterval = setInterval(nextSlide, 5000);
+            }
+          }, 500);
         } else {
           autoSlideInterval = setInterval(nextSlide, 5000);
         }
-      }, 500); // ✅ Wait 300ms for DOM to render properly
-    } else {
-      // Not on current match-up — normal rotation
-      slideResetCooldown = false;
-      autoSlideInterval = setInterval(nextSlide, 5000);
+      });
     }
-  });
-}
 
 
 function handleInputFocus() {
@@ -730,30 +705,21 @@ function handleInputFocus() {
 }
 
 function playWinnerAnimation() {
-  console.log("🎉 Running winner animation...");
-  const slide = document.querySelector('.slide.active');
-  if (!slide) return;
+      const slide = document.querySelector('.slide.active');
+      if (!slide) return;
 
-  const winnerBox = slide.querySelector('.winner-box');
-  const loserBox = slide.querySelector('.loser-box');
+      const winnerBox = slide.querySelector('.winner-box');
+      const loserBox = slide.querySelector('.loser-box');
 
-  if (!winnerBox || !loserBox) return;
+      if (!winnerBox || !loserBox) return;
 
-  // 🧼 Remove any existing animation class
-  winnerBox.classList.remove("animate");
-  loserBox.classList.remove("animate");
-
-  // 🚨 Force reflow — this resets the animation
-  void winnerBox.offsetWidth;
-  void loserBox.offsetWidth;
-
-  // ✅ Re-add class to trigger animation again
-  winnerBox.classList.add("animate");
-  loserBox.classList.add("animate");
-
-  console.log("🏆 Animation applied to:", winnerBox.querySelector('.name')?.textContent);
-}
-
+      winnerBox.classList.remove("animate");
+      loserBox.classList.remove("animate");
+      void winnerBox.offsetWidth;
+      void loserBox.offsetWidth;
+      winnerBox.classList.add("animate");
+      loserBox.classList.add("animate");
+    }
 
     setupRealtimeUpdates();
   </script>
