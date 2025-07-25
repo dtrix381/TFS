@@ -419,7 +419,7 @@ menuToggle.addEventListener('click', () => {
 
 
 <div style="text-align:center; margin-top: 20px;">
-  <button onclick="loginWithDiscord()" style="
+  <button id="useWidgetButton" onclick="loginWithDiscord()" style="
     background: #7289da;
     color: white;
     font-weight: bold;
@@ -432,6 +432,7 @@ menuToggle.addEventListener('click', () => {
   ">🔐 Use Widget</button>
 </div>
 
+
 <script>
   function loginWithDiscord() {
     // ✅ redirect to your Render backend to initiate Discord login
@@ -440,17 +441,25 @@ menuToggle.addEventListener('click', () => {
 </script>
 
 <script>
-  // Check if user is on their own hunt link and hide the button
   window.addEventListener("DOMContentLoaded", () => {
     const urlParams = new URLSearchParams(window.location.search);
     const userIdFromUrl = urlParams.get("user");
-    const loggedInUserId = localStorage.getItem("discord_user_id"); // must be set on login success
+
+    if (userIdFromUrl) {
+      localStorage.setItem("discord_user_id", userIdFromUrl);
+    }
+
+    const storedUserId = localStorage.getItem("discord_user_id");
     const useWidgetBtn = document.getElementById("useWidgetButton");
 
-    if (userIdFromUrl && loggedInUserId && userIdFromUrl === loggedInUserId) {
-      if (useWidgetBtn) useWidgetBtn.style.display = "none";
+    if (userIdFromUrl && storedUserId && userIdFromUrl === storedUserId) {
+      if (useWidgetBtn) {
+        useWidgetBtn.style.display = "none";
+        console.log("✅ Hiding Use Widget button (matched user)");
+      }
     }
   });
+</script>
 </script>
 
 
