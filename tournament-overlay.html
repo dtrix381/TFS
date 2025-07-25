@@ -399,13 +399,16 @@ let currentRoundTitle = "";
 
 for (let rIdx = 0; rIdx < rounds.length; rIdx++) {
   const round = rounds[rIdx];
-  const match = round.find(m => !m[2] && m[0] && m[1]);
+  const match = round.find(m =>
+    m[0] && m[1] && (!m[2] || (m[2] && (!m[2].p1 || !m[2].p2)))
+  );
   if (match) {
     currentMatch = match;
     currentRoundTitle = bracketRounds[rIdx] || `ROUND ${rIdx + 1}`;
     break;
   }
 }
+
 if (currentMatch) {
   const p1 = currentMatch[0];
   const p2 = currentMatch[1];
@@ -606,15 +609,15 @@ if (final && final[2] && final[2].winner) {
       renderSlides(newData);
 
       // If it's a new current match or it was just updated, jump to that slide
-      const matchSlideIndex = slideData.findIndex(slide => slide.includes("CURRENT MATCH-UP"));
-      if (matchSlideIndex !== -1) {
+const matchSlideIndex = slideData.findIndex(slide => slide.includes("CURRENT MATCH-UP"));
+if (matchSlideIndex !== -1) {
   slideIndex = matchSlideIndex;
   renderNextSlide();
 
   clearInterval(autoSlideInterval);
   setTimeout(() => {
     autoSlideInterval = setInterval(nextSlide, 5000);
-  }, 10000); // pause for 8s so it feels like a "focus"
+  }, 10000); // pause 10s on current match-up
 }
     }
   });
