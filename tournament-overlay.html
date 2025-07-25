@@ -627,47 +627,53 @@ if (currentMatch) {
       });
     }
 
-    
+let autoSlideInterval = null;    
 
 function setupRealtimeUpdates() {
-      if (!userId) return;
-      db.collection("tournaments").doc(userId).onSnapshot(doc => {
-        if (!doc.exists) return;
-        const data = doc.data();
-        const wasCurrentIndex = slideIndex;
-        renderSlides(data);
+  if (!userId) return;
+  db.collection("tournaments").doc(userId).onSnapshot(doc => {
+    if (!doc.exists) return;
+    const data = doc.data();
+    const wasCurrentIndex = slideIndex;
 
-        const currentMatchIndex = slideData.findIndex(s => s.includes("CURRENT MATCH-UP"));
-        if (currentMatchIndex !== -1) {
-          slideIndex = currentMatchIndex;
-          renderNextSlide();
+    renderSlides(data);
 
-          clearInterval(autoSlideInterval);
-          slideResetCooldown = true;
+    const currentMatchIndex = slideData.findIndex(s => s.includes("CURRENT MATCH-UP"));
 
-          setTimeout(() => {
-            autoSlideInterval = setInterval(nextSlide, 5000);
-            slideResetCooldown = false;
-          }, 30000); // 30 seconds hold after typing
-        }
-      });
+    if (currentMatchIndex !== -1) {
+      slideIndex = currentMatchIndex;
+      renderNextSlide();
+
+      // ✅ Always clear existing interval
+      if (autoSlideInterval) clearInterval(autoSlideInterval);
+
+      slideResetCooldown = true;
+
+      // ✅ Set delay properly
+      autoSlideInterval = setInterval(nextSlide, 5000);
+      setTimeout(() => {
+        slideResetCooldown = false;
+      }, 30000); // 30 seconds
     }
+  });
+}
 
     function handleInputFocus() {
-      const currentMatchIndex = slideData.findIndex(s => s.includes("CURRENT MATCH-UP"));
-      if (currentMatchIndex !== -1 && !slideResetCooldown) {
-        slideIndex = currentMatchIndex;
-        renderNextSlide();
+  const currentMatchIndex = slideData.findIndex(s => s.includes("CURRENT MATCH-UP"));
+  if (currentMatchIndex !== -1 && !slideResetCooldown) {
+    slideIndex = currentMatchIndex;
+    renderNextSlide();
 
-        clearInterval(autoSlideInterval);
-        slideResetCooldown = true;
+    if (autoSlideInterval) clearInterval(autoSlideInterval); // ✅ Prevent stacking
+    slideResetCooldown = true;
 
-        setTimeout(() => {
-          autoSlideInterval = setInterval(nextSlide, 5000);
-          slideResetCooldown = false;
-        }, 30000);
-      }
-    }
+    autoSlideInterval = setInterval(nextSlide, 5000);
+    setTimeout(() => {
+      slideResetCooldown = false;
+    }, 30000);
+  }
+}
+
 
     document.addEventListener('input', handleInputFocus);
 
