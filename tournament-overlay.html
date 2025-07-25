@@ -448,7 +448,7 @@ for (let i = 0; i < rounds.length; i++) {
   }
 }
 
-if (currentMatch) {
+Match) {
   const [p1, p2, result] = currentMatch;
   const p1Stats = result?.p1;
   const p2Stats = result?.p2;
@@ -654,18 +654,23 @@ function setupRealtimeUpdates() {
 
     // ✅ FORCE re-show current match when a result appears
     if (currentMatchIndex !== -1 && hasResult) {
-      slideIndex = currentMatchIndex;
-      renderNextSlide();
-      playWinnerAnimation();
+  slideIndex = currentMatchIndex;
+  renderNextSlide();
 
-      slideResetCooldown = true;
-      hasFocusedCurrentMatch = true;
+  // ⏳ Wait for DOM to update before animating
+  setTimeout(() => {
+    playWinnerAnimation();
+  }, 200); // Adjust delay if needed
 
-      slideResumeTimeout = setTimeout(() => {
-        autoSlideInterval = setInterval(nextSlide, 5000);
-        slideResetCooldown = false;
-      }, 35000); // Give time for animation
-    }
+  slideResetCooldown = true;
+  hasFocusedCurrentMatch = true;
+
+  slideResumeTimeout = setTimeout(() => {
+    autoSlideInterval = setInterval(nextSlide, 5000);
+    slideResetCooldown = false;
+  }, 35000); // Enough time for animations
+}
+
 
     // 🔁 Fallback: show Current Match when not yet focused
     else if (currentMatchIndex !== -1 && !hasFocusedCurrentMatch) {
