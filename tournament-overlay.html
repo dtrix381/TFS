@@ -399,9 +399,7 @@ let currentRoundTitle = "";
 
 for (let rIdx = 0; rIdx < rounds.length; rIdx++) {
   const round = rounds[rIdx];
-  const match = round.find(m =>
-  m[0] && m[1] && m[2] && (m[2].p1 || m[2].p2) && (!m[2].p1 || !m[2].p2 || !m[2].winner)
-) || round.find(m => m[0] && m[1] && !m[2]);
+  const match = round.find(m => m[0] && m[1] && (!m[2] || !m[2].winner));
 
   if (match) {
     currentMatch = match;
@@ -427,7 +425,7 @@ if (currentMatch) {
         <div class="player-box-alt ${getHighlight(p1.kickUsername)}">
           <div class="name">${p1.kickUsername}</div>
           <div class="slot">${p1.slot}</div>
-          ${p1Stats ? `
+         ${p1Stats ? `
   <div class="result-info fade-in">
     <span class="${winner === p1.kickUsername ? 'winner' : 'loser'}">
       ${winner === p1.kickUsername ? 'WINNER' : 'LOSER'}
@@ -436,7 +434,7 @@ if (currentMatch) {
     Pays: ${p1Stats?.totalPay != null ? `$${p1Stats.totalPay}` : '-'}<br>
     Total x: ${p1Stats?.totalX != null ? `${p1Stats.totalX}x` : '-'}
   </div>
-          ` : ""}
+` : ""}
         </div>
 
         <div class="vs-text">VS</div>
@@ -507,6 +505,7 @@ if (currentMatch) {
 rounds.forEach((round, rIdx) => {
   const roundTitle = bracketRounds[rIdx] || `ROUND ${rIdx + 1}`;
 
+  const isDone = !!result && result.p1 && result.p2 && result.winner;
   round.forEach(match => {
     const p1 = match[0];
     const p2 = match[1];
