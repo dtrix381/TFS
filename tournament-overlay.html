@@ -627,11 +627,13 @@ if (currentMatch) {
     }
 
 let autoSlideInterval = null;
-let hasFocusedCurrentMatch = false
+let hasFocusedCurrentMatch = false;
+let lastFocusedMatchKey = null; // 🆕 Track last match
 let slideResumeTimeout = null;
-    
+
 function setupRealtimeUpdates() {
   if (!userId) return;
+
   db.collection("tournaments").doc(userId).onSnapshot(doc => {
     if (!doc.exists) return;
     const data = doc.data();
@@ -640,9 +642,24 @@ function setupRealtimeUpdates() {
 
     const currentMatchIndex = slideData.findIndex(s => s.includes("CURRENT MATCH-UP"));
 
-    // ✅ Clear timers
+    // 🆕 Extract current match ID or signature (e.g., player names) from HTML
+    let currentMatchKey = null;
+    if (currentMatchIndex !== -1) {
+      const matchSlide = slideData[currentMatchIndex];
+      const matchNameRegex = /CURRENT MATCH-UP\s*•\s*(.*?)<\/h2>/;
+      const matchKeyMatch = matchSlide.match(matchNameRegex);
+      currentMatchKey = matchKeyMatch ? matchKeyMatch[1] : null;
+    }
+
+    // ✅ Clear old timers
     if (autoSlideInterval) clearInterval(autoSlideInterval);
     if (slideResumeTimeout) clearTimeout(slideResumeTimeout);
+
+    // ✅ If it's a new current match, allow focus again
+    if (currentMatchKey && currentMatchKey !== lastFocusedMatchKey) {
+      hasFocusedCurrentMatch = false;
+      lastFocusedMatchKey = currentMatchKey;
+    }
 
     if (currentMatchIndex !== -1 && !hasFocusedCurrentMatch) {
       slideIndex = currentMatchIndex;
@@ -654,10 +671,9 @@ function setupRealtimeUpdates() {
       slideResumeTimeout = setTimeout(() => {
         autoSlideInterval = setInterval(nextSlide, 5000);
         slideResetCooldown = false;
-        hasFocusedCurrentMatch = false; // ✅ allow next update to focus again
       }, 30000);
     } else {
-      // Normal mode if no current match or already focused before
+      // ✅ Resume normal sliding if allowed
       if (!slideResetCooldown) {
         slideIndex = (slideIndex + 1) % slideData.length;
         renderNextSlide();
@@ -666,7 +682,6 @@ function setupRealtimeUpdates() {
     }
   });
 }
-
 
 
 function handleInputFocus() {
