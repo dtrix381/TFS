@@ -590,7 +590,8 @@ if (currentMatch) {
     }
 
     function renderNextSlide() {
-      slidesContainer.innerHTML = slideData.map((html, i) => `<div class="slide ${i === slideIndex ? 'active' : ''}">${html}</div>`).join('');
+  if (!slideData.length) return;
+  slidesContainer.innerHTML = slideData.map((html, i) => `<div class="slide ${i === slideIndex ? 'active' : ''}">${html}</div>`).join('');
       checkChampionSlideActive();
     }
 
@@ -624,7 +625,6 @@ if (currentMatch) {
 
 let autoSlideInterval = null;
 let hasFocusedCurrentMatch = false;
-let lastFocusedMatchKey = null; // 🆕 Track last match
 let slideResumeTimeout = null;
 
 function setupRealtimeUpdates() {
@@ -651,7 +651,6 @@ function setupRealtimeUpdates() {
     if (slideResumeTimeout) clearTimeout(slideResumeTimeout);
 
     const slide = document.querySelector('.slide.active');
-    const hasResult = slide && slide.innerHTML.includes('WINNER') && slide.innerHTML.includes('LOSER');
 
     // ✅ FORCE re-show current match when a result appears
     if (currentMatchIndex !== -1) {
@@ -695,7 +694,7 @@ function setupRealtimeUpdates() {
 
 
 
-  / 🔁 Fallback: show Current Match when not yet focused
+  // 🔁 Fallback: show Current Match when not yet focused
     else if (currentMatchIndex !== -1 && !hasFocusedCurrentMatch) {
       slideIndex = currentMatchIndex;
       renderNextSlide();
