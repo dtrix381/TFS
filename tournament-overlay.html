@@ -628,7 +628,8 @@ if (currentMatch) {
 
 let autoSlideInterval = null;
 let hasFocusedCurrentMatch = false
-
+let slideResumeTimeout = null;
+    
 function setupRealtimeUpdates() {
   if (!userId) return;
   db.collection("tournaments").doc(userId).onSnapshot(doc => {
