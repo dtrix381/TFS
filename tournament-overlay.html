@@ -660,18 +660,21 @@ function setupRealtimeUpdates() {
 
  // ✅ Wait for DOM + ensure winner/loser boxes exist before animating
 setTimeout(() => {
-  requestAnimationFrame(() => {
+  const checkReadyAndAnimate = () => {
     const activeSlide = document.querySelector('.slide.active');
-    if (
-      activeSlide?.querySelector('.winner-box') &&
-      activeSlide?.querySelector('.loser-box')
-    ) {
+    const winnerBox = activeSlide?.querySelector('.winner-box');
+    const loserBox = activeSlide?.querySelector('.loser-box');
+
+    if (winnerBox && loserBox) {
       playWinnerAnimation();
     } else {
-      console.log("⚠️ Winner animation skipped — boxes not ready yet");
+      // Keep checking until they exist (max 1s)
+      requestAnimationFrame(checkReadyAndAnimate);
     }
-  });
-}, 200);
+  };
+  checkReadyAndAnimate();
+}, 200); // Just enough time for renderNextSlide()
+
 
 
   slideResetCooldown = true;
@@ -737,6 +740,7 @@ function handleInputFocus() {
     document.addEventListener('input', handleInputFocus);
     
 function playWinnerAnimation() {
+  console.log("🎉 Running winner animation...");
   const slide = document.querySelector('.slide.active');
   if (!slide) return;
 
@@ -745,8 +749,6 @@ function playWinnerAnimation() {
 
   if (winnerBox) winnerBox.classList.add("animate");
   if (loserBox) loserBox.classList.add("animate");
-
-  // Optional: Add extra effects like sound or confetti if you want
 }
     setupRealtimeUpdates();
   </script>
