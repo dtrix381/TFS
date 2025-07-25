@@ -347,6 +347,15 @@
   font-style: italic;
 }
 
+.winner-box {
+  border-color: #00ff00 !important;
+  box-shadow: 0 0 12px #00ff00;
+}
+.loser-box {
+  border-color: #ff4444 !important;
+  box-shadow: 0 0 12px #ff4444;
+}
+    
   </style>
 </head>
 <body>
@@ -422,7 +431,7 @@
       <div class="match-slide">
         <h2 class="round-label">CURRENT MATCH-UP • ${currentRoundTitle}</h2>
         <div class="match-container alt-match">
-          <div class="player-box-alt ${getHighlight(p1.kickUsername)}">
+          <div class="player-box-alt ${getStatusClass(p1.kickUsername)}">
             <div class="name">${p1.kickUsername}</div>
             <div class="slot">${p1.slot}</div>
             ${p1Stats ? `
@@ -437,7 +446,7 @@
             ` : ""}
           </div>
           <div class="vs-text">VS</div>
-          <div class="player-box-alt ${getHighlight(p2.kickUsername)}">
+          <div class="player-box-alt ${getStatusClass(p2.kickUsername)}">
             <div class="name">${p2.kickUsername}</div>
             <div class="slot">${p2.slot}</div>
             ${p2Stats ? `
@@ -491,7 +500,11 @@
       const p1Stats = result?.p1;
       const p2Stats = result?.p2;
       const winner = result?.winner?.kickUsername;
-      const getHighlight = name => name === winner ? "highlight" : "";
+      let getStatusClass = name => {
+  if (!winner) return "";
+  if (name === winner) return "winner-box";
+  return "loser-box";
+};
       const isDone = result?.p1 && result?.p2 && result?.winner;
 
       slideData.push(`
