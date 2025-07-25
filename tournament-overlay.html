@@ -400,8 +400,9 @@ let currentRoundTitle = "";
 for (let rIdx = 0; rIdx < rounds.length; rIdx++) {
   const round = rounds[rIdx];
   const match = round.find(m =>
-    m[0] && m[1] && (!m[2] || (m[2] && (!m[2].p1 || !m[2].p2)))
-  );
+  m[0] && m[1] && m[2] && (m[2].p1 || m[2].p2) && (!m[2].p1 || !m[2].p2 || !m[2].winner)
+) || round.find(m => m[0] && m[1] && !m[2]);
+
   if (match) {
     currentMatch = match;
     currentRoundTitle = bracketRounds[rIdx] || `ROUND ${rIdx + 1}`;
