@@ -348,43 +348,38 @@
 }
 
 .winner-box {
-  border-color: #00ff00 !important;
-  box-shadow: 0 0 12px #00ff00;
-}
-.loser-box {
-  border-color: #ff4444 !important;
-  box-shadow: 0 0 12px #ff4444;
-}
-    
-    /* New animations for winner and loser cards */
+      border-color: #00ff00 !important;
+      box-shadow: 0 0 12px #00ff00;
+    }
+    .loser-box {
+      border-color: #ff4444 !important;
+      box-shadow: 0 0 12px #ff4444;
+    }
+
     @keyframes fillRedBorder {
-      0% {
-        border-color: gold;
-        box-shadow: 0 0 10px gold;
-      }
-      100% {
-        border-color: red;
-        box-shadow: 0 0 15px red;
-      }
+      0% { border-color: gold; box-shadow: 0 0 10px gold; }
+      100% { border-color: red; box-shadow: 0 0 15px red; }
     }
-
     @keyframes fillGreenBorder {
-      0% {
-        border-color: gold;
-        box-shadow: 0 0 10px gold;
-      }
-      100% {
-        border-color: #00ff00;
-        box-shadow: 0 0 15px #00ff00;
-      }
+      0% { border-color: gold; box-shadow: 0 0 10px gold; }
+      100% { border-color: #00ff00; box-shadow: 0 0 15px #00ff00; }
     }
-
+    @keyframes crackShake {
+      0% { transform: rotate(0deg); }
+      25% { transform: rotate(-1deg); }
+      50% { transform: rotate(1deg); }
+      75% { transform: rotate(-0.5deg); }
+      100% { transform: rotate(0deg); }
+    }
+    @keyframes crackFlash {
+      0%, 100% { background: rgba(255, 0, 0, 0.1); }
+      50% { background: rgba(255, 0, 0, 0.4); }
+    }
     .winner-box.animate {
       animation: fillGreenBorder 1.5s ease forwards;
     }
-
     .loser-box.animate {
-      animation: fillRedBorder 1.5s ease forwards;
+      animation: fillRedBorder 1.5s ease forwards, crackShake 0.6s ease-in-out 1s forwards, crackFlash 0.6s ease-in-out 1s forwards;
     }
   </style>
 </head>
@@ -631,7 +626,20 @@ let hasFocusedCurrentMatch = false;
 let lastFocusedMatchKey = null; // 🆕 Track last match
 let slideResumeTimeout = null;
 
-function setupRealtimeUpdates() {
+function playWinnerAnimation() {
+      const activeSlide = document.querySelector('.slide.active');
+      if (!activeSlide) return;
+
+      const winnerBox = activeSlide.querySelector('.winner-box');
+      const loserBox = activeSlide.querySelector('.loser-box');
+
+      if (winnerBox && loserBox) {
+        winnerBox.classList.add('animate');
+        loserBox.classList.add('animate');
+      }
+    }
+
+    function setupRealtimeUpdates() {
   if (!userId) return;
 
   db.collection("tournaments").doc(userId).onSnapshot(doc => {
@@ -666,22 +674,32 @@ function setupRealtimeUpdates() {
       renderNextSlide();
 
       hasFocusedCurrentMatch = true;
-      slideResetCooldown = true;
+          slideResetCooldown = true;
 
-      slideResumeTimeout = setTimeout(() => {
-        autoSlideInterval = setInterval(nextSlide, 5000);
-        slideResetCooldown = false;
-      }, 30000);
-    } else {
-      // ✅ Resume normal sliding if allowed
-      if (!slideResetCooldown) {
-        slideIndex = (slideIndex + 1) % slideData.length;
-        renderNextSlide();
-        autoSlideInterval = setInterval(nextSlide, 5000);
-      }
+          const slide = document.querySelector('.slide.active');
+          const hasResult = slide && slide.innerHTML.includes('WINNER') && slide.innerHTML.includes('LOSER');
+
+          if (hasResult) {
+            setTimeout(() => playWinnerAnimation(), 500); // Let the DOM settle
+            slideResumeTimeout = setTimeout(() => {
+              autoSlideInterval = setInterval(nextSlide, 5000);
+              slideResetCooldown = false;
+            }, 35000); // 30s + 5s delay after animation
+          } else {
+            slideResumeTimeout = setTimeout(() => {
+              autoSlideInterval = setInterval(nextSlide, 5000);
+              slideResetCooldown = false;
+            }, 30000);
+          }
+        } else {
+          if (!slideResetCooldown) {
+            slideIndex = (slideIndex + 1) % slideData.length;
+            renderNextSlide();
+            autoSlideInterval = setInterval(nextSlide, 5000);
+          }
+        }
+      });
     }
-  });
-}
 
 
 function handleInputFocus() {
