@@ -372,7 +372,7 @@
     let slideIndex = 0;
     let slideData = [];
 
-    function renderSlides(data) {
+ function renderSlides(data) {
   slideData = [];
 
   const title = data.title || "Tournament";
@@ -391,196 +391,166 @@
     return matches;
   });
 
-// 1. Current match-up
-const bracketRounds = ["FIRST ROUND", "SEMI-FINALS", "GRAND FINALS"];
+  const bracketRounds = ["FIRST ROUND", "SEMI-FINALS", "GRAND FINALS"];
 
-let currentMatch = null;
-let currentRoundTitle = "";
+  // 1. Current match-up
+  let currentMatch = null;
+  let currentRoundTitle = "";
 
-for (let rIdx = 0; rIdx < rounds.length; rIdx++) {
-  const round = rounds[rIdx];
-  const match = round.find(m => m[0] && m[1] && (!m[2] || !m[2].winner));
-
-  if (match) {
-    currentMatch = match;
-    currentRoundTitle = bracketRounds[rIdx] || `ROUND ${rIdx + 1}`;
-    break;
+  for (let rIdx = 0; rIdx < rounds.length; rIdx++) {
+    const round = rounds[rIdx];
+    const match = round.find(m =>
+      m[0] && m[1] && (!m[2] || !m[2].winner)
+    );
+    if (match) {
+      currentMatch = match;
+      currentRoundTitle = bracketRounds[rIdx] || `ROUND ${rIdx + 1}`;
+      break;
+    }
   }
-}
 
-if (currentMatch) {
-  const p1 = currentMatch[0];
-  const p2 = currentMatch[1];
-  const result = currentMatch[2];
-  const p1Stats = result?.p1;
-  const p2Stats = result?.p2;
-  const winner = result?.winner?.kickUsername;
-
-  const getHighlight = name => name === winner ? "highlight" : "";
-
-  slideData.push(`
-    <div class="match-slide">
-      <h2 class="round-label">CURRENT MATCH-UP • ${currentRoundTitle}</h2>
-      <div class="match-container alt-match">
-        <div class="player-box-alt ${getHighlight(p1.kickUsername)}">
-          <div class="name">${p1.kickUsername}</div>
-          <div class="slot">${p1.slot}</div>
-         ${p1Stats ? `
-  <div class="result-info fade-in">
-    <span class="${winner === p1.kickUsername ? 'winner' : 'loser'}">
-      ${winner === p1.kickUsername ? 'WINNER' : 'LOSER'}
-    </span><br>
-    Buys: ${p1Stats?.buyAmount != null ? `$${p1Stats.buyAmount}` : '-'}<br>
-    Pays: ${p1Stats?.totalPay != null ? `$${p1Stats.totalPay}` : '-'}<br>
-    Total x: ${p1Stats?.totalX != null ? `${p1Stats.totalX}x` : '-'}
-  </div>
-` : ""}
-        </div>
-
-        <div class="vs-text">VS</div>
-
-        <div class="player-box-alt ${getHighlight(p2.kickUsername)}">
-          <div class="name">${p2.kickUsername}</div>
-          <div class="slot">${p2.slot}</div>
-          ${p2Stats ? `
-  <div class="result-info fade-in">
-    <span class="${winner === p2.kickUsername ? 'winner' : 'loser'}">
-      ${winner === p2.kickUsername ? 'WINNER' : 'LOSER'}
-    </span><br>
-    Buys: ${p2Stats?.buyAmount != null ? `$${p2Stats.buyAmount}` : '-'}<br>
-    Pays: ${p2Stats?.totalPay != null ? `$${p2Stats.totalPay}` : '-'}<br>
-    Total x: ${p2Stats?.totalX != null ? `${p2Stats.totalX}x` : '-'}
-  </div>
-` : ""}
-        </div>
-      </div>
-    </div>
-  `);
-}
-
-
-  // 2. Title
-  slideData.push(`<div><h1 class="tournament-title">${title}</h1></div>`);
-
-
-  // 3. Players 1-4
-  if (players.length >= 1) {
-  const chunk1 = players.slice(0, 4);
-  const html = `
-    <div class="player-slide">
-      <h2>Players</h2>
-      <div class="player-grid">
-        ${chunk1.map(p => `
-          <div class="player-card">
-            <div class="name">${p.kickUsername}</div>
-            <div class="slot">${p.slot}</div>
-          </div>
-        `).join("")}
-      </div>
-    </div>
-  `;
-  slideData.push(html);
-}
-
-  // 4. Players 5-8
-  if (players.length > 4) {
-  const chunk2 = players.slice(4, 8);
-  const html = `
-    <div class="player-slide">
-      <h2>Players</h2>
-      <div class="player-grid">
-        ${chunk2.map(p => `
-          <div class="player-card">
-            <div class="name">${p.kickUsername}</div>
-            <div class="slot">${p.slot}</div>
-          </div>
-        `).join("")}
-      </div>
-    </div>
-  `;
-  slideData.push(html);
-}
-
-// 5. Bracket slides — one per match
-rounds.forEach((round, rIdx) => {
-  const roundTitle = bracketRounds[rIdx] || `ROUND ${rIdx + 1}`;
-  const isDone = !!result && result.p1 && result.p2 && result.winner;
-  round.forEach(match => {
-    const p1 = match[0];
-    const p2 = match[1];
-    const result = match[2];
-
-    if (!p1 || !p2) return;
-
-    // Optional result fields (example structure)
+  if (currentMatch) {
+    const p1 = currentMatch[0];
+    const p2 = currentMatch[1];
+    const result = currentMatch[2];
     const p1Stats = result?.p1;
     const p2Stats = result?.p2;
-
     const winner = result?.winner?.kickUsername;
     const getHighlight = name => name === winner ? "highlight" : "";
 
-slideData.push(`
-  <div class="match-slide">
-    <h2 class="round-label">${roundTitle}</h2>
-    <div class="match-container alt-match">
-      
-      <div class="player-box-alt ${getHighlight(p1.kickUsername)}">
-        <div class="name">${p1.kickUsername}</div>
-        <div class="slot">${p1.slot}</div>
-        ${isDone ? `
-          <div class="result-info fade-in">
-            <span class="${winner === p1.kickUsername ? 'winner' : 'loser'}">
-              ${winner === p1.kickUsername ? 'WINNER' : 'LOSER'}
-            </span><br>
-            Buys: ${p1Stats?.buyAmount != null ? `$${p1Stats.buyAmount}` : '-'}<br>
-            Pays: ${p1Stats?.totalPay != null ? `$${p1Stats.totalPay}` : '-'}<br>
-            Total x: ${p1Stats?.totalX != null ? `${p1Stats.totalX}x` : '-'}
+    slideData.push(`
+      <div class="match-slide">
+        <h2 class="round-label">CURRENT MATCH-UP • ${currentRoundTitle}</h2>
+        <div class="match-container alt-match">
+          <div class="player-box-alt ${getHighlight(p1.kickUsername)}">
+            <div class="name">${p1.kickUsername}</div>
+            <div class="slot">${p1.slot}</div>
+            ${p1Stats ? `
+              <div class="result-info fade-in">
+                <span class="${winner === p1.kickUsername ? 'winner' : 'loser'}">
+                  ${winner === p1.kickUsername ? 'WINNER' : 'LOSER'}
+                </span><br>
+                Buys: $${p1Stats?.buyAmount ?? '-'}<br>
+                Pays: $${p1Stats?.totalPay ?? '-'}<br>
+                Total x: ${p1Stats?.totalX ?? '-'}x
+              </div>
+            ` : ""}
           </div>
-        ` : ""}
-      </div>
-
-      <div class="vs-text">VS</div>
-
-      <div class="player-box-alt ${getHighlight(p2.kickUsername)}">
-        <div class="name">${p2.kickUsername}</div>
-        <div class="slot">${p2.slot}</div>
-        ${isDone ? `
-          <div class="result-info fade-in">
-            <span class="${winner === p2.kickUsername ? 'winner' : 'loser'}">
-              ${winner === p2.kickUsername ? 'WINNER' : 'LOSER'}
-            </span><br>
-            Buys: ${p2Stats?.buyAmount != null ? `$${p2Stats.buyAmount}` : '-'}<br>
-            Pays: ${p2Stats?.totalPay != null ? `$${p2Stats.totalPay}` : '-'}<br>
-            Total x: ${p2Stats?.totalX != null ? `${p2Stats.totalX}x` : '-'}
+          <div class="vs-text">VS</div>
+          <div class="player-box-alt ${getHighlight(p2.kickUsername)}">
+            <div class="name">${p2.kickUsername}</div>
+            <div class="slot">${p2.slot}</div>
+            ${p2Stats ? `
+              <div class="result-info fade-in">
+                <span class="${winner === p2.kickUsername ? 'winner' : 'loser'}">
+                  ${winner === p2.kickUsername ? 'WINNER' : 'LOSER'}
+                </span><br>
+                Buys: $${p2Stats?.buyAmount ?? '-'}<br>
+                Pays: $${p2Stats?.totalPay ?? '-'}<br>
+                Total x: ${p2Stats?.totalX ?? '-'}x
+              </div>
+            ` : ""}
           </div>
-        ` : ""}
+        </div>
       </div>
+    `);
+  }
 
-    </div>
-  </div>
-`);
+  // 2. Tournament Title
+  slideData.push(`<div><h1 class="tournament-title">${title}</h1></div>`);
+
+  // 3. Player Grid
+  if (players.length) {
+    const chunks = [players.slice(0, 4), players.slice(4, 8)];
+    chunks.forEach(chunk => {
+      slideData.push(`
+        <div class="player-slide">
+          <h2>Players</h2>
+          <div class="player-grid">
+            ${chunk.map(p => `
+              <div class="player-card">
+                <div class="name">${p.kickUsername}</div>
+                <div class="slot">${p.slot}</div>
+              </div>
+            `).join("")}
+          </div>
+        </div>
+      `);
+    });
+  }
+
+  // 4. Bracket slides
+  rounds.forEach((round, rIdx) => {
+    const roundTitle = bracketRounds[rIdx] || `ROUND ${rIdx + 1}`;
+    round.forEach(match => {
+      const p1 = match[0];
+      const p2 = match[1];
+      const result = match[2];
+      if (!p1 || !p2) return;
+
+      const p1Stats = result?.p1;
+      const p2Stats = result?.p2;
+      const winner = result?.winner?.kickUsername;
+      const getHighlight = name => name === winner ? "highlight" : "";
+      const isDone = result?.p1 && result?.p2 && result?.winner;
+
+      slideData.push(`
+        <div class="match-slide">
+          <h2 class="round-label">${roundTitle}</h2>
+          <div class="match-container alt-match">
+            <div class="player-box-alt ${getHighlight(p1.kickUsername)}">
+              <div class="name">${p1.kickUsername}</div>
+              <div class="slot">${p1.slot}</div>
+              ${isDone ? `
+                <div class="result-info fade-in">
+                  <span class="${winner === p1.kickUsername ? 'winner' : 'loser'}">
+                    ${winner === p1.kickUsername ? 'WINNER' : 'LOSER'}
+                  </span><br>
+                  Buys: $${p1Stats?.buyAmount ?? '-'}<br>
+                  Pays: $${p1Stats?.totalPay ?? '-'}<br>
+                  Total x: ${p1Stats?.totalX ?? '-'}x
+                </div>
+              ` : ""}
+            </div>
+            <div class="vs-text">VS</div>
+            <div class="player-box-alt ${getHighlight(p2.kickUsername)}">
+              <div class="name">${p2.kickUsername}</div>
+              <div class="slot">${p2.slot}</div>
+              ${isDone ? `
+                <div class="result-info fade-in">
+                  <span class="${winner === p2.kickUsername ? 'winner' : 'loser'}">
+                    ${winner === p2.kickUsername ? 'WINNER' : 'LOSER'}
+                  </span><br>
+                  Buys: $${p2Stats?.buyAmount ?? '-'}<br>
+                  Pays: $${p2Stats?.totalPay ?? '-'}<br>
+                  Total x: ${p2Stats?.totalX ?? '-'}x
+                </div>
+              ` : ""}
+            </div>
+          </div>
+        </div>
+      `);
+    });
   });
-});
 
-// 6. Champion Slide with Confetti + Animation
-const final = rounds[2]?.[0];
-if (final && final[2] && final[2].winner) {
-  const winner = final[2].winner;
-  slideData.push(`
-    <div class="champion-slide">
-      <div class="champion-glow">
-        <h1 class="champion-title">🏆 CHAMPION 🏆</h1>
-        <h2 class="champion-name">${winner.kickUsername}</h2>
-        <p class="champion-slot">${winner.slot}</p>
+  // 5. Champion
+  const final = rounds[2]?.[0];
+  if (final && final[2] && final[2].winner) {
+    const winner = final[2].winner;
+    slideData.push(`
+      <div class="champion-slide">
+        <div class="champion-glow">
+          <h1 class="champion-title">🏆 CHAMPION 🏆</h1>
+          <h2 class="champion-name">${winner.kickUsername}</h2>
+          <p class="champion-slot">${winner.slot}</p>
+        </div>
       </div>
-    </div>
-  `);
-}
-
-
+    `);
+  }
 
   renderNextSlide();
 }
+
 
 
     function renderNextSlide() {
