@@ -626,6 +626,7 @@ if (currentMatch) {
 let autoSlideInterval = null;
 let hasFocusedCurrentMatch = false;
 let slideResumeTimeout = null;
+let lastWinner = null;
 
 function setupRealtimeUpdates() {
   if (!userId) return;
@@ -639,22 +640,29 @@ function setupRealtimeUpdates() {
     const currentMatchIndex = slideData.findIndex(s => s.includes("CURRENT MATCH-UP"));
 
     // Clear previous timers
-    if (autoSlideInterval) clearInterval(autoSlideInterval);
-    if (slideResumeTimeout) clearTimeout(slideResumeTimeout);
+    if (autoSlideInterval) {
+      clearInterval(autoSlideInterval);
+      autoSlideInterval = null;
+    }
+    if (slideResumeTimeout) {
+      clearTimeout(slideResumeTimeout);
+      slideResumeTimeout = null;
+    }
 
-    // Handle current match-up
-    if (currentMatchIndex !== -1) {
+    const slideIsMatch = currentMatchIndex !== -1;
+    if (slideIsMatch) {
       slideIndex = currentMatchIndex;
       renderNextSlide();
 
       setTimeout(() => {
-        const activeSlide = document.querySelector('.slide.active');
-        const winnerBox = activeSlide?.querySelector('.winner-box');
-        const loserBox = activeSlide?.querySelector('.loser-box');
-        const hasResult = winnerBox && loserBox;
+        const slide = document.querySelector(".slide.active");
+        const winnerBox = slide?.querySelector(".winner-box");
+        const loserBox = slide?.querySelector(".loser-box");
 
-        if (hasResult) {
-          console.log("✅ Winner detected. Playing animation.");
+        const currentWinnerName = winnerBox?.querySelector(".name")?.textContent;
+
+        if (winnerBox && loserBox && currentWinnerName && currentWinnerName !== lastWinner) {
+          lastWinner = currentWinnerName;
           playWinnerAnimation();
 
           slideResetCooldown = true;
@@ -664,9 +672,8 @@ function setupRealtimeUpdates() {
             autoSlideInterval = setInterval(nextSlide, 5000);
             slideResetCooldown = false;
             hasFocusedCurrentMatch = false;
-          }, 35000);
+          }, 35000); // 5s animation + 30s pause
         } else if (!hasFocusedCurrentMatch) {
-          console.log("⏳ No result yet, but focusing match.");
           slideResetCooldown = true;
           hasFocusedCurrentMatch = true;
 
@@ -676,12 +683,10 @@ function setupRealtimeUpdates() {
             hasFocusedCurrentMatch = false;
           }, 30000);
         } else {
-          // Already focused, resume normal
           autoSlideInterval = setInterval(nextSlide, 5000);
         }
-      }, 200); // Wait DOM update
+      }, 500); // wait DOM update
     } else {
-      // No current match, resume normal slider
       slideResetCooldown = false;
       autoSlideInterval = setInterval(nextSlide, 5000);
     }
@@ -691,15 +696,21 @@ function setupRealtimeUpdates() {
 function handleInputFocus() {
   const currentMatchIndex = slideData.findIndex(s => s.includes("CURRENT MATCH-UP"));
 
-  if (autoSlideInterval) clearInterval(autoSlideInterval);
-  if (slideResumeTimeout) clearTimeout(slideResumeTimeout);
+  if (autoSlideInterval) {
+    clearInterval(autoSlideInterval);
+    autoSlideInterval = null;
+  }
+  if (slideResumeTimeout) {
+    clearTimeout(slideResumeTimeout);
+    slideResumeTimeout = null;
+  }
 
   if (currentMatchIndex !== -1) {
     slideIndex = currentMatchIndex;
     renderNextSlide();
 
     slideResetCooldown = true;
-    hasFocusedCurrentMatch = false; // ✅ allow new results to refocus
+    hasFocusedCurrentMatch = false;
 
     slideResumeTimeout = setTimeout(() => {
       autoSlideInterval = setInterval(nextSlide, 5000);
@@ -711,10 +722,6 @@ function handleInputFocus() {
   }
 }
 
-
-
-    document.addEventListener('input', handleInputFocus);
-    
 function playWinnerAnimation() {
   console.log("🎉 Running winner animation...");
   const slide = document.querySelector('.slide.active');
@@ -726,6 +733,7 @@ function playWinnerAnimation() {
   if (winnerBox) winnerBox.classList.add("animate");
   if (loserBox) loserBox.classList.add("animate");
 }
+
     setupRealtimeUpdates();
   </script>
 </body>
