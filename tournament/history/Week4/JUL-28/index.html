@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>TFS | Tournament History</title>
+  <link rel="stylesheet" href="../../../styles.css" />
+  <link rel="icon" href="../../../assets/icon.png" type="image/png" />
+  <link rel="apple-touch-icon" href="../../../assets/icon.png">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Brick+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Akaya+Kanadaka&display=swap" rel="stylesheet">
+
+<!-- Open Graph Tags -->
+<meta property="og:title" content="TeamFullSendSlots">
+<meta property="og:description" content="Join the TFS Tournament! Big prizes, bonus buys, and epic wins.">
+<meta property="og:image" content="https://i.imgur.com/IR08Bjy.png">
+<meta property="og:url" content="https://www.teamfullsendslots.com/Tournament/">
+<meta property="og:type" content="website">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="TeamFullSendSlots">
+<meta name="twitter:description" content="Join the TFS Tournament! Big prizes, bonus buys, and epic wins.">
+<meta name="twitter:image" content="https://i.imgur.com/IR08Bjy.png">
+<meta name="twitter:url" content="https://www.teamfullsendslots.com/Tournament/">
+
+
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap');
+
+    
+    body {
+      font-family: 'Orbitron', sans-serif;
+      background-size: cover;
+      background-color: #000000;
+      color: white;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      text-shadow: 1px 1px 2px #000;
+      height: 100%; 
+      overflow-x: hidden;
+    }
+
+    html, body {
+      height: 100%;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+    }
+
+    main, .content {
+      padding-bottom: 150px;
+    }
+
+    h1, h2 {
+      text-align: center;
+      color: gold;
+      text-shadow: 2px 2px 4px #000;
+    }
+
+.bracket-container {
+  background-color: #021649;
+  padding: 20px;
+  border-radius: 15px;
+  width: 800px;
+  margin: auto;
+  margin-bottom: 100px;
+  color: #fff;
+  border: 2px solid #bb6eff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 100px;
+}
+
+/* Header */
+.bracket-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.bracket-header h1 {
+  font-size: 1.8rem;
+  color: crimson;
+}
+
+.bracket-header h2 {
+  font-size: 2.2rem;
+  color: #FFD700;
+}
+
+.match-container {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  justify-content: center;
+}
+
+
+.player-pool {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Responsive columns */
+  gap: 12px;
+  max-width: 750px;
+  margin: auto;
+  padding: 0 10px;
+  box-sizing: border-box;
+}
+
+.player-entry {
+  display: flex;
+  align-items: center;
+  background: #1f1f1f;
+  padding: 10px 12px;
+  border-radius: 8px;
+  gap: 12px;
+  flex-wrap: wrap;
+  border: 0.5px solid blue;
+}
+
+.avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.player-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.player-name {
+  color: #00ffff;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.slot-name {
+  color: #ff69b4;
+  font-size: 0.85rem;
+}
+
+
+/* Rounds */
+.rounds {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  width: fit-content;
+}
+
+.round-title {
+  font-size: 1.5rem;
+  color: #FFD700;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.player-card {
+  width: 310px; /* or any width that works well for your layout */
+  display: flex;
+  flex-direction: row; /* or column depending on layout */
+  background-color: #1f1f1f;
+  padding: 12px;
+  border-radius: 10px;
+  color: white;
+  border: 1px solid white;
+  align-items: center;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.slot-image {
+  width: 120px;
+  max-height: 100px;
+  border-radius: 10px;
+  object-fit: contain;
+  flex-shrink: 0;
+  margin-left: -18px;
+  margin-right: -10px;
+}
+
+.player-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.player-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.player-info a {
+  color: #00ffff;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.slot-name {
+  color: #ff69b4;
+  font-size: 0.9rem;
+}
+
+.match-result.win {
+  color: #00ff00;
+  font-weight: bold;
+}
+
+.match-result.lose {
+  color: #ff0000;
+  font-weight: bold;
+}
+
+.champion-container {
+  text-align: center;
+  padding: 20px;
+  background-color: #333;
+  border: 2px solid gold;
+  border-radius: 10px;
+  font-size: 1.8rem;
+  color: gold;
+  margin-top: 40px;
+}
+
+@media (max-width: 600px) {
+  .bracket-container {
+    width: 100%;
+    padding: 16px;
+    box-sizing: border-box;
+  }
+
+  .bracket-header h1 {
+    font-size: 1.4rem;
+  }
+
+  .bracket-header h2 {
+    font-size: 1.8rem;
+  }
+
+  .match-container {
+    gap: 8px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .player-pool {
+    grid-template-columns: 1fr; /* cleaner than 100% minmax */
+    padding: 0 8px;
+    gap: 8px;
+    box-sizing: border-box;
+  }
+
+  .player-entry {
+    flex-direction: row;
+    flex-wrap: wrap; /* changed from nowrap */
+    width: 100%;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    box-sizing: border-box;
+  }
+
+  .rounds {
+    align-items: center;
+    width: 100%;
+  }
+
+  .round-title {
+    font-size: 1.2rem;
+  }
+
+  .player-card {
+    width: 100%;
+    max-width: 320px;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    padding: 10px;
+    gap: 10px;
+  }
+
+  .slot-image {
+    width: 100px;
+    max-height: 80px;
+  }
+
+  .player-right {
+    gap: 6px;
+    align-items: flex-start;
+  }
+
+  .avatar {
+    width: 40px;
+    height: 40px;
+  }
+
+  .player-info a {
+    font-size: 0.9rem;
+  }
+
+  .slot-name {
+    font-size: 0.8rem;
+  }
+
+  .match-result.win,
+  .match-result.lose {
+    font-size: 0.85rem;
+  }
+
+  .champion-container {
+    font-size: 1.5rem;
+    padding: 16px;
+  }
+}
+
+
+.back-button {
+  background-color: red;
+  color: #fff;
+  border: none;
+  padding: 8px 16px; /* Slightly smaller */
+  font-size: 14px;   /* Slightly smaller text */
+  cursor: pointer;
+  border-radius: 5px;
+  display: inline-block; /* Keeps it inline */
+  width: auto;           /* Ensures it doesn't stretch */
+  max-width: fit-content; /* Optional: ensures it only fits the content */
+  margin: 15px 0;
+}
+.back-button:hover {
+  background-color: #666;
+}
+
+.flex-center {
+  display: flex;
+  justify-content: center;
+  margin: 15px 0;
+}
+
+@media (max-width: 480px) {
+  .back-button {
+    padding: 8px 16px;
+    font-size: 13px;
+  }
+}
+
+
+  </style>
+
+
+</head>
+<body>
+    
+  <header>
+    <div class="header-container">
+      
+      <!-- Left -->
+      <div class="header-left">
+        <a href="/" style="text-decoration: none;"><h1>TeamFullSend</h1></a>
+      </div>
+     
+	<!-- Menu button (only visible on mobile) -->
+    <button class="menu-button" aria-label="Toggle Menu">☰</button>
+
+      <!-- Right -->
+      <div class="header-right">
+        <a href="https://kick.com/teamfullsendslots" target="_blank" rel="noopener noreferrer" class="button">Live on KICK</a>
+      </div>
+
+    </div>
+
+
+  </header>
+
+
+<button id="menu-toggle" class="menu-button2">☰</button>
+<div class="fixed-buttons">
+  <div class="button-wrapper"><a href="/guess-the-balance/" data-tooltip="Guess the Balance"><span>Guess the Balance</span></a></div>
+  <div class="button-wrapper"><a href="/giveaways/" data-tooltip="Giveaways"><span>Giveaways</span></a></div>
+  <div class="button-wrapper"><a href="/casino-links/" data-tooltip="Casino Links"><span>Casino Links</span></a></div>
+  <div class="button-wrapper"><a href="/" data-tooltip="Home"><span>Home Page</span></a></div>
+</div>
+
+<script>
+const menuToggle = document.getElementById('menu-toggle');
+const buttons = document.querySelector('.fixed-buttons');
+const wrappers = document.querySelectorAll('.button-wrapper');
+
+let menuVisible = true;
+
+menuToggle.addEventListener('click', () => {
+    if (menuVisible) {
+        // Hide with animation
+        buttons.classList.remove('showing');
+        buttons.classList.add('hiding');
+        setTimeout(() => {
+            buttons.style.display = 'none';
+        }, 400);
+    } else {
+        // Prepare hidden state first before showing
+        wrappers.forEach(wrapper => {
+            wrapper.style.opacity = 0;
+            wrapper.style.transform = 'scale(0.8)';
+        });
+
+        buttons.style.display = 'flex';
+
+        // Force reflow so the browser registers the styles above
+        void buttons.offsetWidth;
+
+        buttons.classList.remove('hiding');
+        buttons.classList.add('showing');
+
+        // After animation ends, clear inline styles to reset for next toggle
+        setTimeout(() => {
+            wrappers.forEach(wrapper => {
+                wrapper.style.opacity = '';
+                wrapper.style.transform = '';
+            });
+        }, 400);
+    }
+
+    menuVisible = !menuVisible;
+});
+
+</script>
+
+
+<!-- Mobile full-screen menu (hidden by default) -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="/guess-the-balance/"><span>Guess the Balance</span></a>
+  <a href="/giveaways/"><span>Giveaways</span></a>
+  <a href="/casino-links/"><span>Casino Links</span></a>
+
+  <!-- Bottom section inside mobile menu -->
+  <div class="mobile-menu-bottom">
+    <a href="/" class="buy-button">Go back Home 🏠</a>
+  </div>
+</div>
+
+<script>
+  const mobileMenuButton = document.querySelector('.menu-button');
+  const mobileMenu = document.getElementById('mobileMenu');
+
+  mobileMenuButton.addEventListener('click', () => {
+    mobileMenu.classList.toggle('open');
+    document.body.classList.toggle('menu-open');
+  });
+</script>
+
+
+<main>
+<div class="bracket-container">
+  <!-- Header -->
+  <div class="bracket-header">
+    <h1>📅 Jly 28, 2025</h1>
+    <h2>🎰 TeamFullSendSlots Tournament 🎲</h2>
+  </div>
+
+  <!-- Message about the tournament status -->
+  <div class="bracket-message" style="text-align: center; padding: 40px; color: gold; font-size: 1.2rem;">
+    The tournament is still ongoing. We’ll update this page once the tournament has been completed.
+  </div>
+</div>
+
+
+
+
+
+<div class="flex-center">
+  <a href="/tournament/" class="back-button">Back</a>
+</div>
+
+
+</main>
+</body>
+
+<footer>
+  <p>&copy; 2025 <strong>TeamFullSendSlots.com</strong>. All rights reserved.</p>
+
+<div class="footer-legal">
+  <a href="/policy/">Privacy & Terms</a>
+</div>
+</footer>
+
+
+</html>
