@@ -432,51 +432,6 @@ menuToggle.addEventListener('click', () => {
   ">🔐 Use Widget</button>
 </div>
 
-<script>
-const authorizedUsers = ["488015447417946151", "1037485428921606185"]; // Add more if needed
-let isOwner = false;
-
-// 🟩 Securely load user info
-window.addEventListener("DOMContentLoaded", async () => {
-  const urlParams = new URLSearchParams(window.location.search);
-  const huntOwnerId = urlParams.get("user");
-
-  if (!huntOwnerId) {
-    alert("⚠️ Missing ?user= in URL.");
-    return;
-  }
-
-  try {
-    const res = await fetch("https://tfs-widget-auth.onrender.com/api/user", {
-      credentials: "include",
-    });
-
-    if (!res.ok) throw new Error("User not authenticated");
-
-    const data = await res.json();
-    const loggedInUserId = data.discordId;
-
-    // ✅ Allow if the logged-in user is the owner or in authorized list
-    if (huntOwnerId === loggedInUserId || authorizedUsers.includes(loggedInUserId)) {
-      isOwner = true;
-      document.getElementById("useWidgetButton").style.display = "none";
-    } else {
-      disableEditing();
-    }
-  } catch (err) {
-    console.warn("❌ Not authenticated or fetch error:", err);
-    disableEditing();
-  }
-});
-
-function disableEditing() {
-  document.querySelector(".tracker-controls").style.display = "none";
-  document.getElementById("startingBalance").disabled = true;
-  document.getElementById("huntTitle").disabled = true;
-  document.querySelectorAll('#huntTable input').forEach(input => input.disabled = true);
-}
-</script>
-
 
 <script>
   function loginWithDiscord() {
@@ -484,6 +439,29 @@ function disableEditing() {
     window.location.href = "https://tfs-widget-auth.onrender.com/hunt-tracker/auth/discord";
   }
 </script>
+
+<script>
+  window.addEventListener("DOMContentLoaded", () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const userIdFromUrl = urlParams.get("user");
+
+    if (userIdFromUrl) {
+      localStorage.setItem("discord_user_id", userIdFromUrl);
+    }
+
+    const storedUserId = localStorage.getItem("discord_user_id");
+    const useWidgetBtn = document.getElementById("useWidgetButton");
+
+    if (userIdFromUrl && storedUserId && userIdFromUrl === storedUserId) {
+      if (useWidgetBtn) {
+        useWidgetBtn.style.display = "none";
+        console.log("✅ Hiding Use Widget button (matched user)");
+      }
+    }
+  });
+</script>
+</script>
+
 
 <script>
   const firebaseConfig = {
@@ -520,17 +498,7 @@ function disableEditing() {
   });
 </script>
 
-<script>
-if (!isOwner) {
-  document.querySelectorAll('#huntTable input').forEach(input => {
-    input.disabled = true;
-  });
-  document.getElementById('startingBalance').disabled = true;
-  document.getElementById('huntTitle').disabled = true;
-}
-</script>
 
-    
 <script>
   let counter = 0;
 
@@ -685,16 +653,13 @@ syncToFirebase();
   }
 
 function syncToFirebase() {
-  if (!isOwner) {
-    console.warn("🚫 Not authorized to sync.");
-    return;
-  }
-
   const data = {
     startingBalance: parseFloat(document.getElementById('startingBalance').value) || 0,
-    slots: [],
-    title: document.getElementById('huntTitle').value.trim()
+    slots: []
   };
+
+  // 🔽 ADD THIS LINE:
+  data.title = document.getElementById('huntTitle').value.trim();
 
   const rows = document.querySelectorAll('#huntTable tr');
   rows.forEach(row => {
@@ -704,6 +669,8 @@ function syncToFirebase() {
     const payInput = cells[3].querySelector('input');
     const payVal = parseFloat(payInput?.value) || 0;
     const totalX = betVal > 0 ? payVal / betVal : 0;
+
+    // ✅ Treat the slot as opened only if totalPay was typed in (including $0)
     const opened = payInput?.value !== "" && !isNaN(payVal);
 
     data.slots.push({
@@ -719,7 +686,6 @@ function syncToFirebase() {
     .then(() => console.log("✅ Synced to Firebase"))
     .catch(err => console.error("❌ Firebase Error:", err));
 }
-
 </script>
 
 
