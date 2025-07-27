@@ -640,10 +640,28 @@ menuToggle.addEventListener('click', () => {
   firebase.initializeApp(firebaseConfig);
   const db = firebase.firestore();
   const urlParams = new URLSearchParams(window.location.search);
-  const userId = urlParams.get("user");
-  const isAuthorized = !!userId;
+  const token = urlParams.get("token");
 
+fetch(`/api/validate_token?token=${token}`)
+  .then(res => res.json())
+  .then(data => {
+    if (data.authorized) {
+      const userId = data.userId;
+      // 🔒 Save locally (optional)
+      localStorage.setItem("tfs_user", token);
 
+      // ✅ Now you can load and save data for this user
+      loadTournamentData(userId);
+    } else {
+      alert("⚠️ Session expired. Please log in again.");
+      window.location.href = "https://tfs-widget-auth.onrender.com/tournament/auth/discord";
+    }
+  });
+
+const url = new URL(window.location);
+url.searchParams.delete('token');
+window.history.replaceState({}, document.title, url);
+	
   // ✅ Helper to convert rounds into Firestore-safe object structure
 function prepareSafeRounds(rounds) {
   return rounds.map((round) => {
@@ -696,6 +714,7 @@ function prepareSafeRounds(rounds) {
 	
 
   let currentTournamentData = {};
+  let userId = null;
 
   // Convert Firestore round objects to nested arrays
   function loadSafeRounds(dataRounds) {
