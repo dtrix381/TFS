@@ -640,38 +640,33 @@ menuToggle.addEventListener('click', () => {
   firebase.initializeApp(firebaseConfig);
   const db = firebase.firestore();
   const urlParams = new URLSearchParams(window.location.search);
-  let token = urlParams.get("token");
+  const userId = urlParams.get("user");
+  const authorizedUsers = [
+  "488015447417946151", // 👈 your main Discord ID
+  "1037485428921606185", // (add more if needed)
+  // ...
+];
 
-// ✅ If no token in URL, try loading from localStorage
-if (!token) {
-  token = localStorage.getItem("tfs_user");
+if (!authorizedUsers.includes(userId)) {
+  alert("🚫 You are not authorized to use this tournament manager.");
+  
+  // Disable buttons
+  ["addPlayerBtn", "startBtn"].forEach(id => {
+    const btn = document.getElementById(id);
+    if (btn) btn.disabled = true;
+  });
+
+  // Optional: hide inputs
+  document.getElementById("kickUsername")?.setAttribute("disabled", "true");
+  document.getElementById("slot")?.setAttribute("disabled", "true");
+
+  // Optional: show message
+  const notice = document.createElement("p");
+  notice.textContent = "🛑 You are in read-only mode.";
+  notice.style = "color: crimson; text-align: center; font-weight: bold; font-family: Orbitron;";
+  document.querySelector(".container")?.prepend(notice);
 }
 
-if (!token) {
-  alert("🔒 No token found. Please login first.");
-  window.location.href = "https://tfs-widget-auth.onrender.com/tournament/auth/discord";
-} else {
-  // ✅ Token exists → validate
-  fetch(`/api/validate_token?token=${token}`)
-    .then(res => res.json())
-    .then(data => {
-      if (data.authorized) {
-        const userId = data.userId;
-        localStorage.setItem("tfs_user", token); // save again just in case
-
-        // ✅ Load data
-        loadTournamentData(userId);
-      } else {
-        alert("⚠️ Session expired. Please log in again.");
-        window.location.href = "https://tfs-widget-auth.onrender.com/tournament/auth/discord";
-      }
-    });
-}
-
-const url = new URL(window.location);
-url.searchParams.delete('token');
-window.history.replaceState({}, document.title, url);
-	
   // ✅ Helper to convert rounds into Firestore-safe object structure
 function prepareSafeRounds(rounds) {
   return rounds.map((round) => {
@@ -724,7 +719,6 @@ function prepareSafeRounds(rounds) {
 	
 
   let currentTournamentData = {};
-  let userId = null;
 
   // Convert Firestore round objects to nested arrays
   function loadSafeRounds(dataRounds) {
@@ -758,29 +752,27 @@ function prepareSafeRounds(rounds) {
 
   // Unified full save: players, rounds, title
   function saveTournamentData() {
-  const safePlayers = players.map(p => ({
-    kickUsername: typeof p.kickUsername === "string" ? p.kickUsername : "",
-    slot: typeof p.slot === "string" ? p.slot : ""
-  }));
+    const safePlayers = players.map(p => ({
+      kickUsername: typeof p.kickUsername === "string" ? p.kickUsername : "",
+      slot: typeof p.slot === "string" ? p.slot : ""
+    }));
+    const safeRounds = prepareSafeRounds(rounds);
+    const title = document.getElementById("titleInput")?.value?.trim() || currentTournamentData.title || "Tournament";
 
-  const safeRounds = prepareSafeRounds(rounds); // <-- this must be here
+    const updatedData = {
+      players: safePlayers,
+      rounds: safeRounds,
+      title: title,
+      timestamp: new Date().toISOString()
+    };
 
-  const title = document.getElementById("titleInput")?.value?.trim() || currentTournamentData.title || "Tournament";
-
-  const updatedData = {
-    players: safePlayers,
-    rounds: safeRounds,
-    title: title,
-    timestamp: new Date().toISOString()
-  };
-
-  db.collection("tournaments").doc(userId).set(updatedData).then(() => {
-    currentTournamentData = updatedData;
-    console.log("✅ Full tournament data saved.");
-  }).catch(error => {
-    console.error("❌ Error saving full data:", error);
-  });
-}
+    db.collection("tournaments").doc(userId).set(updatedData).then(() => {
+      currentTournamentData = updatedData;
+      console.log("✅ Full tournament data saved.");
+    }).catch(error => {
+      console.error("❌ Error saving full data:", error);
+    });
+  }
 
   // Reset tournament
   function startNewTournament() {
@@ -1125,52 +1117,26 @@ function saveEdit(button, roundIndex, matchIndex, playerIndex) {
 
 
 function addLiveTotalXListeners() {
-  document.querySelectorAll(".bracket").forEach((roundDiv, roundIndex) => {
-    const matchDivs = roundDiv.querySelectorAll(".match");
+  document.querySelectorAll(".match").forEach(matchDiv => {
+    const playerDivs = matchDiv.querySelectorAll(".player");
+    playerDivs.forEach(playerDiv => {
+      const buyInput = playerDiv.querySelector(".buyAmount");
+      const payInput = playerDiv.querySelector(".totalPay");
+      const totalXSpan = playerDiv.querySelector(".totalX");
 
-    matchDivs.forEach((matchDiv, matchIndex) => {
-      const playerDivs = matchDiv.querySelectorAll(".player");
-
-      playerDivs.forEach((playerDiv, playerIdx) => {
-        const buyInput = playerDiv.querySelector(".buyAmount");
-        const payInput = playerDiv.querySelector(".totalPay");
-        const totalXSpan = playerDiv.querySelector(".totalX");
-
-        if (!buyInput || !payInput || !totalXSpan) return;
-
+      if (buyInput && payInput && totalXSpan) {
         const updateTotalX = () => {
-          const buy = parseFloat(buyInput.value) || 0;
-          const pay = parseFloat(payInput.value) || 0;
-          const totalX = (buy > 0) ? (pay / buy).toFixed(2) : "0";
+          const buy = parseFloat(buyInput.value);
+          const pay = parseFloat(payInput.value);
+          const totalX = (!isNaN(buy) && !isNaN(pay) && buy > 0) ? (pay / buy).toFixed(2) : 0;
           totalXSpan.textContent = `Total X: ${totalX}x`;
-
-          if (!rounds[roundIndex]) rounds[roundIndex] = [];
-          if (!rounds[roundIndex][matchIndex]) rounds[roundIndex][matchIndex] = [null, null, null];
-
-          let result = rounds[roundIndex][matchIndex][2];
-          if (!result || typeof result !== "object") {
-            result = { winner: null, p1: {}, p2: {} };
-          }
-
-          const key = playerIdx === 0 ? "p1" : "p2";
-          result[key] = {
-            buyAmount: buy,
-            totalPay: pay,
-            totalX: parseFloat(totalX)
-          };
-
-          rounds[roundIndex][matchIndex][2] = result;
-
-          if (userId) saveTournamentData();
         };
-
         buyInput.addEventListener("input", updateTotalX);
         payInput.addEventListener("input", updateTotalX);
-      });
+      }
     });
   });
 }
-
 
 function generateWinner(button, roundIndex, matchIndex, code) {
   const matchDiv = button.closest(".match");
