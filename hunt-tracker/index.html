@@ -441,6 +441,33 @@ menuToggle.addEventListener('click', () => {
 </script>
 
 <script>
+const authorizedUsers = [
+  "488015447417946151", // You (Kahly)
+  "1037485428921606185",      // (Optional) Add more Discord user IDs
+];
+
+let canEdit = false;
+
+window.addEventListener("DOMContentLoaded", async () => {
+  const addSlotBtn = document.querySelector(".tracker-controls button[onclick='addRow()']");
+  if (addSlotBtn) addSlotBtn.disabled = true; // 🔒 Disabled by default
+
+  const localUserId = localStorage.getItem("discord_user_id");
+  const userIdParam = new URLSearchParams(window.location.search).get("user");
+
+  if (!userIdParam || !localUserId) return;
+
+  if (userIdParam === localUserId || authorizedUsers.includes(localUserId)) {
+    canEdit = true;
+    if (addSlotBtn) addSlotBtn.disabled = false;
+    console.log("✅ Authorized to edit hunt");
+  } else {
+    console.warn("🚫 Not authorized to edit this hunt");
+  }
+});
+</script>
+
+<script>
   window.addEventListener("DOMContentLoaded", () => {
     const urlParams = new URLSearchParams(window.location.search);
     const userIdFromUrl = urlParams.get("user");
@@ -503,6 +530,10 @@ menuToggle.addEventListener('click', () => {
   let counter = 0;
 
   function addRow(slotData = {}) {
+    if (!canEdit) {
+    alert("🚫 You are not authorized to add slots to this hunt.");
+    return;
+  }
     const table = document.getElementById('huntTable');
     const row = table.insertRow();
     const index = row.insertCell(0);
@@ -660,6 +691,7 @@ function syncToFirebase() {
 
   // 🔽 ADD THIS LINE:
   data.title = document.getElementById('huntTitle').value.trim();
+document.getElementById('huntTitle').addEventListener('input', syncToFirebase);
 
   const rows = document.querySelectorAll('#huntTable tr');
   rows.forEach(row => {
