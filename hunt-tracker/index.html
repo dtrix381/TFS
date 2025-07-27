@@ -432,6 +432,29 @@ menuToggle.addEventListener('click', () => {
   ">🔐 Use Widget</button>
 </div>
 
+<script>
+  let isOwner = false;
+
+  // Validate user ID match on load
+  window.addEventListener("DOMContentLoaded", () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const userIdFromUrl = urlParams.get("user");
+
+    if (userIdFromUrl) {
+      localStorage.setItem("discord_user_id", userIdFromUrl);
+    }
+
+    const storedUserId = localStorage.getItem("discord_user_id");
+
+    if (userIdFromUrl && storedUserId && userIdFromUrl === storedUserId) {
+      isOwner = true;
+      document.getElementById("useWidgetButton").style.display = "none";
+    } else {
+      // 🔒 Disable interaction for non-owner
+      document.querySelector(".tracker-controls").style.display = "none";
+    }
+  });
+</script>
 
 <script>
   function loginWithDiscord() {
@@ -459,7 +482,6 @@ menuToggle.addEventListener('click', () => {
       }
     }
   });
-</script>
 </script>
 
 
@@ -498,7 +520,17 @@ menuToggle.addEventListener('click', () => {
   });
 </script>
 
+<script>
+if (!isOwner) {
+  document.querySelectorAll('#huntTable input').forEach(input => {
+    input.disabled = true;
+  });
+  document.getElementById('startingBalance').disabled = true;
+  document.getElementById('huntTitle').disabled = true;
+}
+</script>
 
+    
 <script>
   let counter = 0;
 
@@ -653,13 +685,16 @@ syncToFirebase();
   }
 
 function syncToFirebase() {
+  if (!isOwner) {
+    console.warn("🚫 Not authorized to sync.");
+    return;
+  }
+
   const data = {
     startingBalance: parseFloat(document.getElementById('startingBalance').value) || 0,
-    slots: []
+    slots: [],
+    title: document.getElementById('huntTitle').value.trim()
   };
-
-  // 🔽 ADD THIS LINE:
-  data.title = document.getElementById('huntTitle').value.trim();
 
   const rows = document.querySelectorAll('#huntTable tr');
   rows.forEach(row => {
@@ -669,8 +704,6 @@ function syncToFirebase() {
     const payInput = cells[3].querySelector('input');
     const payVal = parseFloat(payInput?.value) || 0;
     const totalX = betVal > 0 ? payVal / betVal : 0;
-
-    // ✅ Treat the slot as opened only if totalPay was typed in (including $0)
     const opened = payInput?.value !== "" && !isNaN(payVal);
 
     data.slots.push({
@@ -686,6 +719,7 @@ function syncToFirebase() {
     .then(() => console.log("✅ Synced to Firebase"))
     .catch(err => console.error("❌ Firebase Error:", err));
 }
+
 </script>
 
 
