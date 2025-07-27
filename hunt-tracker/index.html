@@ -243,7 +243,14 @@
     width: 100%;
     font-size: 14px;
   }
-}
+
+  body:not(.authorized) .tracker-controls,
+  body:not(.authorized) .currency-input,
+  body:not(.authorized) #huntTitle,
+  body:not(.authorized) .tracker-table,
+  body:not(.authorized) .stats-box {
+    display: none !important;
+  }
   </style>
 </head>
 <body>
@@ -442,27 +449,51 @@ menuToggle.addEventListener('click', () => {
 
 <script>
 const authorizedUsers = [
-  "488015447417946151", // You (Kahly)
-  "1037485428921606185",      // (Optional) Add more Discord user IDs
+  "488015447417946151", // Kahly
+  "1037485428921606185", // Other admins if any
 ];
 
 let canEdit = false;
 
-window.addEventListener("DOMContentLoaded", async () => {
-  const addSlotBtn = document.querySelector(".tracker-controls button[onclick='addRow()']");
-  if (addSlotBtn) addSlotBtn.disabled = true; // 🔒 Disabled by default
-
+// ✅ Full secure check
+function checkAuthorization() {
   const localUserId = localStorage.getItem("discord_user_id");
-  const userIdParam = new URLSearchParams(window.location.search).get("user");
+  const urlUserId = new URLSearchParams(window.location.search).get("user");
 
-  if (!userIdParam || !localUserId) return;
+  const isAdmin = authorizedUsers.includes(localUserId);
+  const isOwner = urlUserId === localUserId;
 
-  if (userIdParam === localUserId || authorizedUsers.includes(localUserId)) {
-    canEdit = true;
-    if (addSlotBtn) addSlotBtn.disabled = false;
-    console.log("✅ Authorized to edit hunt");
-  } else {
-    console.warn("🚫 Not authorized to edit this hunt");
+  if (!isOwner && !isAdmin) {
+    console.warn("🚫 Access denied.");
+
+    document.body.innerHTML = `
+      <div style="text-align:center;margin-top:100px;color:red;">
+        <h2>❌ Unauthorized Access</h2>
+        <p>You are not allowed to view or edit this hunt.</p>
+        <a href="/" style="color:#00ffff;text-decoration:underline;">Return to Home</a>
+      </div>`;
+    return false;
+  }
+
+  document.body.classList.add("authorized");
+  return true;
+}
+
+window.addEventListener("DOMContentLoaded", () => {
+  const addSlotBtn = document.querySelector(".tracker-controls button[onclick='addRow()']");
+  if (addSlotBtn) addSlotBtn.disabled = true;
+
+  if (!checkAuthorization()) return;
+
+  canEdit = true;
+  if (addSlotBtn) addSlotBtn.disabled = false;
+  console.log("✅ Authorized to edit hunt");
+
+  const useWidgetBtn = document.getElementById("useWidgetButton");
+  const urlUserId = new URLSearchParams(window.location.search).get("user");
+  const localUserId = localStorage.getItem("discord_user_id");
+  if (useWidgetBtn && urlUserId === localUserId) {
+    useWidgetBtn.style.display = "none";
   }
 });
 </script>
@@ -490,7 +521,17 @@ if (!localStorage.getItem("discord_user_id")) {
       }
     }
   });
-</script>
+
+window.addEventListener("DOMContentLoaded", async () => {
+  if (!checkAuthorization()) return;
+
+  // if authorized, unlock addRow button and other features
+  canEdit = true;
+  const addSlotBtn = document.querySelector(".tracker-controls button[onclick='addRow()']");
+  if (addSlotBtn) addSlotBtn.disabled = false;
+  console.log("✅ Authorized to edit hunt");
+});
+	
 </script>
 
 
@@ -511,6 +552,27 @@ if (!localStorage.getItem("discord_user_id")) {
   }
   const huntDocId = userId;
 
+  function checkAuthorization() {
+  const localUserId = localStorage.getItem("discord_user_id");
+  const urlUserId = new URLSearchParams(window.location.search).get("user");
+
+  const isAdmin = authorizedUsers.includes(localUserId);
+  const isOwner = urlUserId === localUserId;
+
+  if (!isOwner && !isAdmin) {
+    console.warn("🚫 Access denied.");
+    document.body.innerHTML = `
+      <div style="color: red; text-align: center; margin-top: 100px;">
+        <h2>❌ Unauthorized Access</h2>
+        <p>You are not allowed to view or edit this hunt.</p>
+        <a href="/" style="color: #00ffff; text-decoration: underline;">Return to Homepage</a>
+      </div>`;
+    return false;
+  }
+
+  return true;
+}
+	
   // 🟢 Load saved hunt data for this user
   window.addEventListener('DOMContentLoaded', () => {
     db.collection("hunts").doc(huntDocId).get()
