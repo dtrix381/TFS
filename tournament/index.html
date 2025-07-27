@@ -640,23 +640,33 @@ menuToggle.addEventListener('click', () => {
   firebase.initializeApp(firebaseConfig);
   const db = firebase.firestore();
   const urlParams = new URLSearchParams(window.location.search);
-  const token = urlParams.get("token");
+  let token = urlParams.get("token");
 
-fetch(`/api/validate_token?token=${token}`)
-  .then(res => res.json())
-  .then(data => {
-    if (data.authorized) {
-      const userId = data.userId;
-      // 🔒 Save locally (optional)
-      localStorage.setItem("tfs_user", token);
+// ✅ If no token in URL, try loading from localStorage
+if (!token) {
+  token = localStorage.getItem("tfs_user");
+}
 
-      // ✅ Now you can load and save data for this user
-      loadTournamentData(userId);
-    } else {
-      alert("⚠️ Session expired. Please log in again.");
-      window.location.href = "https://tfs-widget-auth.onrender.com/tournament/auth/discord";
-    }
-  });
+if (!token) {
+  alert("🔒 No token found. Please login first.");
+  window.location.href = "https://tfs-widget-auth.onrender.com/tournament/auth/discord";
+} else {
+  // ✅ Token exists → validate
+  fetch(`/api/validate_token?token=${token}`)
+    .then(res => res.json())
+    .then(data => {
+      if (data.authorized) {
+        const userId = data.userId;
+        localStorage.setItem("tfs_user", token); // save again just in case
+
+        // ✅ Load data
+        loadTournamentData(userId);
+      } else {
+        alert("⚠️ Session expired. Please log in again.");
+        window.location.href = "https://tfs-widget-auth.onrender.com/tournament/auth/discord";
+      }
+    });
+}
 
 const url = new URL(window.location);
 url.searchParams.delete('token');
