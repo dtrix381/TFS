@@ -646,26 +646,25 @@ menuToggle.addEventListener('click', () => {
   "1037485428921606185", // (add more if needed)
   // ...
 ];
-
-if (!authorizedUsers.includes(userId)) {
+const canEdit = authorizedUsers.includes(userId); // 🔐
+if (!canEdit) {
   alert("🚫 You are not authorized to use this tournament manager.");
-  
-  // Disable buttons
+
   ["addPlayerBtn", "startBtn"].forEach(id => {
     const btn = document.getElementById(id);
     if (btn) btn.disabled = true;
   });
 
-  // Optional: hide inputs
   document.getElementById("kickUsername")?.setAttribute("disabled", "true");
   document.getElementById("slot")?.setAttribute("disabled", "true");
 
-  // Optional: show message
   const notice = document.createElement("p");
   notice.textContent = "🛑 You are in read-only mode.";
   notice.style = "color: crimson; text-align: center; font-weight: bold; font-family: Orbitron;";
   document.querySelector(".container")?.prepend(notice);
 }
+	
+
 
   // ✅ Helper to convert rounds into Firestore-safe object structure
 function prepareSafeRounds(rounds) {
@@ -953,6 +952,7 @@ let players = [];
 let rounds = [];
 
 function addPlayer() {
+  if (!canEdit) return alert("❌ You are not authorized to add players.");
   const kickUsername = document.getElementById("kickUsername").value.trim();
   const slot = document.getElementById("slot").value.trim();
 
@@ -981,6 +981,7 @@ function updatePlayerList() {
 }
 
 function startTournament() {
+  if (!canEdit) return alert("❌ You are not authorized to add players.");
   if (players.length !== 8) return alert("Exactly 8 players are required.");
 
   shuffle(players);
