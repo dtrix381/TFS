@@ -433,28 +433,50 @@ menuToggle.addEventListener('click', () => {
 </div>
 
 <script>
-  let isOwner = false;
+const authorizedUsers = ["488015447417946151", "1037485428921606185"]; // Add more if needed
+let isOwner = false;
 
-  // Validate user ID match on load
-  window.addEventListener("DOMContentLoaded", () => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const userIdFromUrl = urlParams.get("user");
+// 🟩 Securely load user info
+window.addEventListener("DOMContentLoaded", async () => {
+  const urlParams = new URLSearchParams(window.location.search);
+  const huntOwnerId = urlParams.get("user");
 
-    if (userIdFromUrl) {
-      localStorage.setItem("discord_user_id", userIdFromUrl);
-    }
+  if (!huntOwnerId) {
+    alert("⚠️ Missing ?user= in URL.");
+    return;
+  }
 
-    const storedUserId = localStorage.getItem("discord_user_id");
+  try {
+    const res = await fetch("https://tfs-widget-auth.onrender.com/api/user", {
+      credentials: "include",
+    });
 
-    if (userIdFromUrl && storedUserId && userIdFromUrl === storedUserId) {
+    if (!res.ok) throw new Error("User not authenticated");
+
+    const data = await res.json();
+    const loggedInUserId = data.discordId;
+
+    // ✅ Allow if the logged-in user is the owner or in authorized list
+    if (huntOwnerId === loggedInUserId || authorizedUsers.includes(loggedInUserId)) {
       isOwner = true;
       document.getElementById("useWidgetButton").style.display = "none";
     } else {
-      // 🔒 Disable interaction for non-owner
-      document.querySelector(".tracker-controls").style.display = "none";
+      disableEditing();
     }
-  });
+  } catch (err) {
+    console.warn("❌ Not authenticated or fetch error:", err);
+    disableEditing();
+  }
+});
+
+function disableEditing() {
+  document.querySelector(".tracker-controls").style.display = "none";
+  document.getElementById("startingBalance").disabled = true;
+  document.getElementById("huntTitle").disabled = true;
+  document.querySelectorAll('#huntTable input').forEach(input => input.disabled = true);
+}
 </script>
+
 
 <script>
   function loginWithDiscord() {
@@ -462,28 +484,6 @@ menuToggle.addEventListener('click', () => {
     window.location.href = "https://tfs-widget-auth.onrender.com/hunt-tracker/auth/discord";
   }
 </script>
-
-<script>
-  window.addEventListener("DOMContentLoaded", () => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const userIdFromUrl = urlParams.get("user");
-
-    if (userIdFromUrl) {
-      localStorage.setItem("discord_user_id", userIdFromUrl);
-    }
-
-    const storedUserId = localStorage.getItem("discord_user_id");
-    const useWidgetBtn = document.getElementById("useWidgetButton");
-
-    if (userIdFromUrl && storedUserId && userIdFromUrl === storedUserId) {
-      if (useWidgetBtn) {
-        useWidgetBtn.style.display = "none";
-        console.log("✅ Hiding Use Widget button (matched user)");
-      }
-    }
-  });
-</script>
-
 
 <script>
   const firebaseConfig = {
