@@ -472,9 +472,13 @@ window.addEventListener("DOMContentLoaded", async () => {
     const urlParams = new URLSearchParams(window.location.search);
     const userIdFromUrl = urlParams.get("user");
 
-    if (userIdFromUrl) {
-      localStorage.setItem("discord_user_id", userIdFromUrl);
-    }
+    // Only allow setting ID from server, not from query string
+if (!localStorage.getItem("discord_user_id")) {
+  console.warn("No authenticated Discord ID found. Please login.");
+  document.getElementById("useWidgetButton").style.display = "block";
+  return; // stop loading
+}
+
 
     const storedUserId = localStorage.getItem("discord_user_id");
     const useWidgetBtn = document.getElementById("useWidgetButton");
