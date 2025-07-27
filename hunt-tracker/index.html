@@ -480,9 +480,6 @@ function checkAuthorization() {
 }
 
 window.addEventListener("DOMContentLoaded", async () => {
-  const addSlotBtn = document.querySelector(".tracker-controls button[onclick='addRow()']");
-  if (addSlotBtn) addSlotBtn.disabled = true;
-
   const urlParams = new URLSearchParams(window.location.search);
   const urlUserId = urlParams.get("user");
   const localUserId = localStorage.getItem("discord_user_id");
@@ -501,7 +498,6 @@ window.addEventListener("DOMContentLoaded", async () => {
   if (!checkAuthorization()) return;
 
   canEdit = true;
-  if (addSlotBtn) addSlotBtn.disabled = false;
   console.log("✅ Authorized to edit hunt");
 
   // Firebase init moved here to ensure user is authorized
