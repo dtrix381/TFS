@@ -243,14 +243,7 @@
     width: 100%;
     font-size: 14px;
   }
-
-  body:not(.authorized) .tracker-controls,
-  body:not(.authorized) .currency-input,
-  body:not(.authorized) #huntTitle,
-  body:not(.authorized) .tracker-table,
-  body:not(.authorized) .stats-box {
-    display: none !important;
-  }
+}
   </style>
 </head>
 <body>
@@ -406,7 +399,7 @@ menuToggle.addEventListener('click', () => {
 
 
 <div class="tracker-controls">
-  <button onclick="addRow()" id="addSlotBtn" disabled>+ Add Slot</button>
+  <button onclick="addRow()">+ Add Slot</button>
   <button onclick="confirmReset()" style="margin-left: 10px;">🔁 Reset Hunt</button>
 </div>
 
@@ -426,7 +419,7 @@ menuToggle.addEventListener('click', () => {
 
 
 <div style="text-align:center; margin-top: 20px;">
-  <button id="useWidgetButton" onclick="loginWithDiscord()" style="
+  <button onclick="loginWithDiscord()" style="
     background: #7289da;
     color: white;
     font-weight: bold;
@@ -439,68 +432,16 @@ menuToggle.addEventListener('click', () => {
   ">🔐 Use Widget</button>
 </div>
 
-
 <script>
   function loginWithDiscord() {
+    // ✅ redirect to your Render backend to initiate Discord login
     window.location.href = "https://tfs-widget-auth.onrender.com/hunt-tracker/auth/discord";
   }
 </script>
 
+
+
 <script>
-let canEdit = false;
-const authorizedUsers = [
-  "488015447417946151",
-  "1037485428921606185",
-];
-
-function checkAuthorization() {
-  const localUserId = localStorage.getItem("discord_user_id");
-  const urlUserId = new URLSearchParams(window.location.search).get("user");
-
-  const isAdmin = authorizedUsers.includes(localUserId);
-  const isOwner = urlUserId === localUserId;
-
-  const addSlotBtn = document.querySelector(".tracker-controls button[onclick='addRow()']");
-  if (addSlotBtn) addSlotBtn.disabled = true;
-
-  if (!localUserId || (!isAdmin && !isOwner)) {
-    console.warn("🚫 Access denied.");
-    document.body.innerHTML = `
-      <div style="text-align:center;margin-top:100px;color:red;">
-        <h2>❌ Unauthorized Access</h2>
-        <p>You are not allowed to view or edit this hunt.</p>
-        <a href="/" style="color:#00ffff;text-decoration:underline;">Return to Home</a>
-      </div>`;
-    return false;
-  }
-
-  if (addSlotBtn) addSlotBtn.disabled = false;
-  document.body.classList.add("authorized");
-  return true;
-}
-
-window.addEventListener("DOMContentLoaded", async () => {
-  const urlParams = new URLSearchParams(window.location.search);
-  const urlUserId = urlParams.get("user");
-  const localUserId = localStorage.getItem("discord_user_id");
-  const useWidgetBtn = document.getElementById("useWidgetButton");
-
-  if (!localUserId) {
-    console.warn("⚠️ No Discord login found.");
-    if (useWidgetBtn) useWidgetBtn.style.display = "block";
-    return;
-  }
-
-  if (useWidgetBtn && urlUserId === localUserId) {
-    useWidgetBtn.style.display = "none";
-  }
-
-  if (!checkAuthorization()) return;
-
-  canEdit = true;
-  console.log("✅ Authorized to edit hunt");
-
-  // Firebase init moved here to ensure user is authorized
   const firebaseConfig = {
     apiKey: "AIzaSyCGCiv3p9KgjXR7yCA8Z2JYMhPweDRnQPk",
     authDomain: "tfs-hunt-tracker.firebaseapp.com",
@@ -509,36 +450,37 @@ window.addEventListener("DOMContentLoaded", async () => {
   firebase.initializeApp(firebaseConfig);
   const db = firebase.firestore();
 
-  const huntDocId = urlUserId;
-  window.db = db;
-  window.huntDocId = huntDocId;
+  const urlParams = new URLSearchParams(window.location.search);
+  const userId = urlParams.get("user");
+  if (!userId) {
+    alert("⚠️ No user ID provided. Please log in via Discord.");
+    throw new Error("Missing user ID");
+  }
+  const huntDocId = userId;
 
-  // Load saved hunt data
-  db.collection("hunts").doc(huntDocId).get()
-    .then(doc => {
-      if (doc.exists) {
-        const data = doc.data();
-        document.getElementById('startingBalance').value = data.startingBalance || 0;
-        document.getElementById('huntTitle').value = data.title || '';
-        (data.slots || []).forEach(addRow);
-        updateStats();
-      } else {
-        console.log("🆕 No existing hunt data for this user");
-      }
-    })
-    .catch(err => console.error("❌ Error loading hunt:", err));
-});
+  // 🟢 Load saved hunt data for this user
+  window.addEventListener('DOMContentLoaded', () => {
+    db.collection("hunts").doc(huntDocId).get()
+      .then(doc => {
+        if (doc.exists) {
+          const data = doc.data();
+          document.getElementById('startingBalance').value = data.startingBalance || 0;
+	  document.getElementById('huntTitle').value = data.title || '';
+          (data.slots || []).forEach(addRow); // Call your existing addRow(slotData) function
+          updateStats(); // Refresh calculations/UI
+        } else {
+          console.log("🆕 No existing hunt data for this user");
+        }
+      })
+      .catch(err => console.error("❌ Error loading hunt:", err));
+  });
 </script>
+
 
 <script>
   let counter = 0;
 
   function addRow(slotData = {}) {
-    if (!canEdit) {
-      alert("🚫 You are not authorized to add slots to this hunt.");
-      return;
-    }
-
     const table = document.getElementById('huntTable');
     const row = table.insertRow();
     const index = row.insertCell(0);
@@ -557,44 +499,76 @@ window.addEventListener("DOMContentLoaded", async () => {
       <div class="currency-input">
         <span>$</span>
         <input type="number" step="0.01" min="0" value="${slotData.betSize || ''}" onchange="updateStats()">
-      </div>`;
+      </div>
+    `;
 
     pay.innerHTML = `
       <div class="currency-input">
         <span>$</span>
         <input type="number" step="0.01" min="0" value="${slotData.totalPay || ''}" onchange="updateStats()">
-      </div>`;
+      </div>
+    `;
 
     const x = slotData.totalX || 0;
-    totalX.innerHTML = `<span class="total-x">${x.toFixed(2)}x</span>`;
+  totalX.innerHTML = `<span class="total-x">${x.toFixed(2)}x</span>`;
 
-    remove.innerHTML = `
-      <button onclick="removeRow(this)" style="background:red;color:white;border:none;border-radius:4px;cursor:pointer;padding:4px 8px;">✖</button>`;
+  remove.innerHTML = `
+    <button onclick="removeRow(this)" style="background:red;color:white;border:none;border-radius:4px;cursor:pointer;padding:4px 8px;">✖</button>
+  `;
 
-    updateRowNumbers();
+  updateRowNumbers(); // set number after adding
+}
+
+function removeRow(btn) {
+  const row = btn.closest('tr');
+  row.remove();
+  updateRowNumbers();
+  updateStats(); // keep stats accurate
+}
+
+function updateRowNumbers() {
+  const rows = document.querySelectorAll('#huntTable tr');
+  rows.forEach((row, idx) => {
+    const cell = row.querySelector('td');
+    if (cell) {
+      cell.textContent = idx + 1; // 1-based index
+    }
+  });
+}
+
+
+function confirmReset() {
+    const confirmReset = confirm("⚠️ Are you sure you want to reset your entire hunt?\nThis will delete all saved slots and stats.");
+
+    if (confirmReset) {
+      // Clear Firestore document
+      db.collection("hunts").doc(huntDocId).set({
+        startingBalance: 0,
+        slots: []
+      }).then(() => {
+        // Clear UI
+        document.getElementById('startingBalance').value = 0;
+        document.getElementById('huntTable').innerHTML = '';
+        counter = 0;
+        updateStats();
+        alert("✅ Hunt successfully reset!");
+      }).catch(err => {
+        console.error("❌ Error resetting hunt:", err);
+        alert("Something went wrong. Please try again.");
+      });
+    }
   }
 
-  function removeRow(btn) {
-    const row = btn.closest('tr');
-    row.remove();
-    updateRowNumbers();
-    updateStats();
-  }
 
-  function updateRowNumbers() {
-    const rows = document.querySelectorAll('#huntTable tr');
-    rows.forEach((row, idx) => {
-      const cell = row.querySelector('td');
-      if (cell) {
-        cell.textContent = idx + 1;
-      }
-    });
-  }
+
 
   function updateStats() {
     const rows = document.querySelectorAll('#huntTable tr');
-    let totalPay = 0, highestPay = 0, highestX = 0;
-    let bestPaySlot = '-', bestXSlot = '-';
+    let totalPay = 0;
+    let highestPay = 0;
+    let bestPaySlot = '-';
+    let highestX = 0;
+    let bestXSlot = '-';
 
     rows.forEach(row => {
       const cells = row.querySelectorAll('td');
@@ -602,18 +576,22 @@ window.addEventListener("DOMContentLoaded", async () => {
       const betVal = parseFloat(cells[2].querySelector('input')?.value) || 0;
       const payVal = parseFloat(cells[3].querySelector('input')?.value) || 0;
 
-      const x = betVal > 0 ? payVal / betVal : 0;
+      let x = 0;
+      if (betVal > 0) x = payVal / betVal;
+
       const xDisplay = cells[4].querySelector('.total-x');
       if (xDisplay) xDisplay.textContent = `${x.toFixed(2)}x`;
 
       totalPay += payVal;
+
       if (payVal > highestPay) {
         highestPay = payVal;
-        bestPaySlot = slotName;
+        bestPaySlot = slotName || '[Unnamed]';
       }
+
       if (x > highestX) {
         highestX = x;
-        bestXSlot = slotName;
+        bestXSlot = slotName || '[Unnamed]';
       }
     });
 
@@ -621,80 +599,72 @@ window.addEventListener("DOMContentLoaded", async () => {
     const profit = totalPay - start;
 
     document.getElementById('finalBalance').textContent = `$${totalPay.toFixed(2)}`;
+
     const profitEl = document.getElementById('profit');
     const profitContainer = document.getElementById('profitContainer');
     const absProfit = Math.abs(profit).toFixed(2);
 
     profitContainer.classList.remove('positive', 'negative');
     profitContainer.classList.add(profit >= 0 ? 'positive' : 'negative');
+
     profitEl.textContent = (profit < 0 ? `-$${absProfit}` : `$${absProfit}`);
 
-    document.getElementById('highestProfit').innerHTML = `<span class="highlight-slot">${bestPaySlot}</span> <span class="highlight-value">($${highestPay.toFixed(2)})</span>`;
-    document.getElementById('highestMulti').innerHTML = `<span class="highlight-slot">${bestXSlot}</span> <span class="highlight-value">(${highestX.toFixed(2)}x)</span>`;
+    document.getElementById('highestProfit').innerHTML =
+      `<span class="highlight-slot">${bestPaySlot}</span> <span class="highlight-value">($${highestPay.toFixed(2)})</span>`;
 
-    const totalBonuses = rows.length;
-    let openedBonuses = 0;
-    rows.forEach(row => {
-      const payVal = parseFloat(row.querySelectorAll('td')[3].querySelector('input')?.value) || 0;
-      if (payVal > 0) openedBonuses++;
-    });
-    document.getElementById('bonusesOpened').textContent = `${openedBonuses} / ${totalBonuses}`;
+    document.getElementById('highestMulti').innerHTML =
+      `<span class="highlight-slot">${bestXSlot}</span> <span class="highlight-value">(${highestX.toFixed(2)}x)</span>`;
 
-    syncToFirebase();
+// Bonuses Opened
+const totalBonuses = rows.length;
+let openedBonuses = 0;
+
+rows.forEach(row => {
+  const payVal = parseFloat(row.querySelectorAll('td')[3].querySelector('input')?.value) || 0;
+  if (payVal > 0) openedBonuses++;
+});
+
+document.getElementById('bonusesOpened').textContent = `${openedBonuses} / ${totalBonuses}`;
+
+// 🔄 Realtime save to Firebase
+syncToFirebase();
   }
 
-  function confirmReset() {
-    const confirmReset = confirm("⚠️ Are you sure you want to reset your entire hunt?");
-    if (!confirmReset) return;
+function syncToFirebase() {
+  const data = {
+    startingBalance: parseFloat(document.getElementById('startingBalance').value) || 0,
+    slots: []
+  };
 
-    db.collection("hunts").doc(huntDocId).set({
-      startingBalance: 0,
-      title: '',
-      slots: []
-    }).then(() => {
-      document.getElementById('startingBalance').value = 0;
-      document.getElementById('huntTable').innerHTML = '';
-      counter = 0;
-      updateStats();
-      alert("✅ Hunt successfully reset!");
-    }).catch(err => {
-      console.error("❌ Error resetting hunt:", err);
-      alert("Something went wrong. Please try again.");
+  // 🔽 ADD THIS LINE:
+  data.title = document.getElementById('huntTitle').value.trim();
+
+  const rows = document.querySelectorAll('#huntTable tr');
+  rows.forEach(row => {
+    const cells = row.querySelectorAll('td');
+    const slotName = cells[1].querySelector('input')?.value || '';
+    const betVal = parseFloat(cells[2].querySelector('input')?.value) || 0;
+    const payInput = cells[3].querySelector('input');
+    const payVal = parseFloat(payInput?.value) || 0;
+    const totalX = betVal > 0 ? payVal / betVal : 0;
+
+    // ✅ Treat the slot as opened only if totalPay was typed in (including $0)
+    const opened = payInput?.value !== "" && !isNaN(payVal);
+
+    data.slots.push({
+      slotName,
+      betSize: betVal,
+      totalPay: payVal,
+      totalX: parseFloat(totalX.toFixed(2)),
+      opened: opened
     });
-  }
+  });
 
-  function syncToFirebase() {
-    const data = {
-      startingBalance: parseFloat(document.getElementById('startingBalance').value) || 0,
-      title: document.getElementById('huntTitle').value.trim(),
-      slots: []
-    };
-
-    const rows = document.querySelectorAll('#huntTable tr');
-    rows.forEach(row => {
-      const cells = row.querySelectorAll('td');
-      const slotName = cells[1].querySelector('input')?.value || '';
-      const betVal = parseFloat(cells[2].querySelector('input')?.value) || 0;
-      const payInput = cells[3].querySelector('input');
-      const payVal = parseFloat(payInput?.value) || 0;
-      const totalX = betVal > 0 ? payVal / betVal : 0;
-      const opened = payInput?.value !== "" && !isNaN(payVal);
-
-      data.slots.push({
-        slotName,
-        betSize: betVal,
-        totalPay: payVal,
-        totalX: parseFloat(totalX.toFixed(2)),
-        opened: opened
-      });
-    });
-
-    db.collection("hunts").doc(huntDocId).set(data)
-      .then(() => console.log("✅ Synced to Firebase"))
-      .catch(err => console.error("❌ Firebase Error:", err));
-  }
+  db.collection("hunts").doc(huntDocId).set(data)
+    .then(() => console.log("✅ Synced to Firebase"))
+    .catch(err => console.error("❌ Firebase Error:", err));
+}
 </script>
-
 
 
 </body>
