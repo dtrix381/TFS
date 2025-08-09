@@ -642,9 +642,9 @@ menuToggle.addEventListener('click', () => {
   const urlParams = new URLSearchParams(window.location.search);
   const userId = urlParams.get("user");
   const authorizedUsers = [
-  "488015447417946151", // 👈 your main Discord ID
-  "1037485428921606185", // (add more if needed)
-  // ...
+  "488015447417946151", 
+  "1037485428921606185", 
+  "1259041735514918952",
 ];
 const canEdit = authorizedUsers.includes(userId); // 🔐
 if (!canEdit) {
