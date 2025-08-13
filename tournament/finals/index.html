@@ -427,8 +427,8 @@ menuToggle.addEventListener('click', () => {
 
 <!-- Mobile full-screen menu (hidden by default) -->
 <div class="mobile-menu" id="mobileMenu">
-  <a href="/guess-the-balance/"><span>Guess the Balance</span></a>
   <a href="/hunt-tracker/"><span>Hunt Tracker</span></a>
+  <a href="/guess-the-balance/"><span>Guess the Balance</span></a>
   <a href="/giveaways/"><span>Giveaways</span></a>
   <a href="/casino-links/"><span>Casino Links</span></a>
 
@@ -462,11 +462,10 @@ menuToggle.addEventListener('click', () => {
 
             <h5 class="mt-3">Event Rules</h5>
             <ul class="event-rules">
-                <li>$250 Total Prize to be tipped on winners Dimebit Accounts</li>
-                <li>1st Place = $70</li>
-                <li>2nd Place = $50</li>
-                <li>3rd = $30</li>
-                <li>4th - 8th Place = $20 each</li>
+                <li>$95 Total Prize to be tipped on winners Dimebit Accounts</li>
+                <li>1st Place = $50</li>
+                <li>2nd Place = $30</li>
+                <li>3rd Place = $15</li>
                 <li>From Monday to Thursday we doing a daily Tournaments.</li>
                 <li>The Top 2 on each Tournament will advance to the Finals on Friday</li>
             </ul>
@@ -477,10 +476,8 @@ menuToggle.addEventListener('click', () => {
         <table class="table table-dark">
     <thead>
         <tr>
-            <th>Rank</th>
             <th>Player</th>
             <th>Slot Picked</th>
-            <th>Reward</th>
         </tr>
     </thead>
         <tbody id="leaderboard-body">
@@ -495,14 +492,14 @@ menuToggle.addEventListener('click', () => {
 
 <script>
     const leaderboardData = [
-        { rank: 1, discord: " Damnshiii ", avatar: "807456822326722631", hash: "0e60a7ffd6ea6c439fcfedc3c0f1f503", entries: " Olympus Trueways ", reward: " $50 " },
-        { rank: 2, discord: " MauriARG10 ", avatar: "845002725950357525", hash: "b244abe86a0030ac2445cac3d7878268", entries: " Rise of Ymir [super] ", reward: " $25 " },
-        { rank: 3, discord: " Jess ♡ ", avatar: "725092559701147688", hash: "58d86157e3173e3007e7236b17277cd0", entries: " Fruit Party 2 ", reward: " $15 " },
-        { rank: 4, discord: " Yongdiba ", avatar: "899983590782304306", hash: "ecbe546e3f7de269fbf34ef0d63230da", entries: " Ze Zeus [super]", reward: " $15 " },
-        { rank: 5, discord: " Patchy ", avatar: "743392043157553204", hash: "03be465ebc28e19e04e3479928e47b9f", entries: " SixSixSix [super-gamble] ", reward: " $15 " },
-        { rank: 6, discord: " HarshOp69 ", avatar: "1173972429144600720", hash: "99dbcedb611bb2bcf3eba1ac1b0351d6", entries: " Le King ", reward: " $15 " },
-        { rank: 7, discord: " Pimmetjaah ", avatar: "1275495290698469397", hash: "None", entries: " Starlight Princess ", reward: " $15 " },
-        { rank: 8, discord: " paweu1312 ", avatar: "1388652496792195214", hash: "None", entries: " Sweet Bonanza 1000 ", reward: " $15 " },
+        { discord: " MickTheBigGun ", avatar: "782799143025639434", hash: "a001f3be5a518d40f5717ae6fa0e2d6a", entries: "Sweet Bonanza Super Scatter" },
+        { discord: "Patchy", avatar: "743392043157553204", hash: "03be465ebc28e19e04e3479928e47b9f", entries: "Rip City [super]"},
+        { discord: "Foggy6", avatar: "1248485202527912042", hash: "cee6d4419c62aadc165154816f07c6b1", entries: "Fighter Pit" },
+        { discord: "Dtrix", avatar: "488015447417946151", hash: "19e7b770b91a24f3891e8646dc09d335", entries: "Heart of Cleopatra" },
+        { discord: "Imtom122", avatar: "1306554183708577792", hash: "a_f850103dfea9a3d965939f49a681b0cb", entries: "Fist of Destruction [super]" },
+        { discord: "Kimmy9049", avatar: "898589521711616070", hash: "faf0bacccc8d36aadf02751e16794271", entries: "Wild Bison Charge" },
+        { discord: "Day 4 - Winner", avatar: "875842451590500403", hash: "None", entries: " Vacant" },
+        { discord: "Day 4 - Finalist", avatar: "988865245793636392", hash: "None", entries: " Vacant" },
    ];
 
     const rowsPerPage = 10;
@@ -535,18 +532,17 @@ function renderTable() {
             rankIcon = data.rank;
         }
 
-        let avatarURL = data.hash && data.hash !== "None" 
-            ? `https://cdn.discordapp.com/avatars/${data.avatar}/${data.hash}.png`
-            : `https://cdn.discordapp.com/embed/avatars/${data.avatar % 1}.png`;
-
-// Get numeric value of rewards
-const rewardValue = parseFloat(data.reward.replace(/[^0-9.]/g, '') || 0);
-
-// Choose color
-const rewardColor = rewardValue >= 1 ? 'gold' : '#ccc';
+        let avatarURL;
+if (!data.hash || data.hash.toLowerCase() === "none") {
+    // Default avatar — pick based on Discord user ID mod 5
+    const fallbackIndex = parseInt(data.avatar) % 5;
+    avatarURL = `https://cdn.discordapp.com/embed/avatars/${fallbackIndex}.png`;
+} else {
+    // Custom avatar
+    avatarURL = `https://cdn.discordapp.com/avatars/${data.avatar}/${data.hash}.png`;
+}
 
         row.innerHTML = `
-            <td><span class="rank-badge ${rankBadgeClass}">${rankIcon}</span></td>
             <td>
                 <div style="display: flex; align-items: center;">
                     <img src="${avatarURL}" class="rank-img" style="width: 50px; height: 50px; margin-right: 5px;">
@@ -557,7 +553,6 @@ const rewardColor = rewardValue >= 1 ? 'gold' : '#ccc';
                 </div>
             </td>
             <td style="color: #1ceb1c; font-weight: bold; font-size: 18px;">${data.entries}</td>
-	    <td style="color: ${rewardColor}; font-weight: bold; font-size: 18px;">${data.reward}</td>
         `;
 
         tbody.appendChild(row);
