@@ -627,6 +627,48 @@ main, .content {
 }
 
 
+.claim-section {
+  text-align: center;
+  padding: 40px 20px;
+  background: #111;
+  margin-top: 30px;
+  border-top: 2px solid gold;
+  border-bottom: 2px solid gold;
+}
+
+.claim-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+}
+
+.coin-img {
+  width: 100px;
+  height: 100px;
+}
+
+.claim-btn {
+  padding: 12px 24px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  background: gold;
+  color: black;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.claim-btn:hover {
+  background: #e6c200;
+}
+
+.hidden {
+  display: none;
+}
+
     </style>
 
 </head>
@@ -871,6 +913,23 @@ window.addEventListener("load", () => {
 </script>
 
 
+
+<!-- Claim TFS Coins Section -->
+<section class="claim-section" id="claim">
+  <h2>Claim Your Daily TFS Coins</h2>
+  <div class="claim-box">
+    <img src="assets/coin.png" alt="TFS Coin" class="coin-img">
+    <div class="claim-content">
+      <p id="claim-message">Log in with Discord to claim 20 TFS coins!</p>
+      <button id="discord-login" class="claim-btn">🔑 Log in with Discord</button>
+      <button id="claim-btn" class="claim-btn hidden">🪙 Claim 20 TFS Coins</button>
+    </div>
+  </div>
+</section>
+
+
+
+
 <section id="socials">
 <div class="socials-container">
   <h2 class="socials-title">SOCIAL ACCOUNTS</h2>
@@ -1103,6 +1162,56 @@ function copyText() {
   document.execCommand("copy");
 }
 
+</script>
+
+
+<script>
+// Handles login + claim
+document.getElementById("discord-login").addEventListener("click", () => {
+  window.location.href = "/auth/discord?redirect=/claim"; 
+});
+
+// After redirect and login, backend should set session
+async function checkClaimStatus() {
+  try {
+    const res = await fetch("/api/claim-status");
+    const data = await res.json();
+
+    if (!data.logged_in) {
+      document.getElementById("claim-message").innerText = "Log in with Discord to claim 20 TFS coins!";
+      return;
+    }
+
+    if (!data.allowed) {
+      document.getElementById("claim-message").innerText = "🚫 You must join the TFS Discord (and required role) to claim.";
+      return;
+    }
+
+    if (data.can_claim) {
+      document.getElementById("discord-login").classList.add("hidden");
+      document.getElementById("claim-btn").classList.remove("hidden");
+      document.getElementById("claim-message").innerText = "✅ Logged in! Click below to claim.";
+    } else {
+      document.getElementById("claim-message").innerText = `⏳ Already claimed. Try again in ${data.remaining}`;
+    }
+  } catch (err) {
+    console.error("Error checking claim:", err);
+  }
+}
+
+document.getElementById("claim-btn").addEventListener("click", async () => {
+  const res = await fetch("/api/claim-daily", { method: "POST" });
+  const data = await res.json();
+  if (data.success) {
+    document.getElementById("claim-message").innerText = "🎉 You claimed 20 TFS coins!";
+    document.getElementById("claim-btn").classList.add("hidden");
+  } else {
+    document.getElementById("claim-message").innerText = data.error;
+  }
+});
+
+// Run check on load
+checkClaimStatus();
 </script>
 
 </body>
