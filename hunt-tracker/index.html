@@ -245,6 +245,11 @@
   }
 }
   </style>
+
+<!-- Awesomplete for slot autocomplete -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.5/awesomplete.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.5/awesomplete.min.js"></script>
+
 </head>
 <body>
 
@@ -395,6 +400,15 @@ menuToggle.addEventListener('click', () => {
   <div>Highest Multi (X): <span id="highestMulti">-</span></div>
 <div>Bonuses: <span id="bonusesOpened">0 / 0</span></div>
 
+	<div style="margin:20px auto; max-width:700px; text-align:center;">
+  <h3>🎰 Select Slot</h3>
+  <input id="slot-field" placeholder="Type slot name..." style="width:95%; padding:8px; border-radius:6px; border:1px solid #444; background:#111; color:white; font-size:16px;" />
+  <div id="slot-info" style="margin-top:10px;">
+    <img id="slot-thumb" width="100" style="display:none; border-radius:6px; border:1px solid #444;" />
+    <p id="provider-name" style="font-weight:bold; color:#00ffcc;"></p>
+  </div>
+</div>
+
 </div>
 
 
@@ -493,7 +507,33 @@ menuToggle.addEventListener('click', () => {
     counter++;
     index.textContent = counter;
 
-    slot.innerHTML = `<input type="text" placeholder="e.g. Sugar Rush" value="${slotData.slotName || ''}">`;
+    slot.innerHTML = `
+  <input type="text" placeholder="e.g. Sugar Rush" value="${slotData.slotName || ''}" class="slot-input">
+  <div class="slot-thumb-container" style="margin-top:5px;">
+    <img src="" class="row-thumb" style="width:60px; display:none; border-radius:4px; border:1px solid #444;">
+    <p class="row-provider" style="font-size:12px; color:#00ffcc;"></p>
+  </div>
+`;
+
+const newSlotInput = row.querySelector(".slot-input");
+const rowThumb = row.querySelector(".row-thumb");
+const rowProvider = row.querySelector(".row-provider");
+
+new Awesomplete(newSlotInput, {
+  list: slots.map(s => s.name),
+  minChars: 1,
+  maxItems: 10
+});
+
+newSlotInput.addEventListener("awesomplete-selectcomplete", function(evt) {
+  const selected = slots.find(s => s.name === evt.text.value);
+  if (selected) {
+    rowThumb.src = selected.thumb;
+    rowThumb.style.display = 'block';
+    rowProvider.textContent = "Provider: " + selected.provider;
+  }
+});
+
 
     bet.innerHTML = `
       <div class="currency-input">
@@ -666,6 +706,40 @@ function syncToFirebase() {
 }
 </script>
 
+<script>
+let slots = [];
+
+async function initSlots() {
+  try {
+    const res = await fetch('/api/slots'); // your existing Express route
+    slots = await res.json();
+
+    new Awesomplete(document.getElementById("slot-field"), {
+      list: slots.map(s => s.name),
+      minChars: 1,
+      maxItems: 10
+    });
+  } catch (err) {
+    console.error("❌ Failed to fetch slots:", err);
+  }
+}
+
+const slotField = document.getElementById("slot-field");
+const thumbImg = document.getElementById("slot-thumb");
+const providerText = document.getElementById("provider-name");
+
+slotField.addEventListener("awesomplete-selectcomplete", function(evt) {
+  const selected = slots.find(s => s.name === evt.text.value);
+  if (selected) {
+    thumbImg.src = selected.thumb;
+    thumbImg.style.display = 'block';
+    providerText.textContent = "Provider: " + selected.provider;
+  }
+});
+
+// Initialize on page load
+initSlots();
+</script>
 
 </body>
 <footer>
