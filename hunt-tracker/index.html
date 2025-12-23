@@ -480,7 +480,15 @@ menuToggle.addEventListener('click', () => {
           const data = doc.data();
           document.getElementById('startingBalance').value = data.startingBalance || 0;
 	  document.getElementById('huntTitle').value = data.title || '';
-          (data.slots || []).forEach(addRow); // Call your existing addRow(slotData) function
+          // Wait until slots are loaded before adding rows
+const tryLoadRows = () => {
+  if (!slots || slots.length === 0) {
+    setTimeout(tryLoadRows, 100);
+    return;
+  }
+  (data.slots || []).forEach(addRow);
+};
+
           updateStats(); // Refresh calculations/UI
         } else {
           console.log("🆕 No existing hunt data for this user");
@@ -519,12 +527,20 @@ const newSlotInput = row.querySelector(".slot-input");
 const rowThumb = row.querySelector(".row-thumb");
 const rowProvider = row.querySelector(".row-provider");
 
+// Wait until slots are loaded
+if (!slots || slots.length === 0) {
+  setTimeout(() => addRow(slotData), 100);
+  return;
+}
+
+// Awesomplete for this row
 new Awesomplete(newSlotInput, {
   list: slots.map(s => s.name),
   minChars: 1,
   maxItems: 10
 });
 
+// Show thumbnail/provider when a slot is selected
 newSlotInput.addEventListener("awesomplete-selectcomplete", function(evt) {
   const selected = slots.find(s => s.name === evt.text.value);
   if (selected) {
@@ -533,6 +549,17 @@ newSlotInput.addEventListener("awesomplete-selectcomplete", function(evt) {
     rowProvider.textContent = "Provider: " + selected.provider;
   }
 });
+
+// If loading saved hunt, automatically show thumbnail/provider
+if (slotData.slotName) {
+  const selected = slots.find(s => s.name === slotData.slotName);
+  if (selected) {
+    rowThumb.src = selected.thumb;
+    rowThumb.style.display = 'block';
+    rowProvider.textContent = "Provider: " + selected.provider;
+  }
+}
+
 
 
     bet.innerHTML = `
@@ -711,18 +738,38 @@ let slots = [];
 
 async function initSlots() {
   try {
-    const res = await fetch('/api/slots'); // your existing Express route
+    const res = await fetch('/api/slots');
     slots = await res.json();
+    console.log("✅ Slots loaded:", slots.length);
 
-    new Awesomplete(document.getElementById("slot-field"), {
+    // Initialize top input autocomplete
+    const slotField = document.getElementById("slot-field");
+    new Awesomplete(slotField, {
       list: slots.map(s => s.name),
       minChars: 1,
       maxItems: 10
     });
+
+    // Show thumbnail/provider when a slot is selected
+    const thumbImg = document.getElementById("slot-thumb");
+    const providerText = document.getElementById("provider-name");
+    slotField.addEventListener("awesomplete-selectcomplete", function(evt) {
+      const selected = slots.find(s => s.name === evt.text.value);
+      if (selected) {
+        thumbImg.src = selected.thumb;
+        thumbImg.style.display = 'block';
+        providerText.textContent = "Provider: " + selected.provider;
+      }
+    });
+
   } catch (err) {
     console.error("❌ Failed to fetch slots:", err);
   }
 }
+
+// Call initSlots() when page loads
+initSlots();
+
 
 const slotField = document.getElementById("slot-field");
 const thumbImg = document.getElementById("slot-thumb");
