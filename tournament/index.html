@@ -642,9 +642,9 @@ menuToggle.addEventListener('click', () => {
   const urlParams = new URLSearchParams(window.location.search);
   const userId = urlParams.get("user");
   const authorizedUsers = [
-  "488015447417946151", 
-  "1037485428921606185", 
-  "1259041735514918952",
+  "488015447417946151", // 👈 your main Discord ID
+  "1037485428921606185", // (add more if needed)
+  // ...
 ];
 const canEdit = authorizedUsers.includes(userId); // 🔐
 if (!canEdit) {
@@ -1238,7 +1238,7 @@ const pageNum = document.getElementById("pageNumber");
 const events = [
   { name: "Day 1 - July 28 [view results]", url: "/tournament/history/Week4/JUL-28/" },
   { name: "Day 2 - July 29 [view results]", url: "/tournament/history/Week4/JUL-29/" },
-  { name: "Day 3 - July 30 [view results]", url: "/tournament/history/Week4/JUL-30/" },
+  { name: "Day 3 - July 30 [view results]", url: "/tournament/history/Week4/JUL-39/" },
   { name: "Day 4 - July 31 [view results]", url: "/tournament/history/Week4/JUL-31/" },
   { name: "Finals - August 1 [view results]", url: "/tournament/history/Week4/AUG-01/" },
   { name: "Day 1 - July 7 [view results]", url: "/tournament/history/JUL-7/" },
