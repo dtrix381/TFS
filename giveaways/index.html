@@ -81,12 +81,12 @@ button {
 <h1>🎁 Giveaways</h1>
 
 <div class="container">
-
   <!-- WEEKLY -->
   <div class="giveaway">
     <h2 id="wTitle">Weekly</h2>
     <img id="wImage" width="200"><br>
     <p id="wPrize"></p>
+    <p id="wEntries"></p>
     <p id="wCountdown"></p>
     <p id="wWinner"></p>
 
@@ -99,63 +99,41 @@ button {
     <h2 id="mTitle">Monthly</h2>
     <img id="mImage" width="200"><br>
     <p id="mPrize"></p>
+    <p id="mEntries"></p>
     <p id="mCountdown"></p>
     <p id="mWinner"></p>
 
     <button onclick="mockDraw('monthly')">🎡 Try Monthly Luck</button>
     <div id="mAnim" class="animationBox"></div>
   </div>
-
 </div>
+
+<h2>📝 Winners History</h2>
+<table id="historyTable">
+  <thead>
+    <tr>
+      <th>Username</th>
+      <th>Giveaway Type</th>
+      <th>Prize</th>
+      <th>Win %</th>
+      <th>Time</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
 
 <script>
 let leaderboardData = [];
 let giveawayData = {};
 
-// =========================
-// CALCULATE WIN CHANCES
-// =========================
-function calculateChances(data, type) {
-  const key = type === "weekly" ? "weekly" : "monthly";
-  const total = data.reduce((sum, u) => sum + u[key], 0);
-  return data.map(u => ({
-    ...u,
-    [type + "_chance"]: total > 0 ? ((u[key] / total) * 100).toFixed(2) : "0.00"
-  }));
-}
-
-// =========================
-// LOAD LEADERBOARD
-// =========================
+// ===== LOAD LEADERBOARD =====
 async function loadLeaderboard() {
   const url = 'https://raw.githubusercontent.com/dtrix381/TFS/main/leaderboard.json?t=' + Date.now();
   const res = await fetch(url);
   leaderboardData = await res.json();
-
-  // calculate chances
-  leaderboardData = calculateChances(leaderboardData, "weekly");
-  leaderboardData = calculateChances(leaderboardData, "monthly");
-
-  const tbody = document.querySelector("#leaderboard tbody");
-  tbody.innerHTML = '';
-
-  leaderboardData.forEach((user, index) => {
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td>${index + 1}</td>
-      <td>${user.username}</td>
-      <td>${user.weekly}</td>
-      <td>${user.weekly_chance}%</td>
-      <td>${user.monthly}</td>
-      <td>${user.monthly_chance}%</td>
-    `;
-    tbody.appendChild(tr);
-  });
 }
 
-// =========================
-// LOAD GIVEAWAYS
-// =========================
+// ===== LOAD GIVEAWAYS =====
 async function loadGiveaway() {
   const url = 'https://raw.githubusercontent.com/dtrix381/TFS/main/giveaway_data.json?t=' + Date.now();
   const res = await fetch(url);
@@ -163,6 +141,7 @@ async function loadGiveaway() {
 
   updateUI("weekly", "w");
   updateUI("monthly", "m");
+  updateHistory();
 }
 
 function updateUI(type, prefix) {
@@ -171,15 +150,13 @@ function updateUI(type, prefix) {
   document.getElementById(prefix + "Title").innerText = g.title;
   document.getElementById(prefix + "Prize").innerText = "🎁 " + g.prize;
   document.getElementById(prefix + "Image").src = g.thumbnail;
-  document.getElementById(prefix + "Winner").innerText =
-    "🏆 Last: " + (g.last_winner || "None");
+  document.getElementById(prefix + "Winner").innerText = "🏆 Last: " + (g.last_winner || "None");
+  document.getElementById(prefix + "Entries").innerText = "📊 Total Entries: " + (g.last_entries || 0);
 
   updateCountdown(type, prefix);
 }
 
-// =========================
-// COUNTDOWN
-// =========================
+// ===== COUNTDOWN (days, hours, min, sec) =====
 function updateCountdown(type, prefix) {
   const el = document.getElementById(prefix + "Countdown");
   const g = giveawayData[type];
@@ -189,7 +166,7 @@ function updateCountdown(type, prefix) {
     return;
   }
 
-  const end = new Date(g.end_time);
+  const end = new Date(g.end_time + " UTC");
   const now = new Date();
   const diff = end - now;
 
@@ -198,20 +175,18 @@ function updateCountdown(type, prefix) {
     return;
   }
 
-  const h = Math.floor(diff / 1000 / 60 / 60);
-  const m = Math.floor((diff / 1000 / 60) % 60);
-  const s = Math.floor((diff / 1000) % 60);
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+  const minutes = Math.floor((diff / (1000 * 60)) % 60);
+  const seconds = Math.floor((diff / 1000) % 60);
 
-  el.innerText = `⏳ ${h}h ${m}m ${s}s`;
+  el.innerText = `⏳ ${days}d ${hours}h ${minutes}m ${seconds}s`;
 }
 
-// =========================
-// MOCK DRAW
-// =========================
+// ===== MOCK DRAW =====
 function mockDraw(type) {
   const box = document.getElementById(type === "weekly" ? "wAnim" : "mAnim");
-  let spins = 25;
-  let i = 0;
+  let spins = 25, i = 0;
 
   const interval = setInterval(() => {
     const randomUser = leaderboardData[Math.floor(Math.random() * leaderboardData.length)];
@@ -220,17 +195,15 @@ function mockDraw(type) {
     if (i >= spins) {
       clearInterval(interval);
       const winner = weightedPick(type);
-      box.innerText = "🏆 WINNER: " + winner.username;
+      box.innerText = `🏆 WINNER: ${winner.username} (${winner[type + "_chance"]}%)`;
     }
   }, 80);
 }
 
-// =========================
-// WEIGHTED PICK
-// =========================
+// ===== WEIGHTED PICK =====
 function weightedPick(type) {
   const key = type === "weekly" ? "weekly" : "monthly";
-  const total = leaderboardData.reduce((sum, u) => sum + u[key], 0);
+  let total = leaderboardData.reduce((sum, u) => sum + u[key], 0);
   let r = Math.random() * total;
   let upto = 0;
   for (let u of leaderboardData) {
@@ -239,9 +212,39 @@ function weightedPick(type) {
   }
 }
 
-// =========================
-// AUTO REFRESH
-// =========================
+// ===== CALCULATE WIN CHANCES =====
+function calculateChances(data, type) {
+  const key = type === "weekly" ? "weekly" : "monthly";
+  const total = data.reduce((sum, u) => sum + u[key], 0);
+  return data.map(u => {
+    const chance = total > 0 ? (u[key] / total * 100).toFixed(2) : 0;
+    return { ...u, [type + "_chance"]: chance };
+  });
+}
+
+// ===== WINNERS HISTORY =====
+function updateHistory() {
+  const tbody = document.querySelector("#historyTable tbody");
+  tbody.innerHTML = '';
+
+  ["weekly", "monthly"].forEach(type => {
+    const g = giveawayData[type];
+    if (!g.history) return;
+    g.history.forEach(entry => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${entry.username}</td>
+        <td>${type}</td>
+        <td>${entry.prize}</td>
+        <td>${entry.chance.toFixed(2)}%</td>
+        <td>${entry.time}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+  });
+}
+
+// ===== AUTO REFRESH =====
 loadLeaderboard();
 loadGiveaway();
 
@@ -251,7 +254,7 @@ setInterval(() => {
   updateCountdown("weekly", "w");
   updateCountdown("monthly", "m");
 }, 1000);
-
 </script>
+
 </body>
 </html>
