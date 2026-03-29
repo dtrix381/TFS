@@ -3,7 +3,9 @@
         "title": "Try now",
         "prize": "69",
         "thumbnail": "https://images.hive.blog/0x0/https://steemitimages.com/DQmXUTcJ92jUidKLhH12fJ2U5uZ6qwxqV97x4tV9Ty66GHC/weekly-giveaway.png",
-        "end_time": "2026-03-29 16:25:00"
+        "end_time": null,
+        "last_winner": "trinapalux",
+        "last_entries": 5
     },
     "monthly": {
         "title": "Big monthh",
