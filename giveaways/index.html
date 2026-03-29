@@ -1,58 +1,213 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Leaderboard</title>
-  <style>
-    body { font-family: sans-serif; background: #111; color: #fff; }
-    table { border-collapse: collapse; width: 50%; margin: 50px auto; }
-    th, td { padding: 10px; border: 1px solid #444; text-align: center; }
-    th { background: #222; }
-    tr:nth-child(even) { background: #1a1a1a; }
-  </style>
+<meta charset="UTF-8">
+<title>Leaderboard & Giveaway</title>
+
+<style>
+body {
+  font-family: Arial;
+  background: #0f0f0f;
+  color: #fff;
+  text-align: center;
+}
+
+/* TABLE */
+table {
+  border-collapse: collapse;
+  width: 60%;
+  margin: 30px auto;
+}
+th, td {
+  padding: 10px;
+  border: 1px solid #333;
+}
+th { background: #1f1f1f; }
+tr:nth-child(even) { background: #181818; }
+
+/* GIVEAWAY BOX */
+.giveaway {
+  margin-top: 40px;
+  padding: 20px;
+  background: #181818;
+  border-radius: 10px;
+  width: 400px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* BUTTON */
+button {
+  padding: 10px 20px;
+  background: gold;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  margin-top: 15px;
+}
+
+/* ANIMATION BOX */
+#animationBox {
+  margin-top: 20px;
+  font-size: 20px;
+  height: 40px;
+}
+</style>
 </head>
+
 <body>
-  <h1 style="text-align:center;">Leaderboard</h1>
-  <table id="leaderboard">
-    <thead>
-      <tr>
-        <th>Rank</th>
-        <th>Username</th>
-        <th>Points</th>
-      </tr>
-    </thead>
-    <tbody></tbody>
-  </table>
 
-  <script>
-    async function loadLeaderboard() {
-      try {
-        const url = 'https://raw.githubusercontent.com/dtrix381/TFS/main/leaderboard.json?t=' + Date.now();
-        const res = await fetch(url);
-        const data = await res.json();
+<h1>🏆 Leaderboard</h1>
 
-        const tbody = document.querySelector("#leaderboard tbody");
-        tbody.innerHTML = '';
+<table id="leaderboard">
+<thead>
+<tr>
+<th>Rank</th>
+<th>Username</th>
+<th>Points</th>
+</tr>
+</thead>
+<tbody></tbody>
+</table>
 
-        data.forEach((user, index) => {
-          const tr = document.createElement('tr');
-          tr.innerHTML = `
-            <td>${index + 1}</td>
-            <td>${user.username}</td>
-            <td>${user.points}</td>
-          `;
-          tbody.appendChild(tr);
-        });
-      } catch (err) {
-        console.error("Error loading leaderboard:", err);
-      }
+<!-- GIVEAWAY -->
+<div class="giveaway">
+  <h2 id="gTitle">Loading...</h2>
+  <img id="gImage" src="" width="200"><br>
+  <p id="gPrize"></p>
+  <p id="gCountdown"></p>
+  <p id="gLastWinner"></p>
+
+  <button onclick="mockDraw()">🎡 Try Your Luck</button>
+
+  <div id="animationBox"></div>
+</div>
+
+<script>
+let leaderboardData = [];
+let giveawayData = {};
+
+// =========================
+// LOAD LEADERBOARD
+// =========================
+async function loadLeaderboard() {
+  const url = 'https://raw.githubusercontent.com/dtrix381/TFS/main/leaderboard.json?t=' + Date.now();
+  const res = await fetch(url);
+  const data = await res.json();
+
+  leaderboardData = data;
+
+  const tbody = document.querySelector("#leaderboard tbody");
+  tbody.innerHTML = '';
+
+  data.forEach((user, index) => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${index + 1}</td>
+      <td>${user.username}</td>
+      <td>${user.points}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+// =========================
+// LOAD GIVEAWAY
+// =========================
+async function loadGiveaway() {
+  const url = 'https://raw.githubusercontent.com/dtrix381/TFS/main/giveaway_data.json?t=' + Date.now();
+  const res = await fetch(url);
+  const data = await res.json();
+
+  giveawayData = data.weekly;
+
+  document.getElementById("gTitle").innerText = giveawayData.title;
+  document.getElementById("gPrize").innerText = "🎁 " + giveawayData.prize;
+  document.getElementById("gImage").src = giveawayData.thumbnail;
+  document.getElementById("gLastWinner").innerText =
+    "🏆 Last Winner: " + (giveawayData.last_winner || "None");
+
+  updateCountdown();
+}
+
+// =========================
+// COUNTDOWN
+// =========================
+function updateCountdown() {
+  const el = document.getElementById("gCountdown");
+
+  if (!giveawayData.end_time) {
+    el.innerText = "⏳ No end time set";
+    return;
+  }
+
+  const end = new Date(giveawayData.end_time);
+  const now = new Date();
+
+  const diff = end - now;
+
+  if (diff <= 0) {
+    el.innerText = "🎉 Drawing soon...";
+    return;
+  }
+
+  const h = Math.floor(diff / 1000 / 60 / 60);
+  const m = Math.floor((diff / 1000 / 60) % 60);
+  const s = Math.floor((diff / 1000) % 60);
+
+  el.innerText = `⏳ Ends in: ${h}h ${m}m ${s}s`;
+}
+
+// =========================
+// 🎡 MOCK DRAW
+// =========================
+function mockDraw() {
+  if (!leaderboardData.length) return;
+
+  const box = document.getElementById("animationBox");
+
+  let spins = 20;
+  let i = 0;
+
+  const interval = setInterval(() => {
+    const randomUser = leaderboardData[Math.floor(Math.random() * leaderboardData.length)];
+    box.innerText = "🎲 " + randomUser.username;
+
+    i++;
+
+    if (i >= spins) {
+      clearInterval(interval);
+
+      const winner = weightedPick();
+      box.innerText = "🏆 WINNER: " + winner.username;
     }
+  }, 100);
+}
 
-    // Initial load
-    loadLeaderboard();
+// =========================
+// WEIGHTED PICK (REAL LOGIC)
+// =========================
+function weightedPick() {
+  let total = leaderboardData.reduce((sum, u) => sum + u.points, 0);
+  let r = Math.random() * total;
 
-    // Refresh every 60 seconds
-    setInterval(loadLeaderboard, 60000);
-  </script>
+  let upto = 0;
+  for (let u of leaderboardData) {
+    if (upto + u.points >= r) return u;
+    upto += u.points;
+  }
+}
+
+// =========================
+// AUTO REFRESH
+// =========================
+loadLeaderboard();
+loadGiveaway();
+
+setInterval(loadLeaderboard, 60000);
+setInterval(loadGiveaway, 60000);
+setInterval(updateCountdown, 1000);
+</script>
+
 </body>
 </html>
