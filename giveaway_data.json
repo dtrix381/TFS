@@ -1,11 +1,9 @@
 {
     "weekly": {
-        "title": "Try now",
-        "prize": "69",
+        "title": "test 2",
+        "prize": "41",
         "thumbnail": "https://images.hive.blog/0x0/https://steemitimages.com/DQmXUTcJ92jUidKLhH12fJ2U5uZ6qwxqV97x4tV9Ty66GHC/weekly-giveaway.png",
-        "end_time": null,
-        "last_winner": "trinapalux",
-        "last_entries": 5
+        "end_time": "2002-04-29 17:10:00"
     },
     "monthly": {
         "title": "Big monthh",
