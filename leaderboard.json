@@ -1,14 +1,17 @@
 [
     {
-        "username": "d3dtrix",
-        "points": 57
-    },
-    {
         "username": "izzkezzy",
-        "points": 6
+        "weekly": 6,
+        "monthly": 18
     },
     {
         "username": "trinapalux",
-        "points": 5
+        "weekly": 5,
+        "monthly": 11
+    },
+    {
+        "username": "d3dtrix",
+        "weekly": 7,
+        "monthly": 8
     }
 ]
