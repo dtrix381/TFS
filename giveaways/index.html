@@ -182,6 +182,11 @@ async function loadGiveaway() {
   }
 }
 
+function getTotalEntries(type) {
+  const key = type === "weekly" ? "weekly" : "monthly";
+  return leaderboardData.reduce((sum, u) => sum + u[key], 0);
+}
+
 // ===== UPDATE GIVEAWAY UI =====
 function updateUI(type, prefix) {
   const g = giveawayData[type];
@@ -191,7 +196,7 @@ function updateUI(type, prefix) {
   document.getElementById(prefix + "Prize").innerText = "🎁 " + g.prize;
   document.getElementById(prefix + "Image").src = g.thumbnail;
   document.getElementById(prefix + "Winner").innerText = "🏆 Last: " + (g.last_winner || "None");
-  document.getElementById(prefix + "Entries").innerText = "📊 Total Entries: " + (g.last_entries || 0);
+  document.getElementById(prefix + "Entries").innerText = "📊 Total Entries: " + getTotalEntries(type);
 
   updateCountdown(type, prefix);
 }
