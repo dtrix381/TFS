@@ -3,7 +3,17 @@
         "title": "test 2",
         "prize": "41",
         "thumbnail": "https://images.hive.blog/0x0/https://steemitimages.com/DQmXUTcJ92jUidKLhH12fJ2U5uZ6qwxqV97x4tV9Ty66GHC/weekly-giveaway.png",
-        "end_time": "2002-04-29 17:10:00"
+        "end_time": null,
+        "last_winner": "d3dtrix",
+        "last_entries": 11,
+        "history": [
+            {
+                "username": "d3dtrix",
+                "prize": "41",
+                "chance": 11,
+                "time": "2026-03-29 17:00:19 UTC"
+            }
+        ]
     },
     "monthly": {
         "title": "Big monthh",
