@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Leaderboard & Giveaway</title>
+<title>Leaderboard & Giveaways</title>
 
 <style>
 body {
@@ -25,15 +25,20 @@ th, td {
 th { background: #1f1f1f; }
 tr:nth-child(even) { background: #181818; }
 
-/* GIVEAWAY BOX */
+/* GIVEAWAY BOXES */
+.container {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  flex-wrap: wrap;
+}
+
 .giveaway {
-  margin-top: 40px;
+  margin-top: 20px;
   padding: 20px;
   background: #181818;
   border-radius: 10px;
-  width: 400px;
-  margin-left: auto;
-  margin-right: auto;
+  width: 350px;
 }
 
 /* BUTTON */
@@ -43,13 +48,13 @@ button {
   border: none;
   cursor: pointer;
   font-weight: bold;
-  margin-top: 15px;
+  margin-top: 10px;
 }
 
-/* ANIMATION BOX */
-#animationBox {
-  margin-top: 20px;
-  font-size: 20px;
+/* ANIMATION */
+.animationBox {
+  margin-top: 15px;
+  font-size: 18px;
   height: 40px;
 }
 </style>
@@ -70,17 +75,34 @@ button {
 <tbody></tbody>
 </table>
 
-<!-- GIVEAWAY -->
-<div class="giveaway">
-  <h2 id="gTitle">Loading...</h2>
-  <img id="gImage" src="" width="200"><br>
-  <p id="gPrize"></p>
-  <p id="gCountdown"></p>
-  <p id="gLastWinner"></p>
+<h1>🎁 Giveaways</h1>
 
-  <button onclick="mockDraw()">🎡 Try Your Luck</button>
+<div class="container">
 
-  <div id="animationBox"></div>
+  <!-- WEEKLY -->
+  <div class="giveaway">
+    <h2 id="wTitle">Weekly</h2>
+    <img id="wImage" width="200"><br>
+    <p id="wPrize"></p>
+    <p id="wCountdown"></p>
+    <p id="wWinner"></p>
+
+    <button onclick="mockDraw('weekly')">🎡 Try Weekly Luck</button>
+    <div id="wAnim" class="animationBox"></div>
+  </div>
+
+  <!-- MONTHLY -->
+  <div class="giveaway">
+    <h2 id="mTitle">Monthly</h2>
+    <img id="mImage" width="200"><br>
+    <p id="mPrize"></p>
+    <p id="mCountdown"></p>
+    <p id="mWinner"></p>
+
+    <button onclick="mockDraw('monthly')">🎡 Try Monthly Luck</button>
+    <div id="mAnim" class="animationBox"></div>
+  </div>
+
 </div>
 
 <script>
@@ -93,14 +115,12 @@ let giveawayData = {};
 async function loadLeaderboard() {
   const url = 'https://raw.githubusercontent.com/dtrix381/TFS/main/leaderboard.json?t=' + Date.now();
   const res = await fetch(url);
-  const data = await res.json();
-
-  leaderboardData = data;
+  leaderboardData = await res.json();
 
   const tbody = document.querySelector("#leaderboard tbody");
   tbody.innerHTML = '';
 
-  data.forEach((user, index) => {
+  leaderboardData.forEach((user, index) => {
     const tr = document.createElement('tr');
     tr.innerHTML = `
       <td>${index + 1}</td>
@@ -112,42 +132,47 @@ async function loadLeaderboard() {
 }
 
 // =========================
-// LOAD GIVEAWAY
+// LOAD GIVEAWAYS
 // =========================
 async function loadGiveaway() {
   const url = 'https://raw.githubusercontent.com/dtrix381/TFS/main/giveaway_data.json?t=' + Date.now();
   const res = await fetch(url);
-  const data = await res.json();
+  giveawayData = await res.json();
 
-  giveawayData = data.weekly;
+  updateUI("weekly", "w");
+  updateUI("monthly", "m");
+}
 
-  document.getElementById("gTitle").innerText = giveawayData.title;
-  document.getElementById("gPrize").innerText = "🎁 " + giveawayData.prize;
-  document.getElementById("gImage").src = giveawayData.thumbnail;
-  document.getElementById("gLastWinner").innerText =
-    "🏆 Last Winner: " + (giveawayData.last_winner || "None");
+function updateUI(type, prefix) {
+  const g = giveawayData[type];
 
-  updateCountdown();
+  document.getElementById(prefix + "Title").innerText = g.title;
+  document.getElementById(prefix + "Prize").innerText = "🎁 " + g.prize;
+  document.getElementById(prefix + "Image").src = g.thumbnail;
+  document.getElementById(prefix + "Winner").innerText =
+    "🏆 Last: " + (g.last_winner || "None");
+
+  updateCountdown(type, prefix);
 }
 
 // =========================
 // COUNTDOWN
 // =========================
-function updateCountdown() {
-  const el = document.getElementById("gCountdown");
+function updateCountdown(type, prefix) {
+  const el = document.getElementById(prefix + "Countdown");
+  const g = giveawayData[type];
 
-  if (!giveawayData.end_time) {
-    el.innerText = "⏳ No end time set";
+  if (!g.end_time) {
+    el.innerText = "⏳ Not set";
     return;
   }
 
-  const end = new Date(giveawayData.end_time);
+  const end = new Date(g.end_time);
   const now = new Date();
-
   const diff = end - now;
 
   if (diff <= 0) {
-    el.innerText = "🎉 Drawing soon...";
+    el.innerText = "🎉 Drawing...";
     return;
   }
 
@@ -155,18 +180,16 @@ function updateCountdown() {
   const m = Math.floor((diff / 1000 / 60) % 60);
   const s = Math.floor((diff / 1000) % 60);
 
-  el.innerText = `⏳ Ends in: ${h}h ${m}m ${s}s`;
+  el.innerText = `⏳ ${h}h ${m}m ${s}s`;
 }
 
 // =========================
 // 🎡 MOCK DRAW
 // =========================
-function mockDraw() {
-  if (!leaderboardData.length) return;
+function mockDraw(type) {
+  const box = document.getElementById(type === "weekly" ? "wAnim" : "mAnim");
 
-  const box = document.getElementById("animationBox");
-
-  let spins = 20;
+  let spins = 25;
   let i = 0;
 
   const interval = setInterval(() => {
@@ -181,11 +204,11 @@ function mockDraw() {
       const winner = weightedPick();
       box.innerText = "🏆 WINNER: " + winner.username;
     }
-  }, 100);
+  }, 80);
 }
 
 // =========================
-// WEIGHTED PICK (REAL LOGIC)
+// WEIGHTED PICK
 // =========================
 function weightedPick() {
   let total = leaderboardData.reduce((sum, u) => sum + u.points, 0);
@@ -206,7 +229,10 @@ loadGiveaway();
 
 setInterval(loadLeaderboard, 60000);
 setInterval(loadGiveaway, 60000);
-setInterval(updateCountdown, 1000);
+setInterval(() => {
+  updateCountdown("weekly", "w");
+  updateCountdown("monthly", "m");
+}, 1000);
 </script>
 
 </body>
