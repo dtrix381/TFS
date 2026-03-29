@@ -15,7 +15,7 @@ body {
 /* TABLE */
 table {
   border-collapse: collapse;
-  width: 60%;
+  width: 70%;
   margin: 30px auto;
 }
 th, td {
@@ -69,7 +69,10 @@ button {
 <tr>
 <th>Rank</th>
 <th>Username</th>
-<th>Points</th>
+<th>Weekly</th>
+<th>Win %</th>
+<th>Monthly</th>
+<th>Win %</th>
 </tr>
 </thead>
 <tbody></tbody>
@@ -110,12 +113,28 @@ let leaderboardData = [];
 let giveawayData = {};
 
 // =========================
+// CALCULATE WIN CHANCES
+// =========================
+function calculateChances(data, type) {
+  const key = type === "weekly" ? "weekly" : "monthly";
+  const total = data.reduce((sum, u) => sum + u[key], 0);
+  return data.map(u => ({
+    ...u,
+    [type + "_chance"]: total > 0 ? ((u[key] / total) * 100).toFixed(2) : "0.00"
+  }));
+}
+
+// =========================
 // LOAD LEADERBOARD
 // =========================
 async function loadLeaderboard() {
   const url = 'https://raw.githubusercontent.com/dtrix381/TFS/main/leaderboard.json?t=' + Date.now();
   const res = await fetch(url);
   leaderboardData = await res.json();
+
+  // calculate chances
+  leaderboardData = calculateChances(leaderboardData, "weekly");
+  leaderboardData = calculateChances(leaderboardData, "monthly");
 
   const tbody = document.querySelector("#leaderboard tbody");
   tbody.innerHTML = '';
@@ -125,7 +144,10 @@ async function loadLeaderboard() {
     tr.innerHTML = `
       <td>${index + 1}</td>
       <td>${user.username}</td>
-      <td>${user.points}</td>
+      <td>${user.weekly}</td>
+      <td>${user.weekly_chance}%</td>
+      <td>${user.monthly}</td>
+      <td>${user.monthly_chance}%</td>
     `;
     tbody.appendChild(tr);
   });
@@ -184,24 +206,20 @@ function updateCountdown(type, prefix) {
 }
 
 // =========================
-// 🎡 MOCK DRAW
+// MOCK DRAW
 // =========================
 function mockDraw(type) {
   const box = document.getElementById(type === "weekly" ? "wAnim" : "mAnim");
-
   let spins = 25;
   let i = 0;
 
   const interval = setInterval(() => {
     const randomUser = leaderboardData[Math.floor(Math.random() * leaderboardData.length)];
     box.innerText = "🎲 " + randomUser.username;
-
     i++;
-
     if (i >= spins) {
       clearInterval(interval);
-
-      const winner = weightedPick();
+      const winner = weightedPick(type);
       box.innerText = "🏆 WINNER: " + winner.username;
     }
   }, 80);
@@ -210,14 +228,14 @@ function mockDraw(type) {
 // =========================
 // WEIGHTED PICK
 // =========================
-function weightedPick() {
-  let total = leaderboardData.reduce((sum, u) => sum + u.points, 0);
+function weightedPick(type) {
+  const key = type === "weekly" ? "weekly" : "monthly";
+  const total = leaderboardData.reduce((sum, u) => sum + u[key], 0);
   let r = Math.random() * total;
-
   let upto = 0;
   for (let u of leaderboardData) {
-    if (upto + u.points >= r) return u;
-    upto += u.points;
+    if (upto + u[key] >= r) return u;
+    upto += u[key];
   }
 }
 
@@ -233,7 +251,7 @@ setInterval(() => {
   updateCountdown("weekly", "w");
   updateCountdown("monthly", "m");
 }, 1000);
-</script>
 
+</script>
 </body>
 </html>
