@@ -128,24 +128,58 @@ let giveawayData = {};
 
 // ===== LOAD LEADERBOARD =====
 async function loadLeaderboard() {
-  const url = 'https://raw.githubusercontent.com/dtrix381/TFS/main/leaderboard.json?t=' + Date.now();
-  const res = await fetch(url);
-  leaderboardData = await res.json();
+  try {
+    const url = 'https://raw.githubusercontent.com/dtrix381/TFS/main/leaderboard.json?t=' + Date.now();
+    const res = await fetch(url);
+    leaderboardData = await res.json();
+    renderLeaderboard();
+  } catch (err) {
+    console.error("Failed to load leaderboard:", err);
+  }
+}
+
+// ===== RENDER LEADERBOARD =====
+function renderLeaderboard() {
+  const tbody = document.querySelector("#leaderboard tbody");
+  tbody.innerHTML = '';
+
+  // calculate win chances first
+  leaderboardData = calculateChances(leaderboardData, "weekly");
+  leaderboardData = calculateChances(leaderboardData, "monthly");
+
+  leaderboardData.forEach((user, index) => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${index + 1}</td>
+      <td>${user.username}</td>
+      <td>${user.weekly}</td>
+      <td>${user.weekly_chance}%</td>
+      <td>${user.monthly}</td>
+      <td>${user.monthly_chance}%</td>
+    `;
+    tbody.appendChild(tr);
+  });
 }
 
 // ===== LOAD GIVEAWAYS =====
 async function loadGiveaway() {
-  const url = 'https://raw.githubusercontent.com/dtrix381/TFS/main/giveaway_data.json?t=' + Date.now();
-  const res = await fetch(url);
-  giveawayData = await res.json();
+  try {
+    const url = 'https://raw.githubusercontent.com/dtrix381/TFS/main/giveaway_data.json?t=' + Date.now();
+    const res = await fetch(url);
+    giveawayData = await res.json();
 
-  updateUI("weekly", "w");
-  updateUI("monthly", "m");
-  updateHistory();
+    updateUI("weekly", "w");
+    updateUI("monthly", "m");
+    updateHistory();
+  } catch (err) {
+    console.error("Failed to load giveaways:", err);
+  }
 }
 
+// ===== UPDATE GIVEAWAY UI =====
 function updateUI(type, prefix) {
   const g = giveawayData[type];
+  if (!g) return;
 
   document.getElementById(prefix + "Title").innerText = g.title;
   document.getElementById(prefix + "Prize").innerText = "🎁 " + g.prize;
@@ -156,12 +190,12 @@ function updateUI(type, prefix) {
   updateCountdown(type, prefix);
 }
 
-// ===== COUNTDOWN (days, hours, min, sec) =====
+// ===== COUNTDOWN (days, hours, minutes, seconds) =====
 function updateCountdown(type, prefix) {
   const el = document.getElementById(prefix + "Countdown");
   const g = giveawayData[type];
 
-  if (!g.end_time) {
+  if (!g || !g.end_time) {
     el.innerText = "⏳ Not set";
     return;
   }
@@ -185,6 +219,9 @@ function updateCountdown(type, prefix) {
 
 // ===== MOCK DRAW =====
 function mockDraw(type) {
+  if (!leaderboardData.length) return;
+
+  leaderboardData = calculateChances(leaderboardData, type);
   const box = document.getElementById(type === "weekly" ? "wAnim" : "mAnim");
   let spins = 25, i = 0;
 
@@ -203,7 +240,7 @@ function mockDraw(type) {
 // ===== WEIGHTED PICK =====
 function weightedPick(type) {
   const key = type === "weekly" ? "weekly" : "monthly";
-  let total = leaderboardData.reduce((sum, u) => sum + u[key], 0);
+  const total = leaderboardData.reduce((sum, u) => sum + u[key], 0);
   let r = Math.random() * total;
   let upto = 0;
   for (let u of leaderboardData) {
@@ -229,7 +266,8 @@ function updateHistory() {
 
   ["weekly", "monthly"].forEach(type => {
     const g = giveawayData[type];
-    if (!g.history) return;
+    if (!g || !g.history) return;
+
     g.history.forEach(entry => {
       const tr = document.createElement('tr');
       tr.innerHTML = `
@@ -244,12 +282,19 @@ function updateHistory() {
   });
 }
 
-// ===== AUTO REFRESH =====
-loadLeaderboard();
-loadGiveaway();
+// ===== INIT & AUTO REFRESH =====
+async function init() {
+  await loadLeaderboard();
+  await loadGiveaway();
+}
 
+init();
+
+// Auto-refresh leaderboard and giveaways every 60s
 setInterval(loadLeaderboard, 60000);
 setInterval(loadGiveaway, 60000);
+
+// Update countdown every second
 setInterval(() => {
   updateCountdown("weekly", "w");
   updateCountdown("monthly", "m");
