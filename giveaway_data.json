@@ -1,0 +1,14 @@
+{
+    "weekly": {
+        "title": "TFS weekly",
+        "prize": "50",
+        "thumbnail": "https://images.hive.blog/0x0/https://steemitimages.com/DQmXUTcJ92jUidKLhH12fJ2U5uZ6qwxqV97x4tV9Ty66GHC/weekly-giveaway.png",
+        "end_time": "2026-04-05 23:59:00"
+    },
+    "monthly": {
+        "title": "Monthly Giveaway",
+        "prize": "Big Prize Coming Soon",
+        "thumbnail": "https://via.placeholder.com/300",
+        "end_time": null
+    }
+}
