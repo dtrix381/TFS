@@ -90,7 +90,10 @@ button {
     <p id="wCountdown"></p>
     <p id="wWinner"></p>
 
-    <button onclick="mockDraw('weekly')">🎡 Try Weekly Luck</button>
+    <button onclick="mockDraw('weekly')">🎡 Try Weekly Luck (Demo Only)</button>
+    <p style="font-size:12px; color:#aaa; margin-top:5px;">
+      ⚠️ This is just a demo draw. Real winner will be drawn automatically when timer ends.
+    </p>
     <div id="wAnim" class="animationBox"></div>
   </div>
 
@@ -103,7 +106,10 @@ button {
     <p id="mCountdown"></p>
     <p id="mWinner"></p>
 
-    <button onclick="mockDraw('monthly')">🎡 Try Monthly Luck</button>
+    <button onclick="mockDraw('monthly')">🎡 Try Monthly Luck (Demo Only)</button>
+    <p style="font-size:12px; color:#aaa; margin-top:5px;">
+      ⚠️ This is just a demo draw. Real winner will be drawn automatically when timer ends.
+    </p>
     <div id="mAnim" class="animationBox"></div>
   </div>
 </div>
@@ -272,7 +278,7 @@ function updateHistory() {
       const tr = document.createElement('tr');
       tr.innerHTML = `
         <td>${entry.username}</td>
-        <td>${type}</td>
+        <td>${type.charAt(0).toUpperCase() + type.slice(1)} - ${g.title}</td>
         <td>${entry.prize}</td>
         <td>${entry.chance.toFixed(2)}%</td>
         <td>${entry.time}</td>
