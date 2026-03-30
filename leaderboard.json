@@ -5,17 +5,18 @@
   "users": [
     {
       "username": "izzkezzy",
-        "weekly": 0,
-        "monthly": 22
+      "weekly": 0,
+      "monthly": 22
     },
     {
-        "username": "d3dtrix",
-        "weekly": 5,
-        "monthly": 13
+      "username": "d3dtrix",
+      "weekly": 5,
+      "monthly": 13
     },
     {
-        "username": "trinapalux",
-        "weekly": 0,
-        "monthly": 11
+      "username": "trinapalux",
+      "weekly": 0,
+      "monthly": 11
     }
-]
+  ]
+}
