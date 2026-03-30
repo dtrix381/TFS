@@ -158,9 +158,15 @@ function renderLeaderboard() {
     tr.innerHTML = `
       <td>${index + 1}</td>
       <td>${user.username}</td>
-      <td>${user.weekly}</td>
+      <td>
+        <img src="${data.coin_emoji}" width="16" style="vertical-align: middle;">
+        ${user.weekly}
+      </td>
       <td>${user.weekly_chance}%</td>
-      <td>${user.monthly}</td>
+      <td>
+        <img src="${data.coin_emoji}" width="16" style="vertical-align: middle;">
+        ${user.monthly}
+      </td>
       <td>${user.monthly_chance}%</td>
     `;
     tbody.appendChild(tr);
