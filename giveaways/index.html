@@ -137,7 +137,9 @@ async function loadLeaderboard() {
   try {
     const url = 'https://raw.githubusercontent.com/dtrix381/TFS/main/leaderboard.json?t=' + Date.now();
     const res = await fetch(url);
-    leaderboardData = await res.json();
+    const json = await res.json();
+    leaderboardData = json.users;
+    window.coinEmoji = json.emojis.coin; // store globally
     renderLeaderboard();
   } catch (err) {
     console.error("Failed to load leaderboard:", err);
@@ -159,12 +161,12 @@ function renderLeaderboard() {
       <td>${index + 1}</td>
       <td>${user.username}</td>
       <td>
-        <img src="${data.coin_emoji}" width="16" style="vertical-align: middle;">
+        <img src="${coinEmoji}" width="16" style="vertical-align: middle;">
         ${user.weekly}
       </td>
       <td>${user.weekly_chance}%</td>
       <td>
-        <img src="${data.coin_emoji}" width="16" style="vertical-align: middle;">
+        <img src="${coinEmoji}" width="16" style="vertical-align: middle;">
         ${user.monthly}
       </td>
       <td>${user.monthly_chance}%</td>
