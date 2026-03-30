@@ -138,8 +138,8 @@ async function loadLeaderboard() {
     const url = 'https://raw.githubusercontent.com/dtrix381/TFS/main/leaderboard.json?t=' + Date.now();
     const res = await fetch(url);
     const json = await res.json();
-    leaderboardData = json.users;
-    window.coinEmoji = json.emojis.coin; // store globally
+    leaderboardData = json.users || [];
+    window.coinEmoji = json.emojis?.coin || "https://cdn.discordapp.com/emojis/1418612841359081643.png";
     renderLeaderboard();
   } catch (err) {
     console.error("Failed to load leaderboard:", err);
@@ -293,7 +293,7 @@ function updateHistory() {
         <td>${entry.username}</td>
         <td>${type.charAt(0).toUpperCase() + type.slice(1)} - ${g.title}</td>
         <td>${entry.prize}</td>
-        <td>${entry.chance.toFixed(2)}%</td>
+        <td>${Number(entry.chance || 0).toFixed(2)}%</td>
         <td>${entry.time}</td>
       `;
       tbody.appendChild(tr);
