@@ -289,12 +289,21 @@ function updateUI(type, prefix) {
   const g = giveawayData[type];
   if (!g) return;
 
-  document.getElementById(prefix + "Title").innerText = g.title;
-  document.getElementById(prefix + "Prize").innerText = "🎁 " + g.prize;
-  document.getElementById(prefix + "Image").src = g.thumbnail;
-  document.getElementById(prefix + "Winner").innerText = "🏆 Last: " + (g.last_winner || "None");
+  // Prize
+  const prizeText = g.prize ? "$" + g.prize : "No giveaway yet";
+  document.getElementById(prefix + "Prize").innerText = "🎁 Prize: " + prizeText;
+
+  // Image
+  document.getElementById(prefix + "Image").src = g.thumbnail || "";
+
+  // Last winner
+  const lastWinner = g.last_winner || "None";
+  document.getElementById(prefix + "Winner").innerText = "🏆 Last Winner: " + lastWinner;
+
+  // Total Entries
   document.getElementById(prefix + "Entries").innerText = "📊 Total Entries: " + getTotalEntries(type);
 
+  // Countdown
   updateCountdown(type, prefix);
 }
 
@@ -304,7 +313,7 @@ function updateCountdown(type, prefix) {
   const g = giveawayData[type];
 
   if (!g || !g.end_time) {
-    el.innerText = "⏳ Not set";
+    el.innerText = "⏳ No giveaway yet";
     return;
   }
 
@@ -313,7 +322,7 @@ function updateCountdown(type, prefix) {
   const diff = end - now;
 
   if (diff <= 0) {
-    el.innerText = "🎉 Drawing Winner...";
+    el.innerText = "🎉 Giveaway ended";
     return;
   }
 
@@ -331,19 +340,22 @@ function mockDraw(type) {
 
   leaderboardData = calculateChances(leaderboardData, type);
   const box = document.getElementById(type === "weekly" ? "wAnim" : "mAnim");
+  const prize = giveawayData[type]?.prize ? "$" + giveawayData[type].prize : "No giveaway yet"; // $ added
+
   let spins = 25, i = 0;
 
   const interval = setInterval(() => {
     const randomUser = leaderboardData[Math.floor(Math.random() * leaderboardData.length)];
-    box.innerText = "🎲 " + randomUser.username;
+    box.innerText = "🎲 " + randomUser.discord_username;
     i++;
     if (i >= spins) {
       clearInterval(interval);
       const winner = weightedPick(type);
-      box.innerText = `🏆 WINNER: ${winner.username} (${winner[type + "_chance"]}%)`;
+      box.innerText = `🏆 WINNER: ${winner.discord_username} (${winner[type + "_chance"]}%) – ${prize}`;
     }
   }, 80);
 }
+
 
 // ===== WEIGHTED PICK =====
 function weightedPick(type) {
@@ -377,11 +389,12 @@ function updateHistory() {
     if (!g || !g.history) return;
 
     g.history.forEach(entry => {
+      const prize = entry.prize ? "$" + entry.prize : "$0"; // add $
       const tr = document.createElement('tr');
       tr.innerHTML = `
         <td>${entry.username}</td>
         <td>${type.charAt(0).toUpperCase() + type.slice(1)} - ${g.title}</td>
-        <td>${entry.prize}</td>
+        <td>${prize}</td>
         <td>${Number(entry.chance || 0).toFixed(2)}%</td>
         <td>${entry.time}</td>
       `;
