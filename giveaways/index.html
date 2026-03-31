@@ -57,10 +57,57 @@ button {
   font-size: 18px;
   height: 40px;
 }
+
+#userModal {
+  display: none;
+  position: fixed;
+  top:0; left:0;
+  width:100%; height:100%;
+  background: rgba(0,0,0,0.8);
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+#userModal div {
+  background: #1f1f1f;
+  padding: 20px;
+  border-radius: 10px;
+  width: 300px;
+  position: relative;
+  color: #fff;
+}
+
+#userModal img {
+  border-radius: 50%;
+  margin-bottom: 10px;
+}
+
+#userModal h3, #userModal h4 {
+  margin: 5px 0;
+}
+
+#userModal ul {
+  text-align: left;
+  padding-left: 15px;
+}
+
 </style>
 </head>
 
 <body>
+
+<!-- USER INFO MODAL -->
+<div id="userModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); justify-content:center; align-items:center; z-index:1000;">
+  <div style="background:#1f1f1f; padding:20px; border-radius:10px; width:300px; position:relative; color:#fff;">
+    <span id="closeModal" style="position:absolute; top:10px; right:15px; cursor:pointer; font-weight:bold;">&times;</span>
+    <img id="modalAvatar" src="" width="80" style="border-radius:50%; margin-bottom:10px;">
+    <h3 id="modalDiscord"></h3>
+    <p>Instagram: <a href="#" id="modalInsta" target="_blank"></a></p>
+    <h4>Giveaway History:</h4>
+    <ul id="modalHistory" style="text-align:left; padding-left:15px;"></ul>
+  </div>
+</div>
 
 <h1>🏆 Leaderboard</h1>
 
@@ -159,7 +206,10 @@ function renderLeaderboard() {
     const tr = document.createElement('tr');
     tr.innerHTML = `
       <td>${index + 1}</td>
-      <td>${user.username}</td>
+      <td style="cursor:pointer;" onclick="showUserModal(${index})">
+        <img src="${user.discord_avatar}" width="32" style="vertical-align: middle; border-radius:50%;"> 
+        ${user.discord_username}
+      </td>
       <td>
         <img src="${coinEmoji}" width="32" style="vertical-align: middle;">
         ${user.weekly}
@@ -174,6 +224,32 @@ function renderLeaderboard() {
     tbody.appendChild(tr);
   });
 }
+
+function showUserModal(index) {
+  const user = leaderboardData[index];
+  if (!user) return;
+
+  document.getElementById("modalAvatar").src = user.discord_avatar || "https://via.placeholder.com/80";
+  document.getElementById("modalDiscord").innerText = user.discord_username;
+  document.getElementById("modalInsta").innerText = user.instagram_username;
+  document.getElementById("modalInsta").href = "https://instagram.com/" + user.instagram_username;
+
+  // Fill history
+  const ul = document.getElementById("modalHistory");
+  ul.innerHTML = "";
+  (user.giveaway_history || []).forEach(h => {
+    const li = document.createElement("li");
+    li.innerText = `[${h.type}] ${h.prize} (Chance: ${h.chance}%)`;
+    ul.appendChild(li);
+  });
+
+  document.getElementById("userModal").style.display = "flex";
+}
+
+// Close modal
+document.getElementById("closeModal").onclick = () => {
+  document.getElementById("userModal").style.display = "none";
+};
 
 // ===== LOAD GIVEAWAYS =====
 async function loadGiveaway() {
