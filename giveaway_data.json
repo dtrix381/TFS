@@ -6,10 +6,19 @@
         "title": "First Week",
         "prize": "69",
         "thumbnail": "https://www.teamfullsendslots.com/assets/TFS2.png",
-        "end_time": "2026-03-31 11:20:00",
-        "history": [],
-        "last_winner": null,
-        "last_entries": 0
+        "end_time": null,
+        "history": [
+            {
+                "username": "izzkezzy",
+                "discord_id": "1212036545650106380",
+                "prize": "69",
+                "chance": 4,
+                "time": "2026-03-31 11:20:45 UTC",
+                "title": "First Week"
+            }
+        ],
+        "last_winner": "izzkezzy",
+        "last_entries": 4
     },
     "monthly": {
         "title": "Monthly",
