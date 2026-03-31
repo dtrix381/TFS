@@ -99,12 +99,15 @@ button {
 
 <!-- USER INFO MODAL -->
 <div id="userModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); justify-content:center; align-items:center; z-index:1000;">
-  <div style="background:#1f1f1f; padding:20px; border-radius:10px; width:300px; position:relative; color:#fff;">
+  <div style="background:#1f1f1f; padding:20px; border-radius:10px; width:320px; position:relative; color:#fff;">
     <span id="closeModal" style="position:absolute; top:10px; right:15px; cursor:pointer; font-weight:bold;">&times;</span>
     <img id="modalAvatar" src="" width="80" style="border-radius:50%; margin-bottom:10px;">
     <h3 id="modalDiscord"></h3>
-    <p>Instagram: <a href="#" id="modalInsta" target="_blank"></a></p>
-    <h4>Giveaway History:</h4>
+    <p>
+      <img src="https://cdn-icons-png.flaticon.com/512/174/174855.png" width="18" style="vertical-align: middle; margin-right:4px;">
+      Instagram: <a href="#" id="modalInsta" target="_blank"></a>
+    </p>
+    <h4>🎁 Giveaway Wins</h4>
     <ul id="modalHistory" style="text-align:left; padding-left:15px;"></ul>
   </div>
 </div>
@@ -229,17 +232,22 @@ function showUserModal(index) {
   const user = leaderboardData[index];
   if (!user) return;
 
+  // Avatar & Discord
   document.getElementById("modalAvatar").src = user.discord_avatar || "https://via.placeholder.com/80";
   document.getElementById("modalDiscord").innerText = user.discord_username;
-  document.getElementById("modalInsta").innerText = user.instagram_username;
-  document.getElementById("modalInsta").href = "https://instagram.com/" + user.instagram_username;
 
-  // Fill history
+  // Instagram with logo
+  const instaEl = document.getElementById("modalInsta");
+  instaEl.innerText = user.instagram_username;
+  instaEl.href = "https://instagram.com/" + user.instagram_username;
+
+  // Giveaway Wins
   const ul = document.getElementById("modalHistory");
   ul.innerHTML = "";
   (user.giveaway_history || []).forEach(h => {
     const li = document.createElement("li");
-    li.innerText = `[${h.type}] ${h.prize} (Chance: ${h.chance}%)`;
+    // Format: [Weekly] Giveaway Title – Prize (Chance: XX%)
+    li.innerText = `[${h.type}] ${h.title} – ${h.prize} (Chance: ${h.chance}%)`;
     ul.appendChild(li);
   });
 
