@@ -291,17 +291,17 @@ function updateUI(type, prefix) {
 
   // Prize
   const prizeText = g.prize ? "$" + g.prize : "No giveaway yet";
-  document.getElementById(prefix + "Prize").innerText = "🎁 Prize: " + prizeText;
+  document.getElementById(prefix + "Prize").innerText = "Prize: " + prizeText;
 
   // Image
   document.getElementById(prefix + "Image").src = g.thumbnail || "";
 
   // Last winner
   const lastWinner = g.last_winner || "None";
-  document.getElementById(prefix + "Winner").innerText = "🏆 Last Winner: " + lastWinner;
+  document.getElementById(prefix + "Winner").innerText = "Last Winner: " + lastWinner;
 
   // Total Entries
-  document.getElementById(prefix + "Entries").innerText = "📊 Total Entries: " + getTotalEntries(type);
+  document.getElementById(prefix + "Entries").innerText = "Total Entries: " + getTotalEntries(type);
 
   // Countdown
   updateCountdown(type, prefix);
@@ -313,7 +313,7 @@ function updateCountdown(type, prefix) {
   const g = giveawayData[type];
 
   if (!g || !g.end_time) {
-    el.innerText = "⏳ No giveaway yet";
+    el.innerText = "No giveaway yet";
     return;
   }
 
