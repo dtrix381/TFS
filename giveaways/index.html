@@ -440,11 +440,6 @@ function updateHistory() {
         };
       }
 
-      // Add the type to history entry for modal
-      const historyEntry = { ...entry, type: type };
-      if (!user.giveaway_history) user.giveaway_history = [];
-      user.giveaway_history.push(historyEntry);
-
       // Store user in historyUsers for modal indexing
       const index = historyUsers.push(user) - 1;
 
