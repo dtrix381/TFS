@@ -298,7 +298,16 @@ function updateUI(type, prefix) {
 
   // Last winner
   const lastWinner = g.last_winner || "None";
-  document.getElementById(prefix + "Winner").innerText = "Last Winner: " + lastWinner;
+  const winnerUser = leaderboardData.find(u => 
+  u.instagram_username === lastWinner
+);
+
+const displayName = winnerUser 
+  ? winnerUser.discord_username 
+  : lastWinner;
+
+document.getElementById(prefix + "Winner").innerText = "Last Winner: " + displayName;
+
 
   // Total Entries
   document.getElementById(prefix + "Entries").innerText = "Total Entries: " + getTotalEntries(type);
@@ -393,7 +402,10 @@ function updateHistory() {
 
     g.history.forEach(entry => {
       // Find the user in leaderboardData to get avatar and Instagram
-      let user = leaderboardData.find(u => u.discord_username === entry.username);
+      let user = leaderboardData.find(u => 
+        u.instagram_username === entry.username
+        );
+
       if (!user) {
         // If not in leaderboard, create a placeholder
         user = {
