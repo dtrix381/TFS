@@ -6,7 +6,7 @@
         "title": "final weekly",
         "prize": "41",
         "thumbnail": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR_Y9YnVQm6TFG7800XtZPWeJNDvnFl01gssg&s",
-        "end_time": "2026-03-31 10:16:00",
+        "end_time": null,
         "history": [
             {
                 "username": "d3dtrix",
@@ -20,10 +20,17 @@
                 "prize": "77",
                 "chance": 11,
                 "time": "2026-03-31 10:07:31 UTC"
+            },
+            {
+                "username": "rowelie09",
+                "discord_id": "927475447464329236",
+                "prize": "41",
+                "chance": 8,
+                "time": "2026-03-31 10:16:35 UTC"
             }
         ],
-        "last_winner": "d3dtrix",
-        "last_entries": 11
+        "last_winner": "rowelie09",
+        "last_entries": 8
     },
     "monthly": {
         "title": "Big monthh",
