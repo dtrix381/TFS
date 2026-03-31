@@ -404,36 +404,36 @@ function updateHistory() {
     if (!g || !g.history) return;
 
     g.history.forEach(entry => {
-      // Find the user in leaderboardData to get avatar and Instagram
-      let user = leaderboardData.find(u => 
-        u.instagram_username === entry.username
-        );
-
+      // Match by discord_id if available
+      let user = leaderboardData.find(u => u.discord_id === entry.discord_id);
       if (!user) {
-        // If not in leaderboard, create a placeholder
         user = {
           discord_username: entry.username,
           discord_avatar: "https://via.placeholder.com/32",
-          instagram_username: "",
+          instagram_username: entry.instagram_username || "",
           giveaway_history: []
         };
       }
 
-      const prize = entry.prize ? "$" + entry.prize : "$0";
+      // Add the type to history entry for modal
+      const historyEntry = { ...entry, type: type };
+      if (!user.giveaway_history) user.giveaway_history = [];
+      user.giveaway_history.push(historyEntry);
 
       // Store user in historyUsers for modal indexing
       const index = historyUsers.push(user) - 1;
+
+      const prize = entry.prize ? "$" + entry.prize : "$0";
 
       const tr = document.createElement('tr');
       tr.innerHTML = `
         <td>
           <img src="${user.discord_avatar}" width="32" style="vertical-align: middle; border-radius:50%;"> 
-          <span style="cursor:pointer; color:#1e90ff;" onclick="showHistoryModal(${index})">${user.discord_username}</span>
+          <span style="cursor:pointer; color:#1e90ff;" onclick="showHistoryModal(${index})">
+            ${user.discord_username}
+          </span>
         </td>
-        <td>
-          ${type.charAt(0).toUpperCase() + type.slice(1)} - 
-          ${entry.title || g.title}
-        </td>
+        <td>${type.charAt(0).toUpperCase() + type.slice(1)} - ${entry.title || g.title}</td>
         <td>${prize}</td>
         <td>${Number(entry.chance || 0).toFixed(2)}%</td>
         <td>${entry.time}</td>
