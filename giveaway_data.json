@@ -3,46 +3,21 @@
         "coin": "https://cdn.discordapp.com/emojis/1418612841359081643.png"
     },
     "weekly": {
-        "title": "free money",
-        "prize": "55",
+        "title": "Weekly",
+        "prize": "0",
         "thumbnail": "https://www.teamfullsendslots.com/assets/TFS2.png",
         "end_time": null,
-        "history": [
-            {
-                "username": "d3dtrix",
-                "prize": "69",
-                "chance": 31,
-                "time": "2026-03-31 09:35:01 UTC"
-            },
-            {
-                "username": "d3dtrix",
-                "discord_id": "488015447417946151",
-                "prize": "77",
-                "chance": 11,
-                "time": "2026-03-31 10:07:31 UTC"
-            },
-            {
-                "username": "rowelie09",
-                "discord_id": "927475447464329236",
-                "prize": "41",
-                "chance": 8,
-                "time": "2026-03-31 10:16:35 UTC"
-            },
-            {
-                "username": "d3dtrix",
-                "discord_id": "488015447417946151",
-                "prize": "55",
-                "chance": 10,
-                "time": "2026-03-31 10:46:02 UTC"
-            }
-        ],
-        "last_winner": "d3dtrix",
-        "last_entries": 10
+        "history": [],
+        "last_winner": null,
+        "last_entries": 0
     },
     "monthly": {
-        "title": "Big monthh",
-        "prize": "381",
-        "thumbnail": "https://png.pngtree.com/png-vector/20211027/ourmid/pngtree-giveaway-banner-png-image_4012050.png",
-        "end_time": "2026-04-30 16:00:00"
+        "title": "Monthly",
+        "prize": "0",
+        "thumbnail": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR_Y9YnVQm6TFG7800XtZPWeJNDvnFl01gssg&s",
+        "end_time": null,
+        "history": [],
+        "last_winner": null,
+        "last_entries": 0
     }
 }
