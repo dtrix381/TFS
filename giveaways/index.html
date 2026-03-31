@@ -244,10 +244,15 @@ function showUserModal(index) {
   // Giveaway Wins
   const ul = document.getElementById("modalHistory");
   ul.innerHTML = "";
+
   (user.giveaway_history || []).forEach(h => {
+    const giveawayType = h.type.toLowerCase(); // "weekly" or "monthly"
+    const giveaway = giveawayData[giveawayType] || {};
+    const title = giveaway.title || "Unknown Giveaway";
+    const prize = giveaway.prize ? "$" + giveaway.prize : "$0";
+    
     const li = document.createElement("li");
-    // Format: [Weekly] Giveaway Title – Prize (Chance: XX%)
-    li.innerText = `[${h.type}] ${h.title} – ${h.prize} (Chance: ${h.chance}%)`;
+    li.innerText = `[${h.type}] ${title} – ${prize} (Chance: ${h.chance}%)`;
     ul.appendChild(li);
   });
 
