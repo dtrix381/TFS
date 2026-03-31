@@ -248,8 +248,8 @@ function showUserModal(index) {
   (user.giveaway_history || []).forEach(h => {
     const giveawayType = h.type.toLowerCase(); // "weekly" or "monthly"
     const giveaway = giveawayData[giveawayType] || {};
-    const title = giveaway.title || "Unknown Giveaway";
-    const prize = giveaway.prize ? "$" + giveaway.prize : "$0";
+    const title = h.title || "Unknown Giveaway";
+    const prize = h.prize ? "$" + h.prize : "$0";
     
     const li = document.createElement("li");
     li.innerText = `[${h.type}] ${title} – ${prize} (Chance: ${h.chance}%)`;
@@ -288,6 +288,9 @@ function getTotalEntries(type) {
 function updateUI(type, prefix) {
   const g = giveawayData[type];
   if (!g) return;
+  
+  // Title
+  document.getElementById(prefix + "Title").innerText = g.title || type.toUpperCase();
 
   // Prize
   const prizeText = g.prize ? "$" + g.prize : "No giveaway yet";
@@ -427,7 +430,10 @@ function updateHistory() {
           <img src="${user.discord_avatar}" width="32" style="vertical-align: middle; border-radius:50%;"> 
           <span style="cursor:pointer; color:#1e90ff;" onclick="showHistoryModal(${index})">${user.discord_username}</span>
         </td>
-        <td>${type.charAt(0).toUpperCase() + type.slice(1)} - ${g.title}</td>
+        <td>
+          ${type.charAt(0).toUpperCase() + type.slice(1)} - 
+          ${entry.title || g.title}
+        </td>
         <td>${prize}</td>
         <td>${Number(entry.chance || 0).toFixed(2)}%</td>
         <td>${entry.time}</td>
@@ -455,8 +461,8 @@ function showHistoryModal(index) {
   (user.giveaway_history || []).forEach(h => {
     const giveawayType = h.type.toLowerCase();
     const giveaway = giveawayData[giveawayType] || {};
-    const title = giveaway.title || "Unknown Giveaway";
-    const prize = giveaway.prize ? "$" + giveaway.prize : "$0";
+    const title = h.title || "Unknown Giveaway";
+    const prize = h.prize ? "$" + h.prize : "$0";
 
     const li = document.createElement("li");
     li.innerText = `[${h.type}] ${title} – ${prize} (Chance: ${h.chance}%)`;
