@@ -389,10 +389,18 @@ function updateHistory() {
     if (!g || !g.history) return;
 
     g.history.forEach(entry => {
-      const prize = entry.prize ? "$" + entry.prize : "$0"; // add $
+      // Find the user in leaderboardData to get avatar and Instagram
+      const userIndex = leaderboardData.findIndex(u => u.discord_username === entry.username);
+      const user = leaderboardData[userIndex] || { discord_avatar: "https://via.placeholder.com/32", instagram_username: "" };
+
+      const prize = entry.prize ? "$" + entry.prize : "$0";
+
       const tr = document.createElement('tr');
       tr.innerHTML = `
-        <td>${entry.username}</td>
+        <td>
+          <img src="${user.discord_avatar}" width="32" style="vertical-align: middle; border-radius:50%;"> 
+          <span style="cursor:pointer; color:#1e90ff;" onclick="showUserModal(${userIndex})">${entry.username}</span>
+        </td>
         <td>${type.charAt(0).toUpperCase() + type.slice(1)} - ${g.title}</td>
         <td>${prize}</td>
         <td>${Number(entry.chance || 0).toFixed(2)}%</td>
