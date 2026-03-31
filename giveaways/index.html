@@ -470,6 +470,9 @@ function showHistoryModal(index) {
 async function init() {
   await loadLeaderboard();
   await loadGiveaway();
+
+  // ensure history uses latest leaderboard data
+  updateHistory();
 }
 
 init();
