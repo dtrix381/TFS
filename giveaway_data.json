@@ -6,17 +6,24 @@
         "title": "try try try",
         "prize": "77",
         "thumbnail": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcScnxLvK_n55NHNagIcwXmewnzB9Nc2MrHSeA&s",
-        "end_time": "2026-03-31 10:00:00",
+        "end_time": null,
         "history": [
             {
                 "username": "d3dtrix",
                 "prize": "69",
                 "chance": 31,
                 "time": "2026-03-31 09:35:01 UTC"
+            },
+            {
+                "username": "d3dtrix",
+                "discord_id": "488015447417946151",
+                "prize": "77",
+                "chance": 11,
+                "time": "2026-03-31 10:07:31 UTC"
             }
         ],
         "last_winner": "d3dtrix",
-        "last_entries": 31
+        "last_entries": 11
     },
     "monthly": {
         "title": "Big monthh",
