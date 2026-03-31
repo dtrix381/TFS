@@ -10,28 +10,6 @@
             "weekly": 0,
             "monthly": 39,
             "giveaway_history": [
-                {
-                    "username": "d3dtrix",
-                    "prize": "69",
-                    "chance": 31,
-                    "time": "2026-03-31 09:35:01 UTC",
-                    "title": "free money"
-                },
-                {
-                    "username": "d3dtrix",
-                    "prize": "77",
-                    "chance": 11,
-                    "time": "2026-03-31 10:07:31 UTC",
-                    "title": "free money"
-                },
-                {
-                    "username": "d3dtrix",
-                    "prize": "55",
-                    "chance": 10,
-                    "time": "2026-03-31 10:46:02 UTC",
-                    "title": "free money"
-                }
-            ]
         },
         {
             "discord_username": "teelux187",
