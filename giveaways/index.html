@@ -380,9 +380,12 @@ function calculateChances(data, type) {
 }
 
 // ===== WINNERS HISTORY =====
+let historyUsers = []; // temporary array for modal indexing
+
 function updateHistory() {
   const tbody = document.querySelector("#historyTable tbody");
   tbody.innerHTML = '';
+  historyUsers = [];
 
   ["weekly", "monthly"].forEach(type => {
     const g = giveawayData[type];
@@ -390,16 +393,27 @@ function updateHistory() {
 
     g.history.forEach(entry => {
       // Find the user in leaderboardData to get avatar and Instagram
-      const userIndex = leaderboardData.findIndex(u => u.discord_username === entry.username);
-      const user = leaderboardData[userIndex] || { discord_avatar: "https://via.placeholder.com/32", instagram_username: "" };
+      let user = leaderboardData.find(u => u.discord_username === entry.username);
+      if (!user) {
+        // If not in leaderboard, create a placeholder
+        user = {
+          discord_username: entry.username,
+          discord_avatar: "https://via.placeholder.com/32",
+          instagram_username: "",
+          giveaway_history: []
+        };
+      }
 
       const prize = entry.prize ? "$" + entry.prize : "$0";
+
+      // Store user in historyUsers for modal indexing
+      const index = historyUsers.push(user) - 1;
 
       const tr = document.createElement('tr');
       tr.innerHTML = `
         <td>
           <img src="${user.discord_avatar}" width="32" style="vertical-align: middle; border-radius:50%;"> 
-          <span style="cursor:pointer; color:#1e90ff;" onclick="showUserModal(${userIndex})">${entry.username}</span>
+          <span style="cursor:pointer; color:#1e90ff;" onclick="showHistoryModal(${index})">${user.discord_username}</span>
         </td>
         <td>${type.charAt(0).toUpperCase() + type.slice(1)} - ${g.title}</td>
         <td>${prize}</td>
@@ -409,6 +423,35 @@ function updateHistory() {
       tbody.appendChild(tr);
     });
   });
+}
+
+// Separate modal function for winners history
+function showHistoryModal(index) {
+  const user = historyUsers[index];
+  if (!user) return;
+
+  document.getElementById("modalAvatar").src = user.discord_avatar || "https://via.placeholder.com/80";
+  document.getElementById("modalDiscord").innerText = user.discord_username;
+
+  const instaEl = document.getElementById("modalInsta");
+  instaEl.innerText = user.instagram_username;
+  instaEl.href = user.instagram_username ? "https://instagram.com/" + user.instagram_username : "#";
+
+  const ul = document.getElementById("modalHistory");
+  ul.innerHTML = "";
+
+  (user.giveaway_history || []).forEach(h => {
+    const giveawayType = h.type.toLowerCase();
+    const giveaway = giveawayData[giveawayType] || {};
+    const title = giveaway.title || "Unknown Giveaway";
+    const prize = giveaway.prize ? "$" + giveaway.prize : "$0";
+
+    const li = document.createElement("li");
+    li.innerText = `[${h.type}] ${title} – ${prize} (Chance: ${h.chance}%)`;
+    ul.appendChild(li);
+  });
+
+  document.getElementById("userModal").style.display = "flex";
 }
 
 // ===== INIT & AUTO REFRESH =====
