@@ -238,8 +238,13 @@ function showUserModal(index) {
 
   // Instagram with logo
   const instaEl = document.getElementById("modalInsta");
-  instaEl.innerText = user.instagram_username;
-  instaEl.href = "https://instagram.com/" + user.instagram_username;
+  if(user.instagram_username) {
+    instaEl.innerText = user.instagram_username;
+    instaEl.href = "https://instagram.com/" + user.instagram_username;
+  } else {
+    instaEl.innerText = "";
+    instaEl.href = "#";
+  }
 
   // Giveaway Wins
   const ul = document.getElementById("modalHistory");
@@ -270,6 +275,23 @@ async function loadGiveaway() {
     const url = 'https://raw.githubusercontent.com/dtrix381/TFS/main/giveaway_data.json?t=' + Date.now();
     const res = await fetch(url);
     giveawayData = await res.json();
+
+    // === Populate giveaway_history for leaderboard users ===
+    leaderboardData.forEach(user => {
+      user.giveaway_history = []; // reset
+      ["weekly", "monthly"].forEach(type => {
+        const g = giveawayData[type];
+        if (!g || !g.history) return;
+        g.history.forEach(entry => {
+          if (
+            entry.username === user.instagram_username ||
+            entry.username === user.discord_username
+          ) {
+            user.giveaway_history.push({ ...entry, type: type });
+          }
+        });
+      });
+    });
 
     updateUI("weekly", "w");
     updateUI("monthly", "m");
@@ -405,7 +427,10 @@ function updateHistory() {
 
     g.history.forEach(entry => {
       // Match by discord_id if available
-      let user = leaderboardData.find(u => u.discord_id === entry.discord_id);
+      let user = leaderboardData.find(u => 
+        u.discord_username === entry.username || u.instagram_username === entry.username
+      );
+
       if (!user) {
         user = {
           discord_username: entry.username,
@@ -452,8 +477,13 @@ function showHistoryModal(index) {
   document.getElementById("modalDiscord").innerText = user.discord_username;
 
   const instaEl = document.getElementById("modalInsta");
-  instaEl.innerText = user.instagram_username;
-  instaEl.href = user.instagram_username ? "https://instagram.com/" + user.instagram_username : "#";
+  if(user.instagram_username) {
+    instaEl.innerText = user.instagram_username;
+    instaEl.href = "https://instagram.com/" + user.instagram_username;
+  } else {
+    instaEl.innerText = "";
+    instaEl.href = "#";
+  }
 
   const ul = document.getElementById("modalHistory");
   ul.innerHTML = "";
