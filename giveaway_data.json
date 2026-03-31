@@ -6,7 +6,7 @@
         "title": "2nd Week",
         "prize": "77",
         "thumbnail": "https://www.teamfullsendslots.com/assets/TFS2.png",
-        "end_time": "2026-03-31 13:24:00",
+        "end_time": null,
         "history": [
             {
                 "username": "izzkezzy",
@@ -15,10 +15,18 @@
                 "chance": 4,
                 "time": "2026-03-31 11:20:45 UTC",
                 "title": "First Week"
+            },
+            {
+                "username": "d3dtrix",
+                "discord_id": "488015447417946151",
+                "prize": "77",
+                "chance": 8,
+                "time": "2026-03-31 13:24:23 UTC",
+                "title": "2nd Week"
             }
         ],
-        "last_winner": "izzkezzy",
-        "last_entries": 4
+        "last_winner": "d3dtrix",
+        "last_entries": 8
     },
     "monthly": {
         "title": "Monthly",
