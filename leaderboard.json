@@ -1,17 +1,22 @@
-[
-    {
-        "username": "izzkezzy",
-        "weekly": 4,
-        "monthly": 26
+{
+    "emojis": {
+        "coin": "https://cdn.discordapp.com/emojis/1418612841359081643.png"
     },
-    {
-        "username": "d3dtrix",
-        "weekly": 5,
-        "monthly": 13
-    },
-    {
-        "username": "trinapalux",
-        "weekly": 0,
-        "monthly": 11
-    }
-]
+    "users": [
+        {
+            "username": "izzkezzy",
+            "weekly": 4,
+            "monthly": 26
+        },
+        {
+            "username": "d3dtrix",
+            "weekly": 9,
+            "monthly": 17
+        },
+        {
+            "username": "trinapalux",
+            "weekly": 0,
+            "monthly": 11
+        }
+    ]
+}
