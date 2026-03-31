@@ -331,7 +331,7 @@ function updateCountdown(type, prefix) {
   const minutes = Math.floor((diff / (1000 * 60)) % 60);
   const seconds = Math.floor((diff / 1000) % 60);
 
-  el.innerText = `⏳ ${days}d ${hours}h ${minutes}m ${seconds}s`;
+  el.innerText = `${days}d ${hours}h ${minutes}m ${seconds}s`;
 }
 
 // ===== MOCK DRAW =====
@@ -351,7 +351,7 @@ function mockDraw(type) {
     if (i >= spins) {
       clearInterval(interval);
       const winner = weightedPick(type);
-      box.innerText = `🏆 WINNER: ${winner.discord_username} (${winner[type + "_chance"]}%) – ${prize}`;
+      box.innerText = `🏆 WINNER: ${winner.discord_username} (${winner[type + "_chance"]}%)`;
     }
   }, 80);
 }
