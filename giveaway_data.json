@@ -3,33 +3,16 @@
         "coin": "https://cdn.discordapp.com/emojis/1418612841359081643.png"
     },
     "weekly": {
-        "title": "2nd Week",
-        "prize": "77",
+        "title": "Weekly Giveaway",
+        "prize": "0",
         "thumbnail": "https://www.teamfullsendslots.com/assets/TFS2.png",
         "end_time": null,
-        "history": [
-            {
-                "username": "izzkezzy",
-                "discord_id": "1212036545650106380",
-                "prize": "69",
-                "chance": 4,
-                "time": "2026-03-31 11:20:45 UTC",
-                "title": "First Week"
-            },
-            {
-                "username": "d3dtrix",
-                "discord_id": "488015447417946151",
-                "prize": "77",
-                "chance": 8,
-                "time": "2026-03-31 13:24:23 UTC",
-                "title": "2nd Week"
-            }
-        ],
-        "last_winner": "d3dtrix",
+        "history": [],
+        "last_winner": "null,
         "last_entries": 8
     },
     "monthly": {
-        "title": "Monthly",
+        "title": "Monthl Giveawayy",
         "prize": "0",
         "thumbnail": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR_Y9YnVQm6TFG7800XtZPWeJNDvnFl01gssg&s",
         "end_time": null,
