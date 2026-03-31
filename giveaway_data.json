@@ -1,27 +1,17 @@
 {
-  "emojis": {
-    "coin": "https://cdn.discordapp.com/emojis/1418612841359081643.png"
-  },
-  "weekly": {
-    "title": "test 2",
-    "prize": "41",
-    "thumbnail": "https://images.hive.blog/0x0/https://steemitimages.com/DQmXUTcJ92jUidKLhH12fJ2U5uZ6qwxqV97x4tV9Ty66GHC/weekly-giveaway.png",
-    "end_time": null,
-    "last_winner": "d3dtrix",
-    "last_entries": 11,
-    "history": [
-      {
-        "username": "d3dtrix",
-        "prize": "41",
-        "chance": 11,
-        "time": "2026-03-29 17:00:19 UTC"
-      }
-    ]
-  },
-  "monthly": {
-    "title": "Big monthh",
-    "prize": "381",
-    "thumbnail": "https://png.pngtree.com/png-vector/20211027/ourmid/pngtree-giveaway-banner-png-image_4012050.png",
-    "end_time": "2026-04-30 16:00:00"
-  }
+    "emojis": {
+        "coin": "https://cdn.discordapp.com/emojis/1418612841359081643.png"
+    },
+    "weekly": {
+        "title": "final test",
+        "prize": "69",
+        "thumbnail": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR_Y9YnVQm6TFG7800XtZPWeJNDvnFl01gssg&s",
+        "end_time": "2026-03-31 09:35:00"
+    },
+    "monthly": {
+        "title": "Big monthh",
+        "prize": "381",
+        "thumbnail": "https://png.pngtree.com/png-vector/20211027/ourmid/pngtree-giveaway-banner-png-image_4012050.png",
+        "end_time": "2026-04-30 16:00:00"
+    }
 }
