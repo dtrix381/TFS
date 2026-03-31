@@ -6,7 +6,7 @@
         "title": "free money",
         "prize": "55",
         "thumbnail": "https://www.teamfullsendslots.com/assets/TFS2.png",
-        "end_time": "2026-03-31 10:46:00",
+        "end_time": null,
         "history": [
             {
                 "username": "d3dtrix",
@@ -27,10 +27,17 @@
                 "prize": "41",
                 "chance": 8,
                 "time": "2026-03-31 10:16:35 UTC"
+            },
+            {
+                "username": "d3dtrix",
+                "discord_id": "488015447417946151",
+                "prize": "55",
+                "chance": 10,
+                "time": "2026-03-31 10:46:02 UTC"
             }
         ],
-        "last_winner": "rowelie09",
-        "last_entries": 8
+        "last_winner": "d3dtrix",
+        "last_entries": 10
     },
     "monthly": {
         "title": "Big monthh",
