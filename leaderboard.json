@@ -7,8 +7,8 @@
             "discord_username": "dtrix381",
             "discord_avatar": "https://cdn.discordapp.com/avatars/488015447417946151/19e7b770b91a24f3891e8646dc09d335.png?size=1024",
             "instagram_username": "d3dtrix",
-            "weekly": 22,
-            "monthly": 30,
+            "weekly": 31,
+            "monthly": 39,
             "giveaway_history": [
                 {
                     "type": "Weekly",
@@ -19,6 +19,14 @@
             ]
         },
         {
+            "discord_username": "teelux187",
+            "discord_avatar": "https://cdn.discordapp.com/avatars/878253813553844254/1f3e85b584503947c63010aa1bd8ba1e.png?size=1024",
+            "instagram_username": "trinapalux",
+            "weekly": 18,
+            "monthly": 29,
+            "giveaway_history": []
+        },
+        {
             "discord_username": "raiden.0.0",
             "discord_avatar": "https://cdn.discordapp.com/avatars/1212036545650106380/7b64fbbf484717051ef9c0d3eb6b22e9.png?size=1024",
             "instagram_username": "izzkezzy",
@@ -27,11 +35,19 @@
             "giveaway_history": []
         },
         {
-            "discord_username": "teelux187",
-            "discord_avatar": "https://cdn.discordapp.com/avatars/878253813553844254/1f3e85b584503947c63010aa1bd8ba1e.png?size=1024",
-            "instagram_username": "trinapalux",
-            "weekly": 9,
-            "monthly": 20,
+            "discord_username": "rowan.09",
+            "discord_avatar": "https://cdn.discordapp.com/avatars/927475447464329236/24df6569c9e65f0d1cdc4afc01779c25.png?size=1024",
+            "instagram_username": "rowelie09",
+            "weekly": 3,
+            "monthly": 3,
+            "giveaway_history": []
+        },
+        {
+            "discord_username": "dewiputewasi",
+            "discord_avatar": "https://cdn.discordapp.com/avatars/988865245793636392/bd37fa5476ccf70ef6c784712a2055db.png?size=1024",
+            "instagram_username": "dewiputewasi",
+            "weekly": 0,
+            "monthly": 0,
             "giveaway_history": []
         }
     ]
