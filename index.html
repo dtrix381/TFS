@@ -186,6 +186,11 @@ main, .content {
   background-color: #e6b800;
 }
 
+#live-stream iframe {
+  border-radius: 12px;
+  box-shadow: 0 0 25px limegreen;
+}
+
 @media (max-width: 768px) {
   .tfs-section {
     flex-direction: column;
@@ -747,7 +752,6 @@ document.addEventListener("DOMContentLoaded", function () {
       
       <!-- Right -->
       <div class="header-right">
-        <a href="https://kick.com/teamfullsendslots" target="_blank" rel="noopener noreferrer" class="button">Live on KICK</a>
       </div>
 
     </div>
@@ -1238,6 +1242,75 @@ document.getElementById("claim-btn").addEventListener("click", async () => {
 
 // Run check on load
 checkClaimStatus();
+</script>
+
+<!-- 🔴 Sticky Kick Player -->
+<div id="kick-widget"></div>
+
+<style>
+#kick-widget {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 260px;
+  height: 150px;
+  z-index: 9999;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 0 15px rgba(0,255,100,0.6);
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+#kick-widget:hover {
+  transform: scale(1.05);
+}
+
+#kick-widget iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+/* OFFLINE STYLE */
+#kick-offline {
+  width: 100%;
+  height: 100%;
+  background: #111;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-weight: bold;
+  font-size: 14px;
+}
+</style>
+
+<script>
+const isLive = true; // 🔥 CHANGE THIS ONLY
+
+const widget = document.getElementById("kick-widget");
+
+if (isLive) {
+  widget.innerHTML = `
+    <iframe 
+      src="https://player.kick.com/teamfullsendslots?autoplay=true&muted=true"
+      allow="autoplay; fullscreen">
+    </iframe>
+  `;
+} else {
+  widget.innerHTML = `
+    <div id="kick-offline">
+      ⚫ Streamer is offline
+    </div>
+  `;
+}
+
+// Click = go to Kick
+widget.addEventListener("click", () => {
+  window.open("https://kick.com/teamfullsendslots", "_blank");
+});
 </script>
 
 </body>
