@@ -1244,72 +1244,132 @@ document.getElementById("claim-btn").addEventListener("click", async () => {
 checkClaimStatus();
 </script>
 
-<!-- 🔴 Sticky Kick Player -->
-<div id="kick-widget"></div>
+<!-- 🔴 Kick Widget -->
+<div id="kick-widget">
+  <div id="kick-header">
+    <span>TeamFullSendSlots</span>
+    <button id="toggle-btn">—</button>
+  </div>
+  <div id="kick-content"></div>
+</div>
 
 <style>
 #kick-widget {
   position: fixed;
   bottom: 20px;
   right: 20px;
-  width: 260px;
-  height: 150px;
-  z-index: 9999;
+  width: 300px;
+  height: 170px;
+  background: #000;
   border-radius: 12px;
   overflow: hidden;
+  z-index: 9999;
   box-shadow: 0 0 15px rgba(0,255,100,0.6);
+  transition: all 0.3s ease;
+}
+
+/* HEADER */
+#kick-header {
+  height: 30px;
+  background: #111;
+  color: #00ff95;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 10px;
+  font-size: 12px;
+}
+
+#kick-header button {
+  background: none;
+  border: none;
+  color: white;
   cursor: pointer;
-  transition: transform 0.2s ease;
+  font-size: 16px;
 }
 
-#kick-widget:hover {
-  transform: scale(1.05);
+/* CONTENT */
+#kick-content {
+  width: 100%;
+  height: calc(100% - 30px);
 }
 
-#kick-widget iframe {
+#kick-content iframe {
   width: 100%;
   height: 100%;
   border: none;
 }
 
-/* OFFLINE STYLE */
+/* OFFLINE */
 #kick-offline {
   width: 100%;
   height: 100%;
-  background: #111;
-  color: white;
   display: flex;
   align-items: center;
   justify-content: center;
-  text-align: center;
+  color: white;
   font-weight: bold;
-  font-size: 14px;
+  background: #111;
+}
+
+/* MINIMIZED */
+#kick-widget.minimized {
+  height: 30px;
 }
 </style>
 
 <script>
-const isLive = true; // 🔥 CHANGE THIS ONLY
-
+const channel = "teamfullsendslots";
+const content = document.getElementById("kick-content");
 const widget = document.getElementById("kick-widget");
+const toggleBtn = document.getElementById("toggle-btn");
 
-if (isLive) {
-  widget.innerHTML = `
-    <iframe 
-      src="https://player.kick.com/teamfullsendslots?autoplay=true&muted=true"
-      allow="autoplay; fullscreen">
-    </iframe>
-  `;
-} else {
-  widget.innerHTML = `
-    <div id="kick-offline">
-      ⚫ Streamer is offline
-    </div>
-  `;
+// 🔍 CHECK LIVE STATUS
+async function loadStream() {
+  try {
+    const res = await fetch(`https://kick.com/api/v2/channels/${channel}`);
+    const data = await res.json();
+
+    const isLive = data.livestream !== null;
+
+    if (isLive) {
+      content.innerHTML = `
+        <iframe 
+          src="https://player.kick.com/${channel}?autoplay=true&muted=true"
+          allow="autoplay; fullscreen">
+        </iframe>
+      `;
+    } else {
+      content.innerHTML = `
+        <div id="kick-offline">
+          ⚫ Streamer is offline
+        </div>
+      `;
+    }
+
+  } catch (err) {
+    console.error(err);
+    content.innerHTML = `
+      <div id="kick-offline">⚠️ Error loading stream</div>
+    `;
+  }
 }
 
-// Click = go to Kick
-widget.addEventListener("click", () => {
-  window.open("https://kick.com/teamfullsendslots", "_blank");
+// 🔁 AUTO REFRESH
+loadStream();
+setInterval(loadStream, 60000);
+
+// 🔽 MINIMIZE / RESTORE
+toggleBtn.addEventListener("click", () => {
+  widget.classList.toggle("minimized");
+
+  // Change icon
+  toggleBtn.textContent = widget.classList.contains("minimized") ? "⬆" : "—";
+});
+
+// 🖱 CLICK → OPEN KICK
+content.addEventListener("click", () => {
+  window.open(`https://kick.com/${channel}`, "_blank");
 });
 </script>
 
