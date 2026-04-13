@@ -1,23 +1,23 @@
 {
-  "emojis": {
-    "coin": "https://cdn.discordapp.com/emojis/1418612841359081643.png"
-  },
-  "weekly": {
-    "title": "Weekly Giveaway",
-    "prize": "0",
-    "thumbnail": "https://www.teamfullsendslots.com/assets/TFS2.png",
-    "end_time": null,
-    "history": [],
-    "last_winner": null,
-    "last_entries": 0
-  },
-  "monthly": {
-    "title": "Monthly Giveaway",
-    "prize": "0",
-    "thumbnail": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR_Y9YnVQm6TFG7800XtZPWeJNDvnFl01gssg&s",
-    "end_time": null,
-    "history": [],
-    "last_winner": null,
-    "last_entries": 0
-  }
+    "emojis": {
+        "coin": "https://cdn.discordapp.com/emojis/1418612841359081643.png"
+    },
+    "weekly": {
+        "title": "Weekly Giveaway",
+        "prize": "0",
+        "thumbnail": "https://www.teamfullsendslots.com/assets/TFS2.png",
+        "end_time": null,
+        "history": [],
+        "last_winner": null,
+        "last_entries": 0
+    },
+    "monthly": {
+        "title": "JB HIFI Card Giveaway",
+        "prize": "250",
+        "thumbnail": "https://cdn.discordapp.com/attachments/1282174698163015804/1493391850663448706/tfs_m-removebg-preview.png?ex=69decd0b&is=69dd7b8b&hm=b6883faa3d94439365fae546ce8d0f0ae84b3b90259e97f7dbd165dfe4b13b0f",
+        "end_time": "2026-05-15 08:00:00",
+        "history": [],
+        "last_winner": null,
+        "last_entries": 0
+    }
 }
