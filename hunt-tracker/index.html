@@ -202,6 +202,43 @@
   text-shadow: 0 0 5px gold;
 }
 
+.autocomplete-list {
+  position: absolute;
+  background: #111;
+  border: 1px solid #444;
+  width: 100%;
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 999;
+  border-radius: 6px;
+}
+
+.autocomplete-item {
+  padding: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.autocomplete-item:hover {
+  background: #222;
+}
+
+.slot-thumb {
+  width: 60px;          /* allow wider image */
+  height: 40px;         /* keep row height clean */
+  border-radius: 6px;
+  object-fit: contain;  /* 🔥 shows FULL image */
+  background: #000;     /* fills empty space */
+  box-shadow: 0 0 6px rgba(0,0,0,0.6);
+  border: 1px solid #333;
+}
+
+.slot-thumb:hover {
+  transform: scale(1.1);
+}
+
 @media (max-width: 768px) {
   .stats-box {
     grid-template-columns: 1fr; /* stack stats vertically */
@@ -347,6 +384,23 @@ menuToggle.addEventListener('click', () => {
   });
 </script>
 
+<script>
+let SLOT_DATA = [];
+const DEFAULT_THUMBNAIL = "https://i.imgur.com/IR08Bjy.png"; // your fallback image
+
+async function loadSlots() {
+  try {
+    const res = await fetch("https://raw.githubusercontent.com/dtrix381/TFS/main/slots.json");
+    const data = await res.json();
+    SLOT_DATA = data.slots || [];
+    console.log("✅ Slots loaded:", SLOT_DATA.length);
+  } catch (err) {
+    console.error("❌ Failed to load slots:", err);
+  }
+}
+
+loadSlots();
+</script>
 
 <div style="text-align:center; margin: 10px 0;">
   <input id="huntTitle" placeholder="Enter Hunt Title" style="
@@ -466,7 +520,15 @@ menuToggle.addEventListener('click', () => {
           const data = doc.data();
           document.getElementById('startingBalance').value = data.startingBalance || 0;
 	  document.getElementById('huntTitle').value = data.title || '';
-          (data.slots || []).forEach(addRow); // Call your existing addRow(slotData) function
+          (data.slots || []).forEach(slot => {
+  addRow({
+    slotName: slot.slotName,
+    betSize: slot.betSize,
+    totalPay: slot.totalPay,
+    totalX: slot.totalX,
+    thumbnail: slot.thumbnail
+  });
+});
           updateStats(); // Refresh calculations/UI
         } else {
           console.log("🆕 No existing hunt data for this user");
@@ -493,7 +555,21 @@ menuToggle.addEventListener('click', () => {
     counter++;
     index.textContent = counter;
 
-    slot.innerHTML = `<input type="text" placeholder="e.g. Sugar Rush" value="${slotData.slotName || ''}">`;
+    slot.innerHTML = `
+  <div class="slot-wrapper" style="position:relative; display:flex; align-items:center; gap:8px;">
+    
+    <img class="slot-thumb" 
+     src="${slotData.thumbnail || DEFAULT_THUMBNAIL}">
+
+    <div style="flex:1; position:relative;">
+      <input type="text" class="slot-input" placeholder="Search slot..." 
+             value="${slotData.slotName || ''}" 
+             oninput="handleSlotSearch(this)">
+      <div class="autocomplete-list"></div>
+    </div>
+
+  </div>
+`;
 
     bet.innerHTML = `
       <div class="currency-input">
@@ -563,72 +639,89 @@ function confirmReset() {
 
 
   function updateStats() {
-    const rows = document.querySelectorAll('#huntTable tr');
-    let totalPay = 0;
-    let highestPay = 0;
-    let bestPaySlot = '-';
-    let highestX = 0;
-    let bestXSlot = '-';
+  const rows = document.querySelectorAll('#huntTable tr');
 
-    rows.forEach(row => {
-      const cells = row.querySelectorAll('td');
-      const slotName = cells[1].querySelector('input')?.value || '';
-      const betVal = parseFloat(cells[2].querySelector('input')?.value) || 0;
-      const payVal = parseFloat(cells[3].querySelector('input')?.value) || 0;
+  let totalPay = 0;
+  let highestPay = 0;
+  let highestX = 0;
 
-      let x = 0;
-      if (betVal > 0) x = payVal / betVal;
+  let bestPaySlot = '-';
+  let bestPayThumb = DEFAULT_THUMBNAIL;
 
-      const xDisplay = cells[4].querySelector('.total-x');
-      if (xDisplay) xDisplay.textContent = `${x.toFixed(2)}x`;
+  let bestXSlot = '-';
+  let bestXThumb = DEFAULT_THUMBNAIL;
 
-      totalPay += payVal;
+  rows.forEach(row => {
+    const cells = row.querySelectorAll('td');
 
-      if (payVal > highestPay) {
-        highestPay = payVal;
-        bestPaySlot = slotName || '[Unnamed]';
-      }
+    const slotName = cells[1].querySelector('input')?.value || '';
+    const img = cells[1].querySelector('.slot-thumb');
+    const thumbnail = img?.src || DEFAULT_THUMBNAIL;
 
-      if (x > highestX) {
-        highestX = x;
-        bestXSlot = slotName || '[Unnamed]';
-      }
-    });
+    const betVal = parseFloat(cells[2].querySelector('input')?.value) || 0;
+    const payVal = parseFloat(cells[3].querySelector('input')?.value) || 0;
 
-    const start = parseFloat(document.getElementById('startingBalance').value) || 0;
-    const profit = totalPay - start;
+    let x = 0;
+    if (betVal > 0) x = payVal / betVal;
 
-    document.getElementById('finalBalance').textContent = `$${totalPay.toFixed(2)}`;
+    const xDisplay = cells[4].querySelector('.total-x');
+    if (xDisplay) xDisplay.textContent = `${x.toFixed(2)}x`;
 
-    const profitEl = document.getElementById('profit');
-    const profitContainer = document.getElementById('profitContainer');
-    const absProfit = Math.abs(profit).toFixed(2);
+    totalPay += payVal;
 
-    profitContainer.classList.remove('positive', 'negative');
-    profitContainer.classList.add(profit >= 0 ? 'positive' : 'negative');
+    // 🔥 Highest Profit
+    if (payVal > highestPay) {
+      highestPay = payVal;
+      bestPaySlot = slotName || '[Unnamed]';
+      bestPayThumb = thumbnail;
+    }
 
-    profitEl.textContent = (profit < 0 ? `-$${absProfit}` : `$${absProfit}`);
+    // 🔥 Highest X
+    if (x > highestX) {
+      highestX = x;
+      bestXSlot = slotName || '[Unnamed]';
+      bestXThumb = thumbnail;
+    }
+  });
 
-    document.getElementById('highestProfit').innerHTML =
-      `<span class="highlight-slot">${bestPaySlot}</span> <span class="highlight-value">($${highestPay.toFixed(2)})</span>`;
+  const start = parseFloat(document.getElementById('startingBalance').value) || 0;
+  const profit = totalPay - start;
 
-    document.getElementById('highestMulti').innerHTML =
-      `<span class="highlight-slot">${bestXSlot}</span> <span class="highlight-value">(${highestX.toFixed(2)}x)</span>`;
+  document.getElementById('finalBalance').textContent = `$${totalPay.toFixed(2)}`;
 
-// Bonuses Opened
-const totalBonuses = rows.length;
-let openedBonuses = 0;
+  const profitEl = document.getElementById('profit');
+  const profitContainer = document.getElementById('profitContainer');
+  const absProfit = Math.abs(profit).toFixed(2);
 
-rows.forEach(row => {
-  const payVal = parseFloat(row.querySelectorAll('td')[3].querySelector('input')?.value) || 0;
-  if (payVal > 0) openedBonuses++;
-});
+  profitContainer.classList.remove('positive', 'negative');
+  profitContainer.classList.add(profit >= 0 ? 'positive' : 'negative');
 
-document.getElementById('bonusesOpened').textContent = `${openedBonuses} / ${totalBonuses}`;
+  profitEl.textContent = (profit < 0 ? `-$${absProfit}` : `$${absProfit}`);
 
-// 🔄 Realtime save to Firebase
-syncToFirebase();
-  }
+  // 🔥 With thumbnails
+  document.getElementById('highestProfit').innerHTML =
+    `<img src="${bestPayThumb}" style="width:30px;height:20px;object-fit:contain;margin-right:6px;vertical-align:middle;">
+     <span class="highlight-slot">${bestPaySlot}</span>
+     <span class="highlight-value">($${highestPay.toFixed(2)})</span>`;
+
+  document.getElementById('highestMulti').innerHTML =
+    `<img src="${bestXThumb}" style="width:30px;height:20px;object-fit:contain;margin-right:6px;vertical-align:middle;">
+     <span class="highlight-slot">${bestXSlot}</span>
+     <span class="highlight-value">(${highestX.toFixed(2)}x)</span>`;
+
+  // Bonuses
+  const totalBonuses = rows.length;
+  let openedBonuses = 0;
+
+  rows.forEach(row => {
+    const payVal = parseFloat(row.querySelectorAll('td')[3].querySelector('input')?.value) || 0;
+    if (payVal > 0) openedBonuses++;
+  });
+
+  document.getElementById('bonusesOpened').textContent = `${openedBonuses} / ${totalBonuses}`;
+
+  syncToFirebase();
+}
 
 function syncToFirebase() {
   const data = {
@@ -651,19 +744,92 @@ function syncToFirebase() {
     // ✅ Treat the slot as opened only if totalPay was typed in (including $0)
     const opened = payInput?.value !== "" && !isNaN(payVal);
 
-    data.slots.push({
-      slotName,
-      betSize: betVal,
-      totalPay: payVal,
-      totalX: parseFloat(totalX.toFixed(2)),
-      opened: opened
-    });
+    const slotInfo = SLOT_DATA.find(s => s.name === slotName);
+
+data.slots.push({
+  slotName,
+  thumbnail: slotInfo?.thumbnail || DEFAULT_THUMBNAIL,
+  betSize: betVal,
+  totalPay: payVal,
+  totalX: parseFloat(totalX.toFixed(2)),
+  opened: opened
+});
   });
 
   db.collection("hunts").doc(huntDocId).set(data)
     .then(() => console.log("✅ Synced to Firebase"))
     .catch(err => console.error("❌ Firebase Error:", err));
 }
+</script>
+
+<script>
+function handleSlotSearch(input) {
+  const query = input.value.toLowerCase();
+  const container = input.parentElement.querySelector(".autocomplete-list");
+
+  container.innerHTML = "";
+
+  if (!query) return;
+
+  // 🔥 Always show custom option FIRST
+  const customOption = document.createElement("div");
+  customOption.className = "autocomplete-item";
+  customOption.innerHTML = `
+    ➕ Add Custom Slot: <strong>${input.value}</strong>
+  `;
+  customOption.onclick = () => {
+  input.value = input.value;
+
+  const wrapper = input.closest(".slot-wrapper");
+  const img = wrapper.querySelector(".slot-thumb");
+
+  // 🔥 default image for custom slots
+  img.src = DEFAULT_THUMBNAIL;
+
+  container.innerHTML = "";
+};
+  container.appendChild(customOption);
+
+  // 🔍 Filter slots
+  const matches = SLOT_DATA.filter(s =>
+    s.name.toLowerCase().includes(query)
+  ).slice(0, 8);
+
+  matches.forEach(slot => {
+    const item = document.createElement("div");
+    item.className = "autocomplete-item";
+
+    const thumbnail = slot.thumbnail || DEFAULT_THUMBNAIL;
+
+    item.innerHTML = `
+      <img src="${thumbnail}" style="width:30px;height:30px;border-radius:5px;margin-right:8px;">
+      <span>${slot.name}</span>
+    `;
+
+    item.onclick = () => {
+  input.value = slot.name;
+
+  // 🔥 update thumbnail
+  const wrapper = input.closest(".slot-wrapper");
+  const img = wrapper.querySelector(".slot-thumb");
+
+  img.src = slot.thumbnail || DEFAULT_THUMBNAIL;
+
+  container.innerHTML = "";
+};
+
+    container.appendChild(item);
+  });
+}
+
+// close dropdown when clicking outside
+document.addEventListener("click", (e) => {
+  document.querySelectorAll(".autocomplete-list").forEach(list => {
+    if (!list.parentElement.contains(e.target)) {
+      list.innerHTML = "";
+    }
+  });
+});
 </script>
 
 
