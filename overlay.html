@@ -100,6 +100,45 @@
       color: gold;
       text-shadow: 0 0 5px gold;
     }
+
+.entry-row {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+  padding: 8px 0;
+  font-size: 26px;
+}
+
+.entry-thumb {
+  width: 42px;
+  height: 28px;
+  border-radius: 6px;
+  object-fit: contain;
+  background: rgba(0,0,0,0.4);
+  border: 1px solid #333;
+}
+
+.big-current {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 8px;
+  padding: 10px;
+  border: 2px solid gold;
+  border-radius: 10px;
+  background: rgba(0,0,0,0.5);
+}
+
+.big-current img {
+  width: 160px;
+  height: 90px;
+  object-fit: contain;
+  border-radius: 10px;
+  border: 2px solid #444;
+  margin-bottom: 6px;
+}
+
   </style>
 </head>
 <body>
@@ -128,7 +167,7 @@
     const urlParams = new URLSearchParams(window.location.search);
     const userId = urlParams.get("user");
 
-    const authorized = ["488015447417946151", "1037485428921606185", "927475447464329236", "898589521711616070", "743392043157553204", "657584864463159308"]; // Add more IDs as needed
+    const authorized = ["488015447417946151", "1037485428921606185", "927475447464329236", "898589521711616070"]; // Add more IDs as needed
     if (!userId || !authorized.includes(userId)) {
       document.body.innerHTML = `<h2 style="color:red;text-align:center">❌ Not Authorized!<br>Contact TeamFullSend</h2>`;
       throw new Error("Unauthorized");
@@ -156,10 +195,10 @@
       let bestSlot = '-', bestXSlot = '-';
       let highestPay = 0, highestX = 0;
 
-const track = document.getElementById("bonusTrack");
-track.innerHTML = ""; // Clear existing
+      const track = document.getElementById("bonusTrack");
+ track.innerHTML = ""; // Clear the track before rendering
 
-const allEntries = [];
+const allEntries = []; // ✅ This line was missing
 
 slots.forEach((slot, i) => {
   totalPay += slot.totalPay;
@@ -176,31 +215,27 @@ slots.forEach((slot, i) => {
 
   const entry = document.createElement("div");
   entry.className = "bonus-entry";
-  entry.innerHTML = `<strong>${i + 1}.</strong> <span class='highlight-slot'>${slot.slotName}</span> — $${slot.betSize.toFixed(2)} — $${slot.totalPay.toFixed(2)} (${slot.totalX.toFixed(2)}x)`;
+  entry.innerHTML = `
+  <div class="entry-row">
+    <img class="entry-thumb" src="${slot.thumbnail || 'https://i.imgur.com/IR08Bjy.png'}">
+    <div>
+      <strong>${i + 1}.</strong>
+      <span class="highlight-slot">${slot.slotName}</span>
+      — $${slot.betSize.toFixed(2)}
+      — $${slot.totalPay.toFixed(2)}
+      (<span class="highlight-value">${slot.totalX.toFixed(2)}x</span>)
+    </div>
+  </div>
+`;
   allEntries.push(entry);
   track.appendChild(entry);
 });
 
-// 🧠 Check if list height is taller than container, or has more than 5 items
-setTimeout(() => {
-  const scrollWrapper = document.querySelector(".bonus-scroll-wrapper");
-  const scrollContent = document.querySelector(".bonus-scroll");
-
-  const shouldScroll = allEntries.length > 5 || scrollContent.scrollHeight > scrollWrapper.clientHeight;
-
-  if (shouldScroll) {
-    scrollContent.style.animation = "scrollUp 20s linear infinite";
-
-    // Duplicate entries for smooth scroll loop
-    allEntries.forEach(entry => {
-      const clone = entry.cloneNode(true);
-      scrollContent.appendChild(clone);
-    });
-  } else {
-    // No scroll
-    scrollContent.style.animation = "none";
-  }
-}, 100); // Give DOM time to render before checking height
+// 🔁 Duplicate the same entries for infinite loop
+allEntries.forEach(entry => {
+  const clone = entry.cloneNode(true);
+  track.appendChild(clone);
+});
 
       const profit = totalPay - (data.startingBalance || 0);
       const profitClass = profit >= 0 ? 'profit-positive' : 'profit-negative';
@@ -208,8 +243,18 @@ setTimeout(() => {
       document.getElementById("startingBalance").textContent = `Starting Balance: ${formatCurrency(data.startingBalance || 0)}`;
       document.getElementById("finalBalance").textContent = `Final Balance: ${formatCurrency(totalPay)}`;
       document.getElementById("profit").innerHTML = `Profit: <span class='${profitClass}'>${formatCurrency(profit)}</span>`;
-      document.getElementById("highestProfit").innerHTML = `Best Profit: <span class='highlight-slot'>${bestSlot}</span> <span class='highlight-value'>(${formatCurrency(highestPay)})</span>`;
-      document.getElementById("highestMulti").innerHTML = `Best X: <span class='highlight-slot'>${bestXSlot}</span> <span class='highlight-value'>(${highestX.toFixed(2)}x)</span>`;
+      document.getElementById("highestProfit").innerHTML =
+  `Best Profit:
+   <img src="${slots.find(s => s.slotName === bestSlot)?.thumbnail || 'https://i.imgur.com/IR08Bjy.png'}"
+        style="width:50px;height:32px;object-fit:contain;vertical-align:middle;margin:0 6px;border-radius:6px;">
+   <span class='highlight-slot'>${bestSlot}</span>
+   <span class='highlight-value'>(${formatCurrency(highestPay)})</span>`;
+      document.getElementById("highestMulti").innerHTML =
+  `Best X:
+   <img src="${slots.find(s => s.slotName === bestXSlot)?.thumbnail || 'https://i.imgur.com/IR08Bjy.png'}"
+        style="width:50px;height:32px;object-fit:contain;vertical-align:middle;margin:0 6px;border-radius:6px;">
+   <span class='highlight-slot'>${bestXSlot}</span>
+   <span class='highlight-value'>(${highestX.toFixed(2)}x)</span>`;
       const openedCount = slots.filter(slot => slot.opened === true).length;
 	document.getElementById("bonusesOpened").textContent = `Bonuses: ${openedCount} / ${slots.length}`;
 
@@ -219,12 +264,21 @@ setTimeout(() => {
       const nextSlot = slots[nextToOpenIndex + 1];
 
       if (currentSlot) {
-        const current = `<span>${currentSlot.slotName}</span>`;
-        const next = nextSlot ? `<span>${nextSlot.slotName}</span>` : `<em>No more bonuses to open</em>`;
-        upcoming.innerHTML = ` Opening: ${current}<br> Next: ${next}`;
-      } else {
-        upcoming.innerHTML = `✅ All bonuses opened`;
-      }
+  upcoming.innerHTML = `
+    <div class="big-current">
+      <img src="${currentSlot.thumbnail || 'https://i.imgur.com/IR08Bjy.png'}">
+      <div>
+        🎰 NOW OPENING<br>
+        <strong>${currentSlot.slotName}</strong>
+      </div>
+      <div style="color:gold;">
+        NEXT: ${nextSlot ? nextSlot.slotName : 'DONE'}
+      </div>
+    </div>
+  `;
+} else {
+  upcoming.innerHTML = `✅ All bonuses opened`;
+}
     });
   </script>
 </body>
