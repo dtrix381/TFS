@@ -200,6 +200,7 @@ animation: popIn 0.4s ease;
       let totalPay = 0;
       let bestSlot = '-', bestXSlot = '-';
       let highestPay = 0, highestX = 0;
+      let totalBet = 0;
 
       const track = document.getElementById("bonusTrack");
  track.innerHTML = ""; // Clear the track before rendering
@@ -208,6 +209,7 @@ const allEntries = []; // ✅ This line was missing
 
 slots.forEach((slot, i) => {
   totalPay += slot.totalPay;
+  totalBet += slot.betSize || 0;
 
   if (slot.totalPay > highestPay) {
     highestPay = slot.totalPay;
@@ -218,6 +220,18 @@ slots.forEach((slot, i) => {
     highestX = slot.totalX;
     bestXSlot = slot.slotName;
   }
+});
+
+  const startingBalance = data.startingBalance || 0;
+
+const avgBonusCost = slots.length ? totalBet / slots.length : 0;
+
+// recommended breakeven x (your request wording)
+const breakevenX = avgBonusCost ? startingBalance / avgBonusCost : 0;
+
+// volatility (simple + readable version)
+const avgX = totalBet ? totalPay / totalBet : 0;
+const volatility = avgX ? highestX / avgX : 0;
 
   const entry = document.createElement("div");
   entry.className = "bonus-entry";
@@ -272,7 +286,6 @@ allEntries.forEach(entry => {
       const isOpening = data.isOpening || false;
 
 if (!isOpening) {
-  // 🟡 HUNTING MODE (clean, no big image)
   upcoming.innerHTML = `
     <div style="
       font-size: 24px;
@@ -283,8 +296,35 @@ if (!isOpening) {
     ">
       🟡 STILL HUNTING
     </div>
-    <div style="font-size:20px; margin-top:5px;">
-      Bonuses Collected: <span style="color:gold;">${slots.length}</span>
+
+    <div style="font-size:20px;margin-top:5px;">
+      Bonuses Collected: <span style="color:gold;">
+        ${slots.length}
+      </span>
+    </div>
+
+    <div style="font-size:20px;">
+      Starting Balance: <span style="color:gold;">
+        $${startingBalance.toFixed(2)}
+      </span>
+    </div>
+
+    <div style="font-size:20px;">
+      Avg Bonus Cost: <span style="color:#1ec8ff;">
+        $${avgBonusCost.toFixed(2)}
+      </span>
+    </div>
+
+    <div style="font-size:20px;">
+      Recommended Breakeven X: <span style="color:#ffcc00;">
+        ${breakevenX.toFixed(2)}x
+      </span>
+    </div>
+
+    <div style="font-size:20px;">
+      Volatility: <span style="color:#ff66ff;">
+        ${volatility.toFixed(2)}x
+      </span>
     </div>
   `;
 } else {
