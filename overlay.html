@@ -308,15 +308,19 @@ if (!isOpening) {
   </div>
 
   <div id="highestProfit">
-    Best Profit: 
-    <span class="highlight-slot">${bestSlot}</span>
+    Best Profit:
+   <img src="${slots.find(s => s.slotName === bestSlot)?.thumbnail || 'https://i.imgur.com/IR08Bjy.png'}"
+        style="width:50px;height:32px;object-fit:contain;vertical-align:middle;margin:0 6px;border-radius:6px;">
+   <span class='highlight-slot'>${bestSlot}</span>
     <span class="highlight-value">($${highestPay.toFixed(2)})</span>
   </div>
 
   <div id="highestMulti">
-    Best X: 
-    <span class="highlight-slot">${bestXSlot}</span>
-    <span class="highlight-value">${highestX.toFixed(2)}x</span>
+    Best X:
+   <img src="${slots.find(s => s.slotName === bestXSlot)?.thumbnail || 'https://i.imgur.com/IR08Bjy.png'}"
+        style="width:50px;height:32px;object-fit:contain;vertical-align:middle;margin:0 6px;border-radius:6px;">
+   <span class='highlight-slot'>${bestXSlot}</span>
+    <span class="highlight-value">($${highestX.toFixed(2)})x</span>
   </div>
 
   <div id="bonusesOpened">
