@@ -265,10 +265,6 @@ db.collection("hunts").doc(userId).onSnapshot(doc => {
 
   const breakevenX = avgBonusCost ? startingBalance / avgBonusCost : 0;
 
-  const riskPerBonus = startingBalance
-    ? avgBonusCost / startingBalance
-    : 0;
-
   const profit = totalPay - startingBalance;
   const profitClass = profit >= 0 ? "profit-positive" : "profit-negative";
 
@@ -276,43 +272,42 @@ db.collection("hunts").doc(userId).onSnapshot(doc => {
   // TOP STATS UI
   // =========================
 
-  if (isOpening) {
+  const header = document.querySelector(".header-stats");
 
-    document.getElementById("startingBalance").textContent =
-      `Starting Balance: $${startingBalance.toFixed(2)}`;
+if (!isOpening) {
+  // 🟡 HUNTING MODE → use the header box as status panel
+  header.innerHTML = `
+    <div style="text-align:center; font-size:26px; color:#00ffff; text-shadow:0 0 8px #00ffff;">
+      🟡 STILL HUNTING
+    </div>
 
-    document.getElementById("finalBalance").textContent =
-      `Final Balance: $${totalPay.toFixed(2)}`;
+    <div style="margin-top:8px;">
+      Bonuses Collected: <span style="color:gold;">${slots.length}</span>
+    </div>
 
-    document.getElementById("profit").innerHTML =
-      `Profit: <span class="${profitClass}">$${profit.toFixed(2)}</span>`;
+    <div>
+      Starting Balance: <span style="color:gold;">$${startingBalance.toFixed(2)}</span>
+    </div>
 
-    document.getElementById("highestProfit").innerHTML =
-      `Best Profit: <span class="highlight-slot">${bestSlot}</span>`;
+    <div>
+      Avg Bonus Cost: <span style="color:#1ec8ff;">$${avgBonusCost.toFixed(2)}</span>
+    </div>
 
-    document.getElementById("highestMulti").innerHTML =
-      `Best X: <span class="highlight-slot">${bestXSlot}</span>`;
-
-    document.getElementById("bonusesOpened").textContent =
-      `Bonuses: ${slots.filter(s => s.opened).length} / ${slots.length}`;
-
-  } else {
-
-    // HARD RESET (no display bugs)
-    const ids = [
-      "startingBalance",
-      "finalBalance",
-      "profit",
-      "highestProfit",
-      "highestMulti",
-      "bonusesOpened"
-    ];
-
-    ids.forEach(id => {
-      const el = document.getElementById(id);
-      el.innerHTML = "";
-    });
-  }
+    <div>
+      Recommended Breakeven X: <span style="color:#ffcc00;">${breakevenX.toFixed(2)}x</span>
+    </div>
+  `;
+} else {
+  // 🔴 OPENING MODE → restore normal stats layout
+  header.innerHTML = `
+    <div id="startingBalance">Starting Balance: $${startingBalance.toFixed(2)}</div>
+    <div id="finalBalance">Final Balance: $${totalPay.toFixed(2)}</div>
+    <div id="profit">Profit: <span class="${profitClass}">$${profit.toFixed(2)}</span></div>
+    <div id="highestProfit">Best Profit: ${bestSlot}</div>
+    <div id="highestMulti">Best X: ${bestXSlot}</div>
+    <div id="bonusesOpened">Bonuses: ${slots.filter(s => s.opened).length} / ${slots.length}</div>
+  `;
+}
 
   // =========================
   // HUNT / OPEN UI
@@ -348,10 +343,6 @@ db.collection("hunts").doc(userId).onSnapshot(doc => {
 
       <div style="font-size:20px;">
         Recommended Breakeven X: <span style="color:#ffcc00;">${breakevenX.toFixed(2)}x</span>
-      </div>
-
-      <div style="font-size:20px;">
-        Risk per Bonus: <span style="color:#ff66ff;">${riskPerBonus.toFixed(3)}</span>
       </div>
     `;
 
