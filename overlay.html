@@ -199,6 +199,7 @@ db.collection("hunts").doc(userId).onSnapshot(doc => {
     (data.title || "TFS BONUS HUNT LIVE").trim();
 
   const slots = data.slots || [];
+  const isOpening = data.isOpening || false;
 
   let totalPay = 0;
   let totalBet = 0;
@@ -210,7 +211,9 @@ db.collection("hunts").doc(userId).onSnapshot(doc => {
 
   const allEntries = [];
 
-  // ✅ LOOP 1: stats + render
+  // =========================
+  // LOOP: slots
+  // =========================
   slots.forEach((slot, i) => {
 
     const bet = slot.betSize || 0;
@@ -249,11 +252,11 @@ db.collection("hunts").doc(userId).onSnapshot(doc => {
     allEntries.push(entry);
   });
 
-  // 🔁 duplicate scroll
+  // duplicate scroll
   allEntries.forEach(e => track.appendChild(e.cloneNode(true)));
 
   // =========================
-  // ✅ STATS (AFTER LOOP)
+  // STATS (HUNT LOGIC ONLY)
   // =========================
 
   const startingBalance = data.startingBalance || 0;
@@ -262,37 +265,57 @@ db.collection("hunts").doc(userId).onSnapshot(doc => {
 
   const breakevenX = avgBonusCost ? startingBalance / avgBonusCost : 0;
 
-  const avgX = totalBet ? totalPay / totalBet : 0;
-
-  const volatility = avgX ? highestX / avgX : 0;
+  const riskPerBonus = startingBalance
+    ? avgBonusCost / startingBalance
+    : 0;
 
   const profit = totalPay - startingBalance;
   const profitClass = profit >= 0 ? "profit-positive" : "profit-negative";
 
   // =========================
-  // UI updates
+  // TOP STATS UI
   // =========================
 
-  document.getElementById("startingBalance").textContent =
-    `Starting Balance: $${startingBalance.toFixed(2)}`;
+  if (isOpening) {
 
-  document.getElementById("finalBalance").textContent =
-    `Final Balance: $${totalPay.toFixed(2)}`;
+    document.getElementById("startingBalance").textContent =
+      `Starting Balance: $${startingBalance.toFixed(2)}`;
 
-  document.getElementById("profit").innerHTML =
-    `Profit: <span class="${profitClass}">$${profit.toFixed(2)}</span>`;
+    document.getElementById("finalBalance").textContent =
+      `Final Balance: $${totalPay.toFixed(2)}`;
 
-  document.getElementById("highestProfit").innerHTML =
-    `Best Profit: <span class="highlight-slot">${bestSlot}</span>`;
+    document.getElementById("profit").innerHTML =
+      `Profit: <span class="${profitClass}">$${profit.toFixed(2)}</span>`;
 
-  document.getElementById("highestMulti").innerHTML =
-    `Best X: <span class="highlight-slot">${bestXSlot}</span>`;
+    document.getElementById("highestProfit").innerHTML =
+      `Best Profit: <span class="highlight-slot">${bestSlot}</span>`;
 
-  document.getElementById("bonusesOpened").textContent =
-    `Bonuses: ${slots.filter(s => s.opened).length} / ${slots.length}`;
+    document.getElementById("highestMulti").innerHTML =
+      `Best X: <span class="highlight-slot">${bestXSlot}</span>`;
+
+    document.getElementById("bonusesOpened").textContent =
+      `Bonuses: ${slots.filter(s => s.opened).length} / ${slots.length}`;
+
+  } else {
+
+    // HARD RESET (no display bugs)
+    const ids = [
+      "startingBalance",
+      "finalBalance",
+      "profit",
+      "highestProfit",
+      "highestMulti",
+      "bonusesOpened"
+    ];
+
+    ids.forEach(id => {
+      const el = document.getElementById(id);
+      el.innerHTML = "";
+    });
+  }
 
   // =========================
-  // HUNTING / OPENING UI
+  // HUNT / OPEN UI
   // =========================
 
   const upcoming = document.getElementById("upcomingSection");
@@ -304,9 +327,8 @@ db.collection("hunts").doc(userId).onSnapshot(doc => {
   const currentSlot = slots[nextToOpenIndex];
   const nextSlot = slots[nextToOpenIndex + 1];
 
-  const isOpening = data.isOpening || false;
-
   if (!isOpening) {
+
     upcoming.innerHTML = `
       <div style="font-size:24px;text-align:center;color:#00ffff;">
         🟡 STILL HUNTING
@@ -329,10 +351,12 @@ db.collection("hunts").doc(userId).onSnapshot(doc => {
       </div>
 
       <div style="font-size:20px;">
-        Volatility: <span style="color:#ff66ff;">${volatility.toFixed(2)}x</span>
+        Risk per Bonus: <span style="color:#ff66ff;">${riskPerBonus.toFixed(3)}</span>
       </div>
     `;
+
   } else {
+
     if (currentSlot) {
       upcoming.innerHTML = `
         <div class="big-current">
