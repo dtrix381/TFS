@@ -191,162 +191,166 @@ animation: popIn 0.4s ease;
       return `$${(+num).toFixed(2)}`;
     }
 
-    db.collection("hunts").doc(userId).onSnapshot(doc => {
-      if (!doc.exists) return;
-      const data = doc.data();
-	document.getElementById("huntTitleHeader").textContent = (data.title || "TFS BONUS HUNT LIVE").trim();
-      const slots = data.slots || [];
+db.collection("hunts").doc(userId).onSnapshot(doc => {
+  if (!doc.exists) return;
 
-      let totalPay = 0;
-      let bestSlot = '-', bestXSlot = '-';
-      let highestPay = 0, highestX = 0;
-      let totalBet = 0;
+  const data = doc.data();
+  document.getElementById("huntTitleHeader").textContent =
+    (data.title || "TFS BONUS HUNT LIVE").trim();
 
-      const track = document.getElementById("bonusTrack");
- track.innerHTML = ""; // Clear the track before rendering
+  const slots = data.slots || [];
 
-const allEntries = []; // ✅ This line was missing
+  let totalPay = 0;
+  let totalBet = 0;
+  let bestSlot = '-', bestXSlot = '-';
+  let highestPay = 0, highestX = 0;
 
-slots.forEach((slot, i) => {
-  totalPay += slot.totalPay;
-  totalBet += slot.betSize || 0;
+  const track = document.getElementById("bonusTrack");
+  track.innerHTML = "";
 
-  if (slot.totalPay > highestPay) {
-    highestPay = slot.totalPay;
-    bestSlot = slot.slotName;
-  }
+  const allEntries = [];
 
-  if (slot.totalX > highestX) {
-    highestX = slot.totalX;
-    bestXSlot = slot.slotName;
-  }
-});
+  // ✅ LOOP 1: stats + render
+  slots.forEach((slot, i) => {
 
-  const startingBalance = data.startingBalance || 0;
+    const bet = slot.betSize || 0;
+    const pay = slot.totalPay || 0;
+    const x = slot.totalX || 0;
 
-const avgBonusCost = slots.length ? totalBet / slots.length : 0;
+    totalPay += pay;
+    totalBet += bet;
 
-// recommended breakeven x (your request wording)
-const breakevenX = avgBonusCost ? startingBalance / avgBonusCost : 0;
+    if (pay > highestPay) {
+      highestPay = pay;
+      bestSlot = slot.slotName;
+    }
 
-// volatility (simple + readable version)
-const avgX = totalBet ? totalPay / totalBet : 0;
-const volatility = avgX ? highestX / avgX : 0;
+    if (x > highestX) {
+      highestX = x;
+      bestXSlot = slot.slotName;
+    }
 
-  const entry = document.createElement("div");
-  entry.className = "bonus-entry";
-  entry.innerHTML = `
-  <div class="entry-row">
-    <img class="entry-thumb" src="${slot.thumbnail || 'https://i.imgur.com/IR08Bjy.png'}">
-    <div>
-      <strong>${i + 1}.</strong>
-      <span class="highlight-slot">${slot.slotName}</span>
-      — $${slot.betSize.toFixed(2)}
-      — $${slot.totalPay.toFixed(2)}
-      (<span class="highlight-value">${slot.totalX.toFixed(2)}x</span>)
-    </div>
-  </div>
-`;
-  allEntries.push(entry);
-  track.appendChild(entry);
-});
-
-// 🔁 Duplicate the same entries for infinite loop
-allEntries.forEach(entry => {
-  const clone = entry.cloneNode(true);
-  track.appendChild(clone);
-});
-
-      const profit = totalPay - (data.startingBalance || 0);
-      const profitClass = profit >= 0 ? 'profit-positive' : 'profit-negative';
-
-      document.getElementById("startingBalance").textContent = `Starting Balance: ${formatCurrency(data.startingBalance || 0)}`;
-      document.getElementById("finalBalance").textContent = `Final Balance: ${formatCurrency(totalPay)}`;
-      document.getElementById("profit").innerHTML = `Profit: <span class='${profitClass}'>${formatCurrency(profit)}</span>`;
-      document.getElementById("highestProfit").innerHTML =
-  `Best Profit:
-   <img src="${slots.find(s => s.slotName === bestSlot)?.thumbnail || 'https://i.imgur.com/IR08Bjy.png'}"
-        style="width:50px;height:32px;object-fit:contain;vertical-align:middle;margin:0 6px;border-radius:6px;">
-   <span class='highlight-slot'>${bestSlot}</span>
-   <span class='highlight-value'>(${formatCurrency(highestPay)})</span>`;
-      document.getElementById("highestMulti").innerHTML =
-  `Best X:
-   <img src="${slots.find(s => s.slotName === bestXSlot)?.thumbnail || 'https://i.imgur.com/IR08Bjy.png'}"
-        style="width:50px;height:32px;object-fit:contain;vertical-align:middle;margin:0 6px;border-radius:6px;">
-   <span class='highlight-slot'>${bestXSlot}</span>
-   <span class='highlight-value'>(${highestX.toFixed(2)}x)</span>`;
-      const openedCount = slots.filter(slot => slot.opened === true).length;
-	document.getElementById("bonusesOpened").textContent = `Bonuses: ${openedCount} / ${slots.length}`;
-
-      const upcoming = document.getElementById("upcomingSection");
-      const nextToOpenIndex = slots.findIndex(slot => slot.opened === false || typeof slot.opened === 'undefined');
-      const currentSlot = slots[nextToOpenIndex];
-      const nextSlot = slots[nextToOpenIndex + 1];
-
-      const isOpening = data.isOpening || false;
-
-if (!isOpening) {
-  upcoming.innerHTML = `
-    <div style="
-      font-size: 24px;
-      text-align:center;
-      padding: 10px;
-      color: #00ffff;
-      text-shadow: 0 0 8px #00ffff;
-    ">
-      🟡 STILL HUNTING
-    </div>
-
-    <div style="font-size:20px;margin-top:5px;">
-      Bonuses Collected: <span style="color:gold;">
-        ${slots.length}
-      </span>
-    </div>
-
-    <div style="font-size:20px;">
-      Starting Balance: <span style="color:gold;">
-        $${startingBalance.toFixed(2)}
-      </span>
-    </div>
-
-    <div style="font-size:20px;">
-      Avg Bonus Cost: <span style="color:#1ec8ff;">
-        $${avgBonusCost.toFixed(2)}
-      </span>
-    </div>
-
-    <div style="font-size:20px;">
-      Recommended Breakeven X: <span style="color:#ffcc00;">
-        ${breakevenX.toFixed(2)}x
-      </span>
-    </div>
-
-    <div style="font-size:20px;">
-      Volatility: <span style="color:#ff66ff;">
-        ${volatility.toFixed(2)}x
-      </span>
-    </div>
-  `;
-} else {
-  // 🔴 OPENING MODE (your existing big layout)
-  if (currentSlot) {
-    upcoming.innerHTML = `
-      <div class="big-current">
-        <img src="${currentSlot.thumbnail || 'https://i.imgur.com/IR08Bjy.png'}">
+    const entry = document.createElement("div");
+    entry.className = "bonus-entry";
+    entry.innerHTML = `
+      <div class="entry-row">
+        <img class="entry-thumb" src="${slot.thumbnail || 'https://i.imgur.com/IR08Bjy.png'}">
         <div>
-          🎰 NOW OPENING<br>
-          <strong>${currentSlot.slotName}</strong>
-        </div>
-        <div style="color:gold;">
-          NEXT: ${nextSlot ? nextSlot.slotName : 'DONE'}
+          <strong>${i + 1}.</strong>
+          <span class="highlight-slot">${slot.slotName}</span>
+          — $${bet.toFixed(2)}
+          — $${pay.toFixed(2)}
+          (<span class="highlight-value">${x.toFixed(2)}x</span>)
         </div>
       </div>
     `;
+
+    track.appendChild(entry);
+    allEntries.push(entry);
+  });
+
+  // 🔁 duplicate scroll
+  allEntries.forEach(e => track.appendChild(e.cloneNode(true)));
+
+  // =========================
+  // ✅ STATS (AFTER LOOP)
+  // =========================
+
+  const startingBalance = data.startingBalance || 0;
+
+  const avgBonusCost = slots.length ? totalBet / slots.length : 0;
+
+  const breakevenX = avgBonusCost ? startingBalance / avgBonusCost : 0;
+
+  const avgX = totalBet ? totalPay / totalBet : 0;
+
+  const volatility = avgX ? highestX / avgX : 0;
+
+  const profit = totalPay - startingBalance;
+  const profitClass = profit >= 0 ? "profit-positive" : "profit-negative";
+
+  // =========================
+  // UI updates
+  // =========================
+
+  document.getElementById("startingBalance").textContent =
+    `Starting Balance: $${startingBalance.toFixed(2)}`;
+
+  document.getElementById("finalBalance").textContent =
+    `Final Balance: $${totalPay.toFixed(2)}`;
+
+  document.getElementById("profit").innerHTML =
+    `Profit: <span class="${profitClass}">$${profit.toFixed(2)}</span>`;
+
+  document.getElementById("highestProfit").innerHTML =
+    `Best Profit: <span class="highlight-slot">${bestSlot}</span>`;
+
+  document.getElementById("highestMulti").innerHTML =
+    `Best X: <span class="highlight-slot">${bestXSlot}</span>`;
+
+  document.getElementById("bonusesOpened").textContent =
+    `Bonuses: ${slots.filter(s => s.opened).length} / ${slots.length}`;
+
+  // =========================
+  // HUNTING / OPENING UI
+  // =========================
+
+  const upcoming = document.getElementById("upcomingSection");
+
+  const nextToOpenIndex = slots.findIndex(
+    s => s.opened === false || typeof s.opened === "undefined"
+  );
+
+  const currentSlot = slots[nextToOpenIndex];
+  const nextSlot = slots[nextToOpenIndex + 1];
+
+  const isOpening = data.isOpening || false;
+
+  if (!isOpening) {
+    upcoming.innerHTML = `
+      <div style="font-size:24px;text-align:center;color:#00ffff;">
+        🟡 STILL HUNTING
+      </div>
+
+      <div style="font-size:20px;margin-top:5px;">
+        Bonuses Collected: <span style="color:gold;">${slots.length}</span>
+      </div>
+
+      <div style="font-size:20px;">
+        Starting Balance: <span style="color:gold;">$${startingBalance.toFixed(2)}</span>
+      </div>
+
+      <div style="font-size:20px;">
+        Avg Bonus Cost: <span style="color:#1ec8ff;">$${avgBonusCost.toFixed(2)}</span>
+      </div>
+
+      <div style="font-size:20px;">
+        Recommended Breakeven X: <span style="color:#ffcc00;">${breakevenX.toFixed(2)}x</span>
+      </div>
+
+      <div style="font-size:20px;">
+        Volatility: <span style="color:#ff66ff;">${volatility.toFixed(2)}x</span>
+      </div>
+    `;
   } else {
-    upcoming.innerHTML = `✅ All bonuses opened`;
+    if (currentSlot) {
+      upcoming.innerHTML = `
+        <div class="big-current">
+          <img src="${currentSlot.thumbnail || 'https://i.imgur.com/IR08Bjy.png'}">
+          <div>
+            🎰 NOW OPENING<br>
+            <strong>${currentSlot.slotName}</strong>
+          </div>
+          <div style="color:gold;">
+            NEXT: ${nextSlot ? nextSlot.slotName : 'DONE'}
+          </div>
+        </div>
+      `;
+    } else {
+      upcoming.innerHTML = `✅ All bonuses opened`;
+    }
   }
-}
-    });
+});
   </script>
 </body>
 </html>
