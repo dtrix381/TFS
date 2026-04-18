@@ -455,6 +455,9 @@ loadSlots();
 <div class="tracker-controls">
   <button onclick="addRow()">+ Add Slot</button>
   <button onclick="confirmReset()" style="margin-left: 10px;">🔁 Reset Hunt</button>
+<button id="openingToggleBtn" onclick="toggleOpening()" style="margin-left:10px;">
+  🎰 Start Opening
+</button>
 </div>
 
 <table class="tracker-table">
@@ -510,28 +513,74 @@ loadSlots();
     alert("⚠️ No user ID provided. Please log in via Discord.");
     throw new Error("Missing user ID");
   }
+
   const huntDocId = userId;
 
-  // 🟢 Load saved hunt data for this user
+  // 🎰 Toggle Opening State
+function toggleOpening() {
+  const docRef = db.collection("hunts").doc(huntDocId);
+
+  docRef.get().then(doc => {
+    const current = doc.data()?.isOpening || false;
+    const newState = !current;
+
+    docRef.update({
+      isOpening: newState
+    });
+
+    updateOpeningButton(newState);
+  });
+}
+
+// 🎨 Update button UI
+function updateOpeningButton(isOpening) {
+  const btn = document.getElementById("openingToggleBtn");
+  if (!btn) return;
+
+  if (isOpening) {
+    btn.textContent = "🛑 Stop Opening";
+    btn.style.background = "gold";
+    btn.style.color = "black";
+  } else {
+    btn.textContent = "🎰 Start Opening";
+    btn.style.background = "crimson";
+    btn.style.color = "white";
+  }
+}
+
+  // 🟢 Load saved hunt data
   window.addEventListener('DOMContentLoaded', () => {
     db.collection("hunts").doc(huntDocId).get()
       .then(doc => {
         if (doc.exists) {
           const data = doc.data();
+
+          // 🔥 BASIC DATA
           document.getElementById('startingBalance').value = data.startingBalance || 0;
-	  document.getElementById('huntTitle').value = data.title || '';
+          document.getElementById('huntTitle').value = data.title || '';
+
+          // 🔥 LOAD SLOTS
           (data.slots || []).forEach(slot => {
-  addRow({
-    slotName: slot.slotName,
-    betSize: slot.betSize,
-    totalPay: slot.totalPay,
-    totalX: slot.totalX,
-    thumbnail: slot.thumbnail
-  });
-});
-          updateStats(); // Refresh calculations/UI
+            addRow({
+              slotName: slot.slotName,
+              betSize: slot.betSize,
+              totalPay: slot.totalPay,
+              totalX: slot.totalX,
+              thumbnail: slot.thumbnail
+            });
+          });
+
+          // 🔥 IMPORTANT: sync opening state
+          const isOpening = data.isOpening || false;
+          updateOpeningButton(isOpening);
+
+          updateStats();
+
         } else {
           console.log("🆕 No existing hunt data for this user");
+
+          // ensure default button state
+          updateOpeningButton(false);
         }
       })
       .catch(err => console.error("❌ Error loading hunt:", err));
@@ -756,7 +805,7 @@ data.slots.push({
 });
   });
 
-  db.collection("hunts").doc(huntDocId).set(data)
+  db.collection("hunts").doc(huntDocId).set(data, { merge: true })
     .then(() => console.log("✅ Synced to Firebase"))
     .catch(err => console.error("❌ Firebase Error:", err));
 }
