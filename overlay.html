@@ -300,13 +300,29 @@ if (!isOpening) {
 } else {
   // 🔴 OPENING MODE → restore normal stats layout
   header.innerHTML = `
-    <div id="startingBalance">Starting Balance: $${startingBalance.toFixed(2)}</div>
-    <div id="finalBalance">Final Balance: $${totalPay.toFixed(2)}</div>
-    <div id="profit">Profit: <span class="${profitClass}">$${profit.toFixed(2)}</span></div>
-    <div id="highestProfit">Best Profit: ${bestSlot}</div>
-    <div id="highestMulti">Best X: ${bestXSlot}</div>
-    <div id="bonusesOpened">Bonuses: ${slots.filter(s => s.opened).length} / ${slots.length}</div>
-  `;
+  <div id="startingBalance">Starting Balance: $${startingBalance.toFixed(2)}</div>
+  <div id="finalBalance">Final Balance: $${totalPay.toFixed(2)}</div>
+
+  <div id="profit">
+    Profit: <span class="${profitClass}">$${profit.toFixed(2)}</span>
+  </div>
+
+  <div id="highestProfit">
+    Best Profit: 
+    <span class="highlight-slot">${bestSlot}</span>
+    <span class="highlight-value">($${highestPay.toFixed(2)})</span>
+  </div>
+
+  <div id="highestMulti">
+    Best X: 
+    <span class="highlight-slot">${bestXSlot}</span>
+    <span class="highlight-value">${highestX.toFixed(2)}x</span>
+  </div>
+
+  <div id="bonusesOpened">
+    Bonuses: ${slots.filter(s => s.opened).length} / ${slots.length}
+  </div>
+`;
 }
 
   // =========================
