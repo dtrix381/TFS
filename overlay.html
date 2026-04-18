@@ -263,21 +263,42 @@ allEntries.forEach(entry => {
       const currentSlot = slots[nextToOpenIndex];
       const nextSlot = slots[nextToOpenIndex + 1];
 
-      if (currentSlot) {
+      const isOpening = data.isOpening || false;
+
+if (!isOpening) {
+  // 🟡 HUNTING MODE (clean, no big image)
   upcoming.innerHTML = `
-    <div class="big-current">
-      <img src="${currentSlot.thumbnail || 'https://i.imgur.com/IR08Bjy.png'}">
-      <div>
-        🎰 NOW OPENING<br>
-        <strong>${currentSlot.slotName}</strong>
-      </div>
-      <div style="color:gold;">
-        NEXT: ${nextSlot ? nextSlot.slotName : 'DONE'}
-      </div>
+    <div style="
+      font-size: 24px;
+      text-align:center;
+      padding: 10px;
+      color: #00ffff;
+      text-shadow: 0 0 8px #00ffff;
+    ">
+      🟡 STILL HUNTING
+    </div>
+    <div style="font-size:20px; margin-top:5px;">
+      Bonuses Collected: <span style="color:gold;">${slots.length}</span>
     </div>
   `;
 } else {
-  upcoming.innerHTML = `✅ All bonuses opened`;
+  // 🔴 OPENING MODE (your existing big layout)
+  if (currentSlot) {
+    upcoming.innerHTML = `
+      <div class="big-current">
+        <img src="${currentSlot.thumbnail || 'https://i.imgur.com/IR08Bjy.png'}">
+        <div>
+          🎰 NOW OPENING<br>
+          <strong>${currentSlot.slotName}</strong>
+        </div>
+        <div style="color:gold;">
+          NEXT: ${nextSlot ? nextSlot.slotName : 'DONE'}
+        </div>
+      </div>
+    `;
+  } else {
+    upcoming.innerHTML = `✅ All bonuses opened`;
+  }
 }
     });
   </script>
