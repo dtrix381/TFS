@@ -212,6 +212,7 @@
   overflow-y: auto;
   z-index: 9999;
   border-radius: 6px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.6);
 }
 
 .autocomplete-item {
@@ -821,23 +822,40 @@ function handleSlotSearch(input) {
 
   if (!query) return;
 
-  // 🔥 Always show custom option FIRST
+  // 📍 Get input position
+  const rect = input.getBoundingClientRect();
+
+  // 🧠 Decide if dropdown should go up or down
+  const spaceBelow = window.innerHeight - rect.bottom;
+  const dropdownHeight = 200;
+
+  const showAbove = spaceBelow < dropdownHeight;
+
+  // 🎯 Apply fixed positioning
+  container.style.position = "fixed";
+  container.style.left = rect.left + "px";
+  container.style.width = rect.width + "px";
+  container.style.zIndex = "9999";
+
+  if (showAbove) {
+    container.style.top = (rect.top - dropdownHeight) + "px";
+  } else {
+    container.style.top = rect.bottom + "px";
+  }
+
+  // 🔥 Custom option FIRST
   const customOption = document.createElement("div");
   customOption.className = "autocomplete-item";
-  customOption.innerHTML = `
-    ➕ Add Custom Slot: <strong>${input.value}</strong>
-  `;
+  customOption.innerHTML = `➕ Add Custom Slot: <strong>${input.value}</strong>`;
+
   customOption.onclick = () => {
-  input.value = input.value;
+    const wrapper = input.closest(".slot-wrapper");
+    const img = wrapper.querySelector(".slot-thumb");
 
-  const wrapper = input.closest(".slot-wrapper");
-  const img = wrapper.querySelector(".slot-thumb");
+    img.src = DEFAULT_THUMBNAIL;
+    container.innerHTML = "";
+  };
 
-  // 🔥 default image for custom slots
-  img.src = DEFAULT_THUMBNAIL;
-
-  container.innerHTML = "";
-};
   container.appendChild(customOption);
 
   // 🔍 Filter slots
@@ -857,22 +875,21 @@ function handleSlotSearch(input) {
     `;
 
     item.onclick = () => {
-  input.value = slot.name;
+      input.value = slot.name;
 
-  // 🔥 update thumbnail
-  const wrapper = input.closest(".slot-wrapper");
-  const img = wrapper.querySelector(".slot-thumb");
+      const wrapper = input.closest(".slot-wrapper");
+      const img = wrapper.querySelector(".slot-thumb");
 
-  img.src = slot.thumbnail || DEFAULT_THUMBNAIL;
+      img.src = thumbnail;
 
-  container.innerHTML = "";
-};
+      container.innerHTML = "";
+    };
 
     container.appendChild(item);
   });
 }
 
-// close dropdown when clicking outside
+// 🧹 Close dropdown on outside click
 document.addEventListener("click", (e) => {
   document.querySelectorAll(".autocomplete-list").forEach(list => {
     if (!list.parentElement.contains(e.target)) {
@@ -881,7 +898,6 @@ document.addEventListener("click", (e) => {
   });
 });
 </script>
-
 
 </body>
 <footer>
