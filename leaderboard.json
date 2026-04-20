@@ -42,6 +42,14 @@
             "weekly": 10,
             "monthly": 10,
             "giveaway_history": []
+        },
+        {
+            "discord_username": "augustomazo98",
+            "discord_avatar": "https://cdn.discordapp.com/avatars/692472615016857682/5e7c95f4cba17ec2035c111ff63f2862.png?size=1024",
+            "instagram_username": "augustomazo",
+            "weekly": 0,
+            "monthly": 0,
+            "giveaway_history": []
         }
     ]
 }
