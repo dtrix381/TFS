@@ -231,6 +231,61 @@ button {
   }
 }
 
+#modalInsta,
+#modalKick {
+  outline: none !important;
+  box-shadow: none !important;
+  -webkit-tap-highlight-color: transparent; /* mobile fix */
+}
+
+#modalInsta:focus,
+#modalKick:focus,
+#modalInsta:focus-visible,
+#modalKick:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+#modalKick img,
+#modalInsta img {
+  background: transparent;
+  box-shadow: none;
+  border: none;
+}
+
+.modal-icon {
+  width: 18px;
+  height: 18px;
+  display: inline-block;
+  vertical-align: middle;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  filter: none !important;
+}
+
+/* GLOBAL CLEAN RESET FOR CLICK/FOCUS OUTLINES */
+*:focus,
+*:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+img {
+  outline: none !important;
+  border: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button img {
+  outline: none;
+  box-shadow: none;
+}
+
 /* ===== MOBILE ===== */
 @media (max-width: 768px) {
 
@@ -442,9 +497,13 @@ menuToggle.addEventListener('click', () => {
     <img id="modalAvatar" src="" width="80" style="border-radius:50%; margin-bottom:10px;">
     <h3 id="modalDiscord"></h3>
     <p>
-      <img src="https://cdn-icons-png.flaticon.com/512/174/174855.png" width="18" style="vertical-align: middle; margin-right:4px;">
+     <img class="modal-icon" src="https://cdn-icons-png.flaticon.com/512/174/174855.png" width="18" style="vertical-align: middle; margin-right:4px;">
       Instagram: <a href="#" id="modalInsta" target="_blank"></a>
     </p>
+    <p>
+      <img class="modal-icon" src="https://static.vecteezy.com/system/resources/previews/075/195/432/non_2x/kick-live-streaming-logo-app-icon-transparent-background-free-png.png" width="18" style="vertical-align: middle; margin-		right:4px;">
+      Kick: <a href="#" id="modalKick" target="_blank"></a>
+    </p>  
     <h4>🎁 Giveaway Wins</h4>
     <ul id="modalHistory" style="text-align:left; padding-left:15px;"></ul>
   </div>
@@ -619,6 +678,17 @@ function showUserModal(index) {
   } else {
     instaEl.innerText = "";
     instaEl.href = "#";
+  }
+
+  // Kick username
+  const kickEl = document.getElementById("modalKick");
+
+  if (user.kick_username) {
+    kickEl.innerText = user.kick_username;
+    kickEl.href = "https://kick.com/" + user.kick_username;
+  } else {
+    kickEl.innerText = "";
+    kickEl.href = "#";
   }
 
   // Giveaway Wins
