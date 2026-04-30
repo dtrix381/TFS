@@ -921,7 +921,7 @@ function updateHistory() {
         </td>
         <td>${type.charAt(0).toUpperCase() + type.slice(1)} - ${entry.title || g.title}</td>
         <td>${prize}</td>
-        <td>${getChance(entry.username, type)}%</td>
+        <td>${(entry.win_percent ?? 0).toFixed(2)}%</td>
         <td>${entry.time}</td>
       `;
       tbody.appendChild(tr);
