@@ -25,7 +25,8 @@
                 {
                     "username": "teexluk4",
                     "prize": "10",
-                    "chance": 156,
+                    "entries": 156,
+                    "win_percent": 23.11,
                     "time": "2026-04-30 08:00:15 UTC",
                     "title": "Razed Casino Tip"
                 }
