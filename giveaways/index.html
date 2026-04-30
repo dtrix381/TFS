@@ -651,12 +651,12 @@ function renderLeaderboard() {
         <img src="${coinEmoji}" width="32" style="vertical-align: middle;">
         ${user.weekly}
       </td>
-      <td>${user.weekly_win_chance ?? "-" }%</td>
+      <td>${user.weekly_chance}%</td>
       <td>
         <img src="${coinEmoji}" width="32" style="vertical-align: middle;">
         ${user.monthly}
       </td>
-      <td>${user.monthly_win_chance ?? "-" }%</td>
+      <td>${user.monthly_chance}%</td>
     `;
     tbody.appendChild(tr);
   });
@@ -723,23 +723,20 @@ async function loadGiveaway() {
 
     // === Populate giveaway_history for leaderboard users ===
     leaderboardData.forEach(user => {
-  user.weekly_win_chance = null;
-  user.monthly_win_chance = null;
-
-  ["weekly", "monthly"].forEach(type => {
-    const g = giveawayData[type];
-    if (!g || !g.history) return;
-
-    // find latest win for this user
-    const wins = g.history
-      .filter(h => h.username === user.instagram_username)
-      .sort((a, b) => new Date(b.time) - new Date(a.time));
-
-    if (wins.length > 0) {
-      user[type + "_win_chance"] = wins[0].chance;
-    }
-  });
-});
+      user.giveaway_history = []; // reset
+      ["weekly", "monthly"].forEach(type => {
+        const g = giveawayData[type];
+        if (!g || !g.history) return;
+        g.history.forEach(entry => {
+          if (
+            entry.username === user.instagram_username ||
+            entry.username === user.discord_username
+          ) {
+            user.giveaway_history.push({ ...entry, type: type });
+          }
+        });
+      });
+    });
 
     updateUI("weekly", "w");
     updateUI("monthly", "m");
