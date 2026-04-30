@@ -869,6 +869,19 @@ function calculateChances(data, type) {
 // ===== WINNERS HISTORY =====
 let historyUsers = []; // temporary array for modal indexing
 
+function getChance(username, type) {
+  const key = type === "weekly" ? "weekly" : "monthly";
+
+  const total = leaderboardData.reduce((sum, u) => sum + (u[key] || 0), 0);
+  const user = leaderboardData.find(u =>
+    u.discord_username === username || u.instagram_username === username
+  );
+
+  if (!user || total === 0) return "0.00";
+
+  return ((user[key] / total) * 100).toFixed(2);
+}
+	
 function updateHistory() {
   const tbody = document.querySelector("#historyTable tbody");
   tbody.innerHTML = '';
@@ -908,7 +921,7 @@ function updateHistory() {
         </td>
         <td>${type.charAt(0).toUpperCase() + type.slice(1)} - ${entry.title || g.title}</td>
         <td>${prize}</td>
-        <td>${Number(entry.chance || 0).toFixed(2)}%</td>
+        <td>${getChance(entry.username, type)}%</td>
         <td>${entry.time}</td>
       `;
       tbody.appendChild(tr);
