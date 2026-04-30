@@ -6,10 +6,19 @@
         "title": "Razed Casino Tip",
         "prize": "10",
         "thumbnail": "https://cdn.discordapp.com/attachments/1282174698163015804/1493395027739803688/Gemini_Generated_Image_66b8dr66b8dr66b8-removebg-preview.png?ex=69eff380&is=69eea200&hm=908bd18fd36d1949c52f6b8ed0277e7bdf82ab6f6d1e56df03e9c0c44216fb00",
-        "end_time": "2026-04-30 08:00:00",
-        "history": [],
-        "last_winner": null,
-        "last_entries": 0
+        "end_time": null,
+        "history": [
+            {
+                "username": "teexluk4",
+                "discord_id": "878253813553844254",
+                "prize": "10",
+                "chance": 156,
+                "time": "2026-04-30 08:00:15 UTC",
+                "title": "Razed Casino Tip"
+            }
+        ],
+        "last_winner": "teexluk4",
+        "last_entries": 156
     },
     "monthly": {
         "title": "Monthly Giveaway (Coming Soon)",
