@@ -702,7 +702,9 @@ function showUserModal(index) {
     const prize = h.prize ? "$" + h.prize : "$0";
     
     const li = document.createElement("li");
-    li.innerText = `[${h.type}] ${title} – ${prize} (Chance: ${h.chance}%)`;
+    const chance = h.chance ?? h.win_percent ?? 0;
+
+li.innerText = `[${h.type}] ${title} – ${prize} (Chance: ${Number(chance).toFixed(2)}%)`;
     ul.appendChild(li);
   });
 
@@ -751,6 +753,19 @@ function getTotalEntries(type) {
   return leaderboardData.reduce((sum, u) => sum + u[key], 0);
 }
 
+function calculateChances(data, type) {
+  const key = type === "weekly" ? "weekly" : "monthly";
+
+  const total = data.reduce((sum, u) => sum + Number(u[key] || 0), 0);
+
+  return data.map(u => {
+    const value = Number(u[key] || 0);
+    const chance = total > 0 ? (value / total * 100).toFixed(2) : "0.00";
+
+    return { ...u, [type + "_chance"]: chance };
+  });
+}
+	
 // ===== UPDATE GIVEAWAY UI =====
 function updateUI(type, prefix) {
   const g = giveawayData[type];
@@ -935,7 +950,9 @@ function showHistoryModal(index) {
     const prize = h.prize ? "$" + h.prize : "$0";
 
     const li = document.createElement("li");
-    li.innerText = `[${h.type}] ${title} – ${prize} (Chance: ${h.chance}%)`;
+    const chance = h.chance ?? h.win_percent ?? 0;
+
+li.innerText = `[${h.type}] ${title} – ${prize} (Chance: ${Number(chance).toFixed(2)}%)`;
     ul.appendChild(li);
   });
 
