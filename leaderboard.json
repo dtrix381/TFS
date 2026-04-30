@@ -8,8 +8,9 @@
             "discord_avatar": "https://cdn.discordapp.com/avatars/988865245793636392/bd37fa5476ccf70ef6c784712a2055db.png?size=1024",
             "instagram_username": "dewiputewasi",
             "kick_username": "dewiputewasi",
-            "weekly": 234,
+            "weekly": 0,
             "monthly": 234,
+            "win_percent": 34.67,
             "giveaway_history": []
         },
         {
@@ -17,17 +18,27 @@
             "discord_avatar": "https://cdn.discordapp.com/avatars/878253813553844254/1f3e85b584503947c63010aa1bd8ba1e.png?size=1024",
             "instagram_username": "teexluk4",
             "kick_username": "teelux187x",
-            "weekly": 156,
+            "weekly": 0,
             "monthly": 156,
-            "giveaway_history": []
+            "win_percent": 23.11,
+            "giveaway_history": [
+                {
+                    "username": "teexluk4",
+                    "prize": "10",
+                    "chance": 156,
+                    "time": "2026-04-30 08:00:15 UTC",
+                    "title": "Razed Casino Tip"
+                }
+            ]
         },
         {
             "discord_username": "sharkmac007",
             "discord_avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
             "instagram_username": null,
             "kick_username": "sharkmac0007",
-            "weekly": 52,
+            "weekly": 0,
             "monthly": 52,
+            "win_percent": 7.7,
             "giveaway_history": []
         },
         {
@@ -35,8 +46,9 @@
             "discord_avatar": "https://cdn.discordapp.com/avatars/488015447417946151/19e7b770b91a24f3891e8646dc09d335.png?size=1024",
             "instagram_username": "d3dtrix",
             "kick_username": "dtrix381",
-            "weekly": 47,
+            "weekly": 0,
             "monthly": 47,
+            "win_percent": 6.96,
             "giveaway_history": []
         },
         {
@@ -44,8 +56,9 @@
             "discord_avatar": "https://cdn.discordapp.com/avatars/532165402369982474/5a60e4e02e83ddb5363d173bed3af1cb.png?size=1024",
             "instagram_username": null,
             "kick_username": "krazymum008",
-            "weekly": 42,
+            "weekly": 0,
             "monthly": 42,
+            "win_percent": 6.22,
             "giveaway_history": []
         },
         {
@@ -53,8 +66,9 @@
             "discord_avatar": "https://cdn.discordapp.com/avatars/692472615016857682/5e7c95f4cba17ec2035c111ff63f2862.png?size=1024",
             "instagram_username": "augustomazo",
             "kick_username": "dxr_augustomazo98",
-            "weekly": 32,
+            "weekly": 0,
             "monthly": 32,
+            "win_percent": 4.74,
             "giveaway_history": []
         },
         {
@@ -62,8 +76,9 @@
             "discord_avatar": "https://cdn.discordapp.com/avatars/657584864463159308/36447d9df5373b7fe2b1f3e975110930.png?size=1024",
             "instagram_username": null,
             "kick_username": "queenz250",
-            "weekly": 29,
+            "weekly": 0,
             "monthly": 29,
+            "win_percent": 4.3,
             "giveaway_history": []
         },
         {
@@ -71,8 +86,9 @@
             "discord_avatar": "https://cdn.discordapp.com/avatars/927475447464329236/24df6569c9e65f0d1cdc4afc01779c25.png?size=1024",
             "instagram_username": "rowelie09",
             "kick_username": "rowelie",
-            "weekly": 23,
+            "weekly": 0,
             "monthly": 23,
+            "win_percent": 3.41,
             "giveaway_history": []
         },
         {
@@ -80,8 +96,9 @@
             "discord_avatar": "https://cdn.discordapp.com/avatars/743392043157553204/03be465ebc28e19e04e3479928e47b9f.png?size=1024",
             "instagram_username": null,
             "kick_username": "patchy",
-            "weekly": 23,
+            "weekly": 0,
             "monthly": 23,
+            "win_percent": 3.41,
             "giveaway_history": []
         },
         {
@@ -89,8 +106,9 @@
             "discord_avatar": "https://cdn.discordapp.com/avatars/937976594864164894/e4cc9e8a80feb698858825500ed1257d.png?size=1024",
             "instagram_username": "j_mck21",
             "kick_username": "jamesmckenna",
-            "weekly": 17,
+            "weekly": 0,
             "monthly": 17,
+            "win_percent": 2.52,
             "giveaway_history": []
         },
         {
@@ -98,8 +116,9 @@
             "discord_avatar": "https://cdn.discordapp.com/avatars/739613551727214736/155a9551c5f266189b203e736c8136ea.png?size=1024",
             "instagram_username": null,
             "kick_username": "nightreign",
-            "weekly": 10,
+            "weekly": 0,
             "monthly": 10,
+            "win_percent": 1.48,
             "giveaway_history": []
         },
         {
@@ -107,8 +126,9 @@
             "discord_avatar": "https://cdn.discordapp.com/avatars/899983590782304306/022784118e7b89c35deda866951ca958.png?size=1024",
             "instagram_username": null,
             "kick_username": "yongdiba",
-            "weekly": 5,
+            "weekly": 0,
             "monthly": 5,
+            "win_percent": 0.74,
             "giveaway_history": []
         },
         {
@@ -116,8 +136,9 @@
             "discord_avatar": "https://cdn.discordapp.com/avatars/1241933922703642696/05246907e7314b2825dc42ebca4efa7d.png?size=1024",
             "instagram_username": null,
             "kick_username": "stuy_t",
-            "weekly": 4,
+            "weekly": 0,
             "monthly": 4,
+            "win_percent": 0.59,
             "giveaway_history": []
         },
         {
@@ -125,8 +146,9 @@
             "discord_avatar": "https://cdn.discordapp.com/avatars/1280467057426567209/3bbd7540fca6b5b0289709952f9a551c.png?size=1024",
             "instagram_username": null,
             "kick_username": "unluckyshay",
-            "weekly": 1,
+            "weekly": 0,
             "monthly": 1,
+            "win_percent": 0.15,
             "giveaway_history": []
         },
         {
@@ -136,6 +158,7 @@
             "kick_username": "annoybrand",
             "weekly": 0,
             "monthly": 0,
+            "win_percent": 0.0,
             "giveaway_history": []
         },
         {
@@ -145,6 +168,7 @@
             "kick_username": "hamslicer35",
             "weekly": 0,
             "monthly": 0,
+            "win_percent": 0.0,
             "giveaway_history": []
         },
         {
@@ -154,7 +178,9 @@
             "kick_username": "megg4u",
             "weekly": 0,
             "monthly": 0,
+            "win_percent": 0.0,
             "giveaway_history": []
         }
-    ]
+    ],
+    "total_monthly_points": 675
 }
