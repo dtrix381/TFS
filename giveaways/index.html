@@ -752,19 +752,6 @@ function getTotalEntries(type) {
   const key = type === "weekly" ? "weekly" : "monthly";
   return leaderboardData.reduce((sum, u) => sum + u[key], 0);
 }
-
-function calculateChances(data, type) {
-  const key = type === "weekly" ? "weekly" : "monthly";
-
-  const total = data.reduce((sum, u) => sum + Number(u[key] || 0), 0);
-
-  return data.map(u => {
-    const value = Number(u[key] || 0);
-    const chance = total > 0 ? (value / total * 100).toFixed(2) : "0.00";
-
-    return { ...u, [type + "_chance"]: chance };
-  });
-}
 	
 // ===== UPDATE GIVEAWAY UI =====
 function updateUI(type, prefix) {
@@ -863,16 +850,22 @@ function weightedPick(type) {
   }
 }
 
-// ===== CALCULATE WIN CHANCES =====
 function calculateChances(data, type) {
   const key = type === "weekly" ? "weekly" : "monthly";
-  const total = data.reduce((sum, u) => sum + u[key], 0);
+
+  const total = data.reduce((sum, u) => sum + Number(u[key] || 0), 0);
+
   return data.map(u => {
-    const chance = total > 0 ? (u[key] / total * 100).toFixed(2) : 0;
-    return { ...u, [type + "_chance"]: chance };
+    const value = Number(u[key] || 0);
+    const chance = total > 0 ? (value / total * 100).toFixed(2) : "0.00";
+
+    return {
+      ...u,
+      [type + "_chance"]: chance
+    };
   });
 }
-
+	
 // ===== WINNERS HISTORY =====
 let historyUsers = []; // temporary array for modal indexing
 
