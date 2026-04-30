@@ -12,7 +12,9 @@
                 "username": "teexluk4",
                 "discord_id": "878253813553844254",
                 "prize": "10",
-                "chance": 156,
+                "entries": 156,
+                "total_entries": 676,
+                "win_percent": 23.11,
                 "time": "2026-04-30 08:00:15 UTC",
                 "title": "Razed Casino Tip"
             }
