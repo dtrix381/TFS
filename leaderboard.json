@@ -8,9 +8,9 @@
             "discord_avatar": "https://cdn.discordapp.com/avatars/988865245793636392/bd37fa5476ccf70ef6c784712a2055db.png?size=1024",
             "instagram_username": "dewiputewasi",
             "kick_username": "dewiputewasi",
-            "weekly": 46,
-            "monthly": 280,
-            "win_percent": 37.04,
+            "weekly": 49,
+            "monthly": 283,
+            "win_percent": 36.99,
             "giveaway_history": []
         },
         {
@@ -20,7 +20,7 @@
             "kick_username": "teelux187x",
             "weekly": 0,
             "monthly": 156,
-            "win_percent": 20.63,
+            "win_percent": 20.39,
             "giveaway_history": [
                 {
                     "username": "teexluk4",
@@ -39,7 +39,7 @@
             "kick_username": "sharkmac0007",
             "weekly": 8,
             "monthly": 60,
-            "win_percent": 7.94,
+            "win_percent": 7.84,
             "giveaway_history": []
         },
         {
@@ -49,7 +49,7 @@
             "kick_username": "dtrix381",
             "weekly": 7,
             "monthly": 54,
-            "win_percent": 7.14,
+            "win_percent": 7.06,
             "giveaway_history": []
         },
         {
@@ -59,7 +59,7 @@
             "kick_username": "krazymum008",
             "weekly": 9,
             "monthly": 51,
-            "win_percent": 6.75,
+            "win_percent": 6.67,
             "giveaway_history": []
         },
         {
@@ -69,7 +69,7 @@
             "kick_username": "dxr_augustomazo98",
             "weekly": 0,
             "monthly": 32,
-            "win_percent": 4.23,
+            "win_percent": 4.18,
             "giveaway_history": []
         },
         {
@@ -79,7 +79,7 @@
             "kick_username": "queenz250",
             "weekly": 0,
             "monthly": 29,
-            "win_percent": 3.84,
+            "win_percent": 3.79,
             "giveaway_history": []
         },
         {
@@ -89,7 +89,7 @@
             "kick_username": "rowelie",
             "weekly": 0,
             "monthly": 23,
-            "win_percent": 3.04,
+            "win_percent": 3.01,
             "giveaway_history": []
         },
         {
@@ -99,7 +99,7 @@
             "kick_username": "patchy",
             "weekly": 0,
             "monthly": 23,
-            "win_percent": 3.04,
+            "win_percent": 3.01,
             "giveaway_history": []
         },
         {
@@ -109,7 +109,17 @@
             "kick_username": "jamesmckenna",
             "weekly": 0,
             "monthly": 17,
-            "win_percent": 2.25,
+            "win_percent": 2.22,
+            "giveaway_history": []
+        },
+        {
+            "discord_username": "hamslicer",
+            "discord_avatar": "https://cdn.discordapp.com/avatars/850665803161534484/ae41cd1995ef4f0b3e47aad2dddb196a.png?size=1024",
+            "instagram_username": null,
+            "kick_username": "hamslicer35",
+            "weekly": 14,
+            "monthly": 14,
+            "win_percent": 1.83,
             "giveaway_history": []
         },
         {
@@ -119,17 +129,7 @@
             "kick_username": "nightreign",
             "weekly": 0,
             "monthly": 10,
-            "win_percent": 1.32,
-            "giveaway_history": []
-        },
-        {
-            "discord_username": "hamslicer",
-            "discord_avatar": "https://cdn.discordapp.com/avatars/850665803161534484/ae41cd1995ef4f0b3e47aad2dddb196a.png?size=1024",
-            "instagram_username": null,
-            "kick_username": "hamslicer35",
-            "weekly": 8,
-            "monthly": 8,
-            "win_percent": 1.06,
+            "win_percent": 1.31,
             "giveaway_history": []
         },
         {
@@ -139,7 +139,7 @@
             "kick_username": "yongdiba",
             "weekly": 0,
             "monthly": 5,
-            "win_percent": 0.66,
+            "win_percent": 0.65,
             "giveaway_history": []
         },
         {
@@ -149,7 +149,7 @@
             "kick_username": "stuy_t",
             "weekly": 0,
             "monthly": 4,
-            "win_percent": 0.53,
+            "win_percent": 0.52,
             "giveaway_history": []
         },
         {
@@ -159,7 +159,7 @@
             "kick_username": "wellnz",
             "weekly": 3,
             "monthly": 3,
-            "win_percent": 0.4,
+            "win_percent": 0.39,
             "giveaway_history": []
         },
         {
@@ -193,5 +193,5 @@
             "giveaway_history": []
         }
     ],
-    "total_monthly_points": 756
+    "total_monthly_points": 765
 }
