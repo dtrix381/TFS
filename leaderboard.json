@@ -10,7 +10,7 @@
             "kick_username": "teelux187x",
             "weekly": 264,
             "monthly": 420,
-            "win_percent": 26.53,
+            "win_percent": 26.5,
             "giveaway_history": [
                 {
                     "username": "teexluk4",
@@ -27,9 +27,9 @@
             "discord_avatar": "https://cdn.discordapp.com/avatars/988865245793636392/bd37fa5476ccf70ef6c784712a2055db.png?size=1024",
             "instagram_username": "dewiputewasi",
             "kick_username": "dewiputewasi",
-            "weekly": 123,
-            "monthly": 357,
-            "win_percent": 22.55,
+            "weekly": 125,
+            "monthly": 359,
+            "win_percent": 22.65,
             "giveaway_history": []
         },
         {
@@ -39,7 +39,7 @@
             "kick_username": "sharkmac0007",
             "weekly": 65,
             "monthly": 117,
-            "win_percent": 7.39,
+            "win_percent": 7.38,
             "giveaway_history": []
         },
         {
@@ -69,7 +69,7 @@
             "kick_username": "patchy",
             "weekly": 64,
             "monthly": 87,
-            "win_percent": 5.5,
+            "win_percent": 5.49,
             "giveaway_history": []
         },
         {
@@ -79,7 +79,7 @@
             "kick_username": "krazymum008",
             "weekly": 20,
             "monthly": 62,
-            "win_percent": 3.92,
+            "win_percent": 3.91,
             "giveaway_history": []
         },
         {
@@ -99,7 +99,7 @@
             "kick_username": "dxr_augustomazo98",
             "weekly": 8,
             "monthly": 40,
-            "win_percent": 2.53,
+            "win_percent": 2.52,
             "giveaway_history": []
         },
         {
@@ -129,7 +129,7 @@
             "kick_username": "rowelie",
             "weekly": 7,
             "monthly": 30,
-            "win_percent": 1.9,
+            "win_percent": 1.89,
             "giveaway_history": []
         },
         {
@@ -273,5 +273,5 @@
             "giveaway_history": []
         }
     ],
-    "total_monthly_points": 1583
+    "total_monthly_points": 1585
 }
