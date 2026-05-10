@@ -10,7 +10,7 @@
             "kick_username": "teelux187x",
             "weekly": 264,
             "monthly": 420,
-            "win_percent": 26.23,
+            "win_percent": 26.17,
             "giveaway_history": [
                 {
                     "username": "teexluk4",
@@ -29,7 +29,7 @@
             "kick_username": "dewiputewasi",
             "weekly": 125,
             "monthly": 359,
-            "win_percent": 22.42,
+            "win_percent": 22.37,
             "giveaway_history": []
         },
         {
@@ -39,7 +39,7 @@
             "kick_username": "sharkmac0007",
             "weekly": 65,
             "monthly": 117,
-            "win_percent": 7.31,
+            "win_percent": 7.29,
             "giveaway_history": []
         },
         {
@@ -49,7 +49,7 @@
             "kick_username": "dtrix381",
             "weekly": 55,
             "monthly": 102,
-            "win_percent": 6.37,
+            "win_percent": 6.36,
             "giveaway_history": []
         },
         {
@@ -59,7 +59,7 @@
             "kick_username": "circuitgamertv",
             "weekly": 96,
             "monthly": 96,
-            "win_percent": 6.0,
+            "win_percent": 5.98,
             "giveaway_history": []
         },
         {
@@ -69,7 +69,7 @@
             "kick_username": "patchy",
             "weekly": 64,
             "monthly": 87,
-            "win_percent": 5.43,
+            "win_percent": 5.42,
             "giveaway_history": []
         },
         {
@@ -79,7 +79,7 @@
             "kick_username": "krazymum008",
             "weekly": 28,
             "monthly": 70,
-            "win_percent": 4.37,
+            "win_percent": 4.36,
             "giveaway_history": []
         },
         {
@@ -89,7 +89,7 @@
             "kick_username": "Dimboslice",
             "weekly": 54,
             "monthly": 54,
-            "win_percent": 3.37,
+            "win_percent": 3.36,
             "giveaway_history": []
         },
         {
@@ -99,7 +99,7 @@
             "kick_username": "dxr_augustomazo98",
             "weekly": 8,
             "monthly": 40,
-            "win_percent": 2.5,
+            "win_percent": 2.49,
             "giveaway_history": []
         },
         {
@@ -107,9 +107,9 @@
             "discord_avatar": "https://cdn.discordapp.com/avatars/899983590782304306/022784118e7b89c35deda866951ca958.png?size=1024",
             "instagram_username": null,
             "kick_username": "yongdiba",
-            "weekly": 31,
-            "monthly": 36,
-            "win_percent": 2.25,
+            "weekly": 33,
+            "monthly": 38,
+            "win_percent": 2.37,
             "giveaway_history": []
         },
         {
@@ -139,7 +139,7 @@
             "kick_username": "aaron_jay",
             "weekly": 27,
             "monthly": 27,
-            "win_percent": 1.69,
+            "win_percent": 1.68,
             "giveaway_history": []
         },
         {
@@ -243,21 +243,21 @@
             "giveaway_history": []
         },
         {
+            "discord_username": "k_baybe",
+            "discord_avatar": "https://cdn.discordapp.com/avatars/920118580916420670/65841c4757994c4c5f0c5c20e9b1f6e1.png?size=1024",
+            "instagram_username": null,
+            "kick_username": "karina_baybe",
+            "weekly": 3,
+            "monthly": 3,
+            "win_percent": 0.19,
+            "giveaway_history": []
+        },
+        {
             "discord_username": "shayracoon",
             "discord_avatar": "https://cdn.discordapp.com/avatars/1280467057426567209/3bbd7540fca6b5b0289709952f9a551c.png?size=1024",
             "instagram_username": null,
             "kick_username": "unluckyshay",
             "weekly": 0,
-            "monthly": 1,
-            "win_percent": 0.06,
-            "giveaway_history": []
-        },
-        {
-            "discord_username": "k_baybe",
-            "discord_avatar": "https://cdn.discordapp.com/avatars/920118580916420670/65841c4757994c4c5f0c5c20e9b1f6e1.png?size=1024",
-            "instagram_username": null,
-            "kick_username": "karina_baybe",
-            "weekly": 1,
             "monthly": 1,
             "win_percent": 0.06,
             "giveaway_history": []
@@ -283,5 +283,5 @@
             "giveaway_history": []
         }
     ],
-    "total_monthly_points": 1601
+    "total_monthly_points": 1605
 }
