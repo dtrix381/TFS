@@ -8,9 +8,9 @@
             "discord_avatar": "https://cdn.discordapp.com/avatars/878253813553844254/bba61d2437e3df471184e2c8217e7360.png?size=1024",
             "instagram_username": "teexluk4",
             "kick_username": "teelux187x",
-            "weekly": 266,
-            "monthly": 422,
-            "win_percent": 23.68,
+            "weekly": 268,
+            "monthly": 424,
+            "win_percent": 23.77,
             "giveaway_history": [
                 {
                     "username": "teexluk4",
@@ -29,7 +29,7 @@
             "kick_username": "dewiputewasi",
             "weekly": 168,
             "monthly": 402,
-            "win_percent": 22.56,
+            "win_percent": 22.53,
             "giveaway_history": []
         },
         {
@@ -39,7 +39,7 @@
             "kick_username": "sharkmac0007",
             "weekly": 65,
             "monthly": 117,
-            "win_percent": 6.57,
+            "win_percent": 6.56,
             "giveaway_history": []
         },
         {
@@ -49,7 +49,7 @@
             "kick_username": "krazymum008",
             "weekly": 64,
             "monthly": 106,
-            "win_percent": 5.95,
+            "win_percent": 5.94,
             "giveaway_history": []
         },
         {
@@ -69,7 +69,7 @@
             "kick_username": "circuitgamertv",
             "weekly": 96,
             "monthly": 96,
-            "win_percent": 5.39,
+            "win_percent": 5.38,
             "giveaway_history": []
         },
         {
@@ -89,7 +89,7 @@
             "kick_username": "laurag87",
             "weekly": 63,
             "monthly": 63,
-            "win_percent": 3.54,
+            "win_percent": 3.53,
             "giveaway_history": []
         },
         {
@@ -149,7 +149,7 @@
             "kick_username": "aaron_jay",
             "weekly": 27,
             "monthly": 27,
-            "win_percent": 1.52,
+            "win_percent": 1.51,
             "giveaway_history": []
         },
         {
@@ -159,7 +159,7 @@
             "kick_username": "mickthebiggun",
             "weekly": 27,
             "monthly": 27,
-            "win_percent": 1.52,
+            "win_percent": 1.51,
             "giveaway_history": []
         },
         {
@@ -303,5 +303,5 @@
             "giveaway_history": []
         }
     ],
-    "total_monthly_points": 1782
+    "total_monthly_points": 1784
 }
