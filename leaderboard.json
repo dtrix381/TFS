@@ -8,9 +8,9 @@
             "discord_avatar": "https://cdn.discordapp.com/avatars/878253813553844254/bba61d2437e3df471184e2c8217e7360.png?size=1024",
             "instagram_username": "teexluk4",
             "kick_username": "teelux187x",
-            "weekly": 270,
-            "monthly": 426,
-            "win_percent": 23.63,
+            "weekly": 271,
+            "monthly": 427,
+            "win_percent": 23.67,
             "giveaway_history": [
                 {
                     "username": "teexluk4",
@@ -29,7 +29,7 @@
             "kick_username": "dewiputewasi",
             "weekly": 168,
             "monthly": 402,
-            "win_percent": 22.3,
+            "win_percent": 22.28,
             "giveaway_history": []
         },
         {
@@ -99,7 +99,7 @@
             "kick_username": "Dimboslice",
             "weekly": 54,
             "monthly": 54,
-            "win_percent": 3.0,
+            "win_percent": 2.99,
             "giveaway_history": []
         },
         {
@@ -303,5 +303,5 @@
             "giveaway_history": []
         }
     ],
-    "total_monthly_points": 1803
+    "total_monthly_points": 1804
 }
