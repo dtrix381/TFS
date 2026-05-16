@@ -301,6 +301,16 @@
             "monthly": 0,
             "win_percent": 0.0,
             "giveaway_history": []
+        },
+        {
+            "discord_username": "notmesanemi",
+            "discord_avatar": "https://cdn.discordapp.com/avatars/815540863420858369/98f828c040937cc18cab44c9eda87f77.png?size=1024",
+            "instagram_username": null,
+            "kick_username": "# join the server in my bio",
+            "weekly": 0,
+            "monthly": 0,
+            "win_percent": 0.0,
+            "giveaway_history": []
         }
     ],
     "total_monthly_points": 1972
