@@ -10,7 +10,7 @@
             "kick_username": "teelux187x",
             "weekly": 314,
             "monthly": 470,
-            "win_percent": 23.51,
+            "win_percent": 23.43,
             "giveaway_history": [
                 {
                     "username": "teexluk4",
@@ -29,7 +29,7 @@
             "kick_username": "dewiputewasi",
             "weekly": 204,
             "monthly": 438,
-            "win_percent": 21.91,
+            "win_percent": 21.83,
             "giveaway_history": []
         },
         {
@@ -39,7 +39,7 @@
             "kick_username": "sharkmac0007",
             "weekly": 81,
             "monthly": 133,
-            "win_percent": 6.65,
+            "win_percent": 6.63,
             "giveaway_history": []
         },
         {
@@ -49,7 +49,7 @@
             "kick_username": "dtrix381",
             "weekly": 71,
             "monthly": 118,
-            "win_percent": 5.9,
+            "win_percent": 5.88,
             "giveaway_history": []
         },
         {
@@ -59,7 +59,7 @@
             "kick_username": "krazymum008",
             "weekly": 73,
             "monthly": 115,
-            "win_percent": 5.75,
+            "win_percent": 5.73,
             "giveaway_history": []
         },
         {
@@ -69,7 +69,7 @@
             "kick_username": "circuitgamertv",
             "weekly": 96,
             "monthly": 96,
-            "win_percent": 4.8,
+            "win_percent": 4.79,
             "giveaway_history": []
         },
         {
@@ -79,7 +79,7 @@
             "kick_username": "patchy",
             "weekly": 72,
             "monthly": 95,
-            "win_percent": 4.75,
+            "win_percent": 4.74,
             "giveaway_history": []
         },
         {
@@ -89,7 +89,7 @@
             "kick_username": "laurag87",
             "weekly": 63,
             "monthly": 63,
-            "win_percent": 3.15,
+            "win_percent": 3.14,
             "giveaway_history": []
         },
         {
@@ -99,7 +99,17 @@
             "kick_username": "hamslicer35",
             "weekly": 62,
             "monthly": 62,
-            "win_percent": 3.1,
+            "win_percent": 3.09,
+            "giveaway_history": []
+        },
+        {
+            "discord_username": "jimmay24",
+            "discord_avatar": "https://cdn.discordapp.com/avatars/1211619733770739758/e911426970d87ee4ac857323bce23440.png?size=1024",
+            "instagram_username": "jim_faavae",
+            "kick_username": "Dimboslice",
+            "weekly": 61,
+            "monthly": 61,
+            "win_percent": 3.04,
             "giveaway_history": []
         },
         {
@@ -109,17 +119,7 @@
             "kick_username": "yongdiba",
             "weekly": 54,
             "monthly": 59,
-            "win_percent": 2.95,
-            "giveaway_history": []
-        },
-        {
-            "discord_username": "jimmay24",
-            "discord_avatar": "https://cdn.discordapp.com/avatars/1211619733770739758/e911426970d87ee4ac857323bce23440.png?size=1024",
-            "instagram_username": "jim_faavae",
-            "kick_username": "Dimboslice",
-            "weekly": 54,
-            "monthly": 54,
-            "win_percent": 2.7,
+            "win_percent": 2.94,
             "giveaway_history": []
         },
         {
@@ -129,7 +129,7 @@
             "kick_username": "mickthebiggun",
             "weekly": 42,
             "monthly": 42,
-            "win_percent": 2.1,
+            "win_percent": 2.09,
             "giveaway_history": []
         },
         {
@@ -139,7 +139,7 @@
             "kick_username": "dxr_augustomazo98",
             "weekly": 8,
             "monthly": 40,
-            "win_percent": 2.0,
+            "win_percent": 1.99,
             "giveaway_history": []
         },
         {
@@ -149,7 +149,7 @@
             "kick_username": "aaron_jay",
             "weekly": 37,
             "monthly": 37,
-            "win_percent": 1.85,
+            "win_percent": 1.84,
             "giveaway_history": []
         },
         {
@@ -313,5 +313,5 @@
             "giveaway_history": []
         }
     ],
-    "total_monthly_points": 1999
+    "total_monthly_points": 2006
 }
