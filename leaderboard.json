@@ -8,9 +8,9 @@
             "discord_avatar": "https://cdn.discordapp.com/avatars/878253813553844254/bba61d2437e3df471184e2c8217e7360.png?size=1024",
             "instagram_username": "teexluk4",
             "kick_username": "teelux187x",
-            "weekly": 314,
-            "monthly": 470,
-            "win_percent": 23.21,
+            "weekly": 317,
+            "monthly": 473,
+            "win_percent": 23.32,
             "giveaway_history": [
                 {
                     "username": "teexluk4",
@@ -29,7 +29,7 @@
             "kick_username": "dewiputewasi",
             "weekly": 211,
             "monthly": 445,
-            "win_percent": 21.98,
+            "win_percent": 21.94,
             "giveaway_history": []
         },
         {
@@ -39,7 +39,7 @@
             "kick_username": "sharkmac0007",
             "weekly": 81,
             "monthly": 133,
-            "win_percent": 6.57,
+            "win_percent": 6.56,
             "giveaway_history": []
         },
         {
@@ -49,7 +49,7 @@
             "kick_username": "dtrix381",
             "weekly": 71,
             "monthly": 118,
-            "win_percent": 5.83,
+            "win_percent": 5.82,
             "giveaway_history": []
         },
         {
@@ -59,7 +59,7 @@
             "kick_username": "krazymum008",
             "weekly": 73,
             "monthly": 115,
-            "win_percent": 5.68,
+            "win_percent": 5.67,
             "giveaway_history": []
         },
         {
@@ -69,7 +69,7 @@
             "kick_username": "circuitgamertv",
             "weekly": 96,
             "monthly": 96,
-            "win_percent": 4.74,
+            "win_percent": 4.73,
             "giveaway_history": []
         },
         {
@@ -79,7 +79,7 @@
             "kick_username": "patchy",
             "weekly": 72,
             "monthly": 95,
-            "win_percent": 4.69,
+            "win_percent": 4.68,
             "giveaway_history": []
         },
         {
@@ -139,7 +139,7 @@
             "kick_username": "dxr_augustomazo98",
             "weekly": 8,
             "monthly": 40,
-            "win_percent": 1.98,
+            "win_percent": 1.97,
             "giveaway_history": []
         },
         {
@@ -149,7 +149,7 @@
             "kick_username": "aaron_jay",
             "weekly": 37,
             "monthly": 37,
-            "win_percent": 1.83,
+            "win_percent": 1.82,
             "giveaway_history": []
         },
         {
@@ -313,5 +313,5 @@
             "giveaway_history": []
         }
     ],
-    "total_monthly_points": 2025
+    "total_monthly_points": 2028
 }
