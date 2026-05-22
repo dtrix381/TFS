@@ -5,12 +5,12 @@
     "users": [
         {
             "discord_username": "teelux187",
-            "discord_avatar": "https://cdn.discordapp.com/avatars/878253813553844254/bba61d2437e3df471184e2c8217e7360.png?size=1024",
+            "discord_avatar": "https://cdn.discordapp.com/avatars/878253813553844254/e0d8d34783e9c06660f852b83f9d2b11.png?size=1024",
             "instagram_username": "teexluk4",
             "kick_username": "teelux187x",
-            "weekly": 350,
-            "monthly": 506,
-            "win_percent": 23.33,
+            "weekly": 351,
+            "monthly": 507,
+            "win_percent": 23.36,
             "giveaway_history": [
                 {
                     "username": "teexluk4",
@@ -29,7 +29,7 @@
             "kick_username": "dewiputewasi",
             "weekly": 252,
             "monthly": 486,
-            "win_percent": 22.41,
+            "win_percent": 22.4,
             "giveaway_history": []
         },
         {
@@ -79,7 +79,7 @@
             "kick_username": "circuitgamertv",
             "weekly": 96,
             "monthly": 96,
-            "win_percent": 4.43,
+            "win_percent": 4.42,
             "giveaway_history": []
         },
         {
@@ -89,7 +89,7 @@
             "kick_username": "Dimboslice",
             "weekly": 78,
             "monthly": 78,
-            "win_percent": 3.6,
+            "win_percent": 3.59,
             "giveaway_history": []
         },
         {
@@ -304,7 +304,7 @@
         },
         {
             "discord_username": "notmesanemi",
-            "discord_avatar": "https://cdn.discordapp.com/avatars/815540863420858369/6c4012ce168902d43994cba8536b59dd.png?size=1024",
+            "discord_avatar": "https://cdn.discordapp.com/avatars/815540863420858369/d35bfb0b6c598b97bd86deb9d7f2aef6.png?size=1024",
             "instagram_username": null,
             "kick_username": "# join the server in my bio",
             "weekly": 0,
@@ -313,5 +313,5 @@
             "giveaway_history": []
         }
     ],
-    "total_monthly_points": 2169
+    "total_monthly_points": 2170
 }
