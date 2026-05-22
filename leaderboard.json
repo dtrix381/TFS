@@ -8,9 +8,9 @@
             "discord_avatar": "https://cdn.discordapp.com/avatars/878253813553844254/e0d8d34783e9c06660f852b83f9d2b11.png?size=1024",
             "instagram_username": "teexluk4",
             "kick_username": "teelux187x",
-            "weekly": 378,
-            "monthly": 534,
-            "win_percent": 23.64,
+            "weekly": 386,
+            "monthly": 542,
+            "win_percent": 23.91,
             "giveaway_history": [
                 {
                     "username": "teexluk4",
@@ -29,7 +29,7 @@
             "kick_username": "dewiputewasi",
             "weekly": 260,
             "monthly": 494,
-            "win_percent": 21.87,
+            "win_percent": 21.79,
             "giveaway_history": []
         },
         {
@@ -39,7 +39,7 @@
             "kick_username": "patchy",
             "weekly": 130,
             "monthly": 153,
-            "win_percent": 6.77,
+            "win_percent": 6.75,
             "giveaway_history": []
         },
         {
@@ -49,7 +49,7 @@
             "kick_username": "sharkmac0007",
             "weekly": 88,
             "monthly": 140,
-            "win_percent": 6.2,
+            "win_percent": 6.18,
             "giveaway_history": []
         },
         {
@@ -59,7 +59,7 @@
             "kick_username": "dtrix381",
             "weekly": 77,
             "monthly": 124,
-            "win_percent": 5.49,
+            "win_percent": 5.47,
             "giveaway_history": []
         },
         {
@@ -69,7 +69,7 @@
             "kick_username": "krazymum008",
             "weekly": 76,
             "monthly": 118,
-            "win_percent": 5.22,
+            "win_percent": 5.21,
             "giveaway_history": []
         },
         {
@@ -79,7 +79,7 @@
             "kick_username": "circuitgamertv",
             "weekly": 96,
             "monthly": 96,
-            "win_percent": 4.25,
+            "win_percent": 4.23,
             "giveaway_history": []
         },
         {
@@ -89,7 +89,7 @@
             "kick_username": "Dimboslice",
             "weekly": 78,
             "monthly": 78,
-            "win_percent": 3.45,
+            "win_percent": 3.44,
             "giveaway_history": []
         },
         {
@@ -99,7 +99,7 @@
             "kick_username": "aaron_jay",
             "weekly": 64,
             "monthly": 64,
-            "win_percent": 2.83,
+            "win_percent": 2.82,
             "giveaway_history": []
         },
         {
@@ -109,7 +109,7 @@
             "kick_username": "laurag87",
             "weekly": 63,
             "monthly": 63,
-            "win_percent": 2.79,
+            "win_percent": 2.78,
             "giveaway_history": []
         },
         {
@@ -119,7 +119,7 @@
             "kick_username": "hamslicer35",
             "weekly": 62,
             "monthly": 62,
-            "win_percent": 2.74,
+            "win_percent": 2.73,
             "giveaway_history": []
         },
         {
@@ -129,7 +129,7 @@
             "kick_username": "yongdiba",
             "weekly": 54,
             "monthly": 59,
-            "win_percent": 2.61,
+            "win_percent": 2.6,
             "giveaway_history": []
         },
         {
@@ -139,7 +139,7 @@
             "kick_username": "mickthebiggun",
             "weekly": 42,
             "monthly": 42,
-            "win_percent": 1.86,
+            "win_percent": 1.85,
             "giveaway_history": []
         },
         {
@@ -149,7 +149,7 @@
             "kick_username": "dxr_augustomazo98",
             "weekly": 8,
             "monthly": 40,
-            "win_percent": 1.77,
+            "win_percent": 1.76,
             "giveaway_history": []
         },
         {
@@ -179,7 +179,7 @@
             "kick_username": "rowelie",
             "weekly": 7,
             "monthly": 30,
-            "win_percent": 1.33,
+            "win_percent": 1.32,
             "giveaway_history": []
         },
         {
@@ -313,5 +313,5 @@
             "giveaway_history": []
         }
     ],
-    "total_monthly_points": 2259
+    "total_monthly_points": 2267
 }
