@@ -10,7 +10,7 @@
             "kick_username": "teelux187x",
             "weekly": 386,
             "monthly": 542,
-            "win_percent": 23.73,
+            "win_percent": 23.68,
             "giveaway_history": [
                 {
                     "username": "teexluk4",
@@ -29,7 +29,7 @@
             "kick_username": "dewiputewasi",
             "weekly": 263,
             "monthly": 497,
-            "win_percent": 21.76,
+            "win_percent": 21.71,
             "giveaway_history": []
         },
         {
@@ -39,7 +39,7 @@
             "kick_username": "patchy",
             "weekly": 130,
             "monthly": 153,
-            "win_percent": 6.7,
+            "win_percent": 6.68,
             "giveaway_history": []
         },
         {
@@ -49,7 +49,7 @@
             "kick_username": "sharkmac0007",
             "weekly": 88,
             "monthly": 140,
-            "win_percent": 6.13,
+            "win_percent": 6.12,
             "giveaway_history": []
         },
         {
@@ -59,7 +59,7 @@
             "kick_username": "dtrix381",
             "weekly": 77,
             "monthly": 124,
-            "win_percent": 5.43,
+            "win_percent": 5.42,
             "giveaway_history": []
         },
         {
@@ -69,7 +69,7 @@
             "kick_username": "krazymum008",
             "weekly": 76,
             "monthly": 118,
-            "win_percent": 5.17,
+            "win_percent": 5.16,
             "giveaway_history": []
         },
         {
@@ -79,7 +79,7 @@
             "kick_username": "circuitgamertv",
             "weekly": 96,
             "monthly": 96,
-            "win_percent": 4.2,
+            "win_percent": 4.19,
             "giveaway_history": []
         },
         {
@@ -89,7 +89,7 @@
             "kick_username": "Dimboslice",
             "weekly": 78,
             "monthly": 78,
-            "win_percent": 3.42,
+            "win_percent": 3.41,
             "giveaway_history": []
         },
         {
@@ -99,7 +99,7 @@
             "kick_username": "laurag87",
             "weekly": 65,
             "monthly": 65,
-            "win_percent": 2.85,
+            "win_percent": 2.84,
             "giveaway_history": []
         },
         {
@@ -139,7 +139,7 @@
             "kick_username": "mickthebiggun",
             "weekly": 42,
             "monthly": 42,
-            "win_percent": 1.84,
+            "win_percent": 1.83,
             "giveaway_history": []
         },
         {
@@ -169,7 +169,17 @@
             "kick_username": "casinodrifter",
             "weekly": 31,
             "monthly": 31,
-            "win_percent": 1.36,
+            "win_percent": 1.35,
+            "giveaway_history": []
+        },
+        {
+            "discord_username": "scottyinno94",
+            "discord_avatar": "https://cdn.discordapp.com/avatars/1177621812868284448/133d9858ca60bb05e99ee1365367995c.png?size=1024",
+            "instagram_username": null,
+            "kick_username": "scottinnocentgaming94",
+            "weekly": 31,
+            "monthly": 31,
+            "win_percent": 1.35,
             "giveaway_history": []
         },
         {
@@ -180,16 +190,6 @@
             "weekly": 7,
             "monthly": 30,
             "win_percent": 1.31,
-            "giveaway_history": []
-        },
-        {
-            "discord_username": "scottyinno94",
-            "discord_avatar": "https://cdn.discordapp.com/avatars/1177621812868284448/133d9858ca60bb05e99ee1365367995c.png?size=1024",
-            "instagram_username": null,
-            "kick_username": "scottinnocentgaming94",
-            "weekly": 26,
-            "monthly": 26,
-            "win_percent": 1.14,
             "giveaway_history": []
         },
         {
@@ -269,7 +269,7 @@
             "kick_username": "stuy_t",
             "weekly": 0,
             "monthly": 4,
-            "win_percent": 0.18,
+            "win_percent": 0.17,
             "giveaway_history": []
         },
         {
@@ -313,5 +313,5 @@
             "giveaway_history": []
         }
     ],
-    "total_monthly_points": 2284
+    "total_monthly_points": 2289
 }
