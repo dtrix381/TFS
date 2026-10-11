@@ -1,68 +1,87 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Wildlines Verification</title>
   <style>
     body {
-      margin: 0;
-      min-height: 100vh;
-      display: grid;
-      place-items: center;
-      background: #101418;
-      color: #ffffff;
       font-family: Arial, sans-serif;
+      max-width: 600px;
+      margin: 60px auto;
+      padding: 20px;
       text-align: center;
+      background: #f7f7f7;
+      color: #222;
     }
+
     main {
-      width: min(90%, 420px);
+      background: white;
       padding: 30px;
-      box-sizing: border-box;
-      background: #1c232b;
-      border-radius: 16px;
+      border-radius: 12px;
+      box-shadow: 0 2px 12px #0001;
     }
-    h1 { color: #7ee787; }
-    p { color: #c9d1d9; line-height: 1.6; }
+
+    #status {
+      margin-top: 20px;
+      overflow-wrap: anywhere;
+    }
   </style>
 </head>
 <body>
   <main>
     <h1>Wildlines Verification</h1>
-    <p>This is the verification page.</p>
-    <p>Verification services are being set up. Please return to Discord for instructions.</p>
+    <p>Complete the steps shown here to verify your account.</p>
+    <p id="status">Checking your verification session...</p>
   </main>
 
+  <script>
+    const API = "https://wildlines-verification-test.onrender.com";
+    const statusElement = document.getElementById("status");
 
-<script>
-(async function () {
-    const statusElement = document.createElement("p");
-    statusElement.textContent = "Connecting to verification service...";
-    statusElement.setAttribute("id", "backend-status");
-    document.body.appendChild(statusElement);
+    async function checkSession() {
+      const sessionId = new URLSearchParams(
+        window.location.search
+      ).get("session");
 
-    try {
+      if (!sessionId) {
+        statusElement.textContent =
+          "No verification session found. Please start from Discord.";
+        return;
+      }
+
+      try {
         const response = await fetch(
-            "https://wildlines-verification-test.onrender.com/health"
+          `${API}/api/verification/session/${encodeURIComponent(sessionId)}`
         );
-
-        if (!response.ok) {
-            throw new Error("Server returned HTTP " + response.status);
-        }
 
         const data = await response.json();
 
-        statusElement.textContent =
-            data.status === "ok"
-                ? "Verification service connected successfully!"
-                : "The service responded, but its status is unexpected.";
-    } catch (error) {
-        statusElement.textContent =
-            "Could not connect to the verification service. Please try again.";
-        console.error("Verification connection test failed:", error);
-    }
-})();
-</script>
+        if (response.status === 410) {
+          statusElement.textContent =
+            "Your verification session has expired. Please start again from Discord.";
+          return;
+        }
 
+        if (!response.ok) {
+          statusElement.textContent =
+            "This session is invalid or unavailable. Please start again from Discord.";
+          return;
+        }
+
+        statusElement.textContent =
+          `Session found! Status: ${data.status}. ` +
+          "Discord and Kick account connection will be added next.";
+      } catch (error) {
+        console.error("Session check failed:", error);
+        statusElement.textContent =
+          "Could not connect to the verification service. " +
+          "Please check your connection and try again.";
+      }
+    }
+
+    checkSession();
+  </script>
 </body>
 </html>
