@@ -6,50 +6,135 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Wildlines Verification</title>
   <style>
+    * { box-sizing: border-box; }
+
     body {
       font-family: Arial, sans-serif;
       max-width: 600px;
-      margin: 60px auto;
+      margin: 50px auto;
       padding: 20px;
-      text-align: center;
-      background: #f7f7f7;
+      background: #f5f5f5;
       color: #222;
     }
 
     main {
       background: white;
-      padding: 30px;
-      border-radius: 12px;
+      padding: 28px;
+      border-radius: 14px;
       box-shadow: 0 2px 12px #0001;
     }
 
+    h1 { margin-top: 0; }
+
+    button, .connect-button {
+      display: block;
+      width: 100%;
+      margin: 12px 0;
+      padding: 14px;
+      border: 0;
+      border-radius: 8px;
+      color: white;
+      background: #5865F2;
+      font-size: 16px;
+      font-weight: bold;
+      text-align: center;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .kick { background: #239b56; }
+
+    button:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+
     #status {
-      margin-top: 20px;
+      margin: 20px 0;
+      padding: 12px;
+      border-radius: 8px;
+      background: #f0f0f0;
       overflow-wrap: anywhere;
+    }
+
+    .small {
+      color: #666;
+      font-size: 13px;
+      line-height: 1.5;
     }
   </style>
 </head>
 <body>
   <main>
     <h1>Wildlines Verification</h1>
-    <p>Complete the steps shown here to verify your account.</p>
-    <p id="status">Checking your verification session...</p>
+    <p>Connect the Discord account you used to start verification and your Kick account.</p>
+
+    <div id="status" role="status" aria-live="polite">
+      Loading your verification session...
+    </div>
+
+    <section id="connections" hidden>
+      <a id="discordButton" class="connect-button">
+        Connect Discord
+      </a>
+
+      <a id="kickButton" class="connect-button kick">
+        Connect Kick
+      </a>
+
+      <p class="small">
+        Only connect accounts you own. Your session expires after
+        15 minutes. Return to this page after connecting each account.
+      </p>
+    </section>
   </main>
 
   <script>
     const API = "https://wildlines-verification-test.onrender.com";
+    const params = new URLSearchParams(window.location.search);
+    const sessionId = params.get("session");
+    const result = params.get("result");
+
     const statusElement = document.getElementById("status");
+    const connections = document.getElementById("connections");
+    const discordButton = document.getElementById("discordButton");
+    const kickButton = document.getElementById("kickButton");
+
+    let stopped = false;
+    let checking = false;
+
+    const messages = {
+      discord_connected: "Discord connected successfully.",
+      kick_connected: "Kick connected successfully.",
+      discord_mismatch: "The Discord account does not match the account that started verification. Please return to your Discord server and try again.",
+      discord_error: "Discord connection failed. Please try again.",
+      kick_error: "Kick connection failed. Please try again.",
+      expired: "Your verification session expired. Start again from Discord.",
+      config_error: "The connection service is not configured correctly. Please contact an administrator."
+    };
+
+    if (!sessionId) {
+      statusElement.textContent =
+        "No verification session found. Start from the verification button in Discord.";
+      stopped = true;
+    } else {
+      discordButton.href =
+        `${API}/oauth/discord/start/${encodeURIComponent(sessionId)}`;
+
+      kickButton.href =
+        `${API}/oauth/kick/start/${encodeURIComponent(sessionId)}`;
+
+      if (result && messages[result]) {
+        statusElement.textContent = messages[result];
+      }
+
+      connections.hidden = false;
+      checkSession();
+    }
 
     async function checkSession() {
-      const sessionId = new URLSearchParams(
-        window.location.search
-      ).get("session");
-
-      if (!sessionId) {
-        statusElement.textContent =
-          "No verification session found. Please start from Discord.";
-        return;
-      }
+      if (stopped || checking) return;
+      checking = true;
 
       try {
         const response = await fetch(
@@ -58,30 +143,63 @@
 
         const data = await response.json();
 
-        if (response.status === 410) {
+        if (response.status === 404 || response.status === 410) {
           statusElement.textContent =
-            "Your verification session has expired. Please start again from Discord.";
+            "Your verification session is unavailable or expired. Start again from Discord.";
+          stopped = true;
+          connections.hidden = true;
           return;
         }
 
         if (!response.ok) {
           statusElement.textContent =
-            "This session is invalid or unavailable. Please start again from Discord.";
+            "Unable to check your session. Please refresh this page.";
           return;
         }
 
-        statusElement.textContent =
-          `Session found! Status: ${data.status}. ` +
-          "Discord and Kick account connection will be added next.";
+        const discordDone = data.discord_connected;
+        const kickDone = data.kick_connected;
+
+        if (discordDone && kickDone) {
+          statusElement.textContent =
+            "Both accounts are connected. Your account checks and final verification are still pending.";
+        } else {
+          const connected = [];
+
+          if (discordDone) {
+            connected.push("Discord: connected");
+          } else {
+            connected.push("Discord: not connected");
+          }
+
+          if (kickDone) {
+            connected.push("Kick: connected");
+          } else {
+            connected.push("Kick: not connected");
+          }
+
+          statusElement.textContent = connected.join(" · ");
+        }
+
+        discordButton.textContent = discordDone
+          ? "Discord Connected"
+          : "Connect Discord";
+
+        kickButton.textContent = kickDone
+          ? "Kick Connected"
+          : "Connect Kick";
+
       } catch (error) {
-        console.error("Session check failed:", error);
         statusElement.textContent =
-          "Could not connect to the verification service. " +
-          "Please check your connection and try again.";
+          "Could not reach the verification service. Please refresh and try again.";
+      } finally {
+        checking = false;
       }
     }
 
-    checkSession();
+    setInterval(() => {
+      if (!stopped) checkSession();
+    }, 5000);
   </script>
 </body>
 </html>
