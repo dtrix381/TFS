@@ -89,35 +89,77 @@
     </section>
   </main>
 
-  <script>
-    const API = "https://wildlines-verification-test.onrender.com";
-    const params = new URLSearchParams(window.location.search);
-    const sessionId = params.get("session");
-    const result = params.get("result");
 
-    const statusElement = document.getElementById("status");
-    const connections = document.getElementById("connections");
-    const discordButton = document.getElementById("discordButton");
-    const kickButton = document.getElementById("kickButton");
+<script>
+  const API = "https://wildlines-verification-test.onrender.com";
+  const params = new URLSearchParams(window.location.search);
+  const sessionId = params.get("session");
+  const result = params.get("result");
 
-    let stopped = false;
-    let checking = false;
+  const statusElement = document.getElementById("status");
+  const connections = document.getElementById("connections");
+  const discordButton = document.getElementById("discordButton");
+  const kickButton = document.getElementById("kickButton");
 
-    const messages = {
-      discord_connected: "Discord connected successfully.",
-      kick_connected: "Kick connected successfully.",
-      discord_mismatch: "The Discord account does not match the account that started verification. Please return to your Discord server and try again.",
-      discord_error: "Discord connection failed. Please try again.",
-      kick_error: "Kick connection failed. Please try again.",
-      expired: "Your verification session expired. Start again from Discord.",
-      config_error: "The connection service is not configured correctly. Please contact an administrator."
-    };
+  let stopped = false;
+  let checking = false;
+  let pollingStarted = false;
 
-    if (!sessionId) {
-      statusElement.textContent =
-        "No verification session found. Start from the verification button in Discord.";
-      stopped = true;
-    } else {
+  const messages = {
+    discord_connected: "Discord connected successfully.",
+    kick_connected: "Kick connected successfully.",
+    discord_mismatch:
+      "The Discord account does not match the account that started verification. Please return to your Discord server and try again.",
+    discord_error: "Discord connection failed. Please try again.",
+    kick_error: "Kick connection failed. Please try again.",
+    expired:
+      "Your verification session expired. Start again from Discord.",
+    config_error:
+      "The connection service is not configured correctly. Please contact an administrator."
+  };
+
+  connections.hidden = true;
+
+  if (!sessionId) {
+    statusElement.textContent =
+      "No verification session found. Start from the verification button in Discord.";
+    stopped = true;
+  } else {
+    startSecurityCheck();
+  }
+
+  async function startSecurityCheck() {
+    statusElement.textContent =
+      "Checking your connection security. Please wait...";
+
+    try {
+      const response = await fetch(
+        `${API}/api/verification/security-check/${encodeURIComponent(sessionId)}`,
+        {
+          method: "POST"
+        }
+      );
+
+      const data = await response.json();
+
+      if (data.security_check === "blocked") {
+        statusElement.textContent =
+          "Verification unsuccessful. Please turn off your VPN or proxy, then try again.";
+        stopped = true;
+        connections.hidden = true;
+        return;
+      }
+
+      if (!response.ok || data.security_check !== "clear") {
+        statusElement.textContent =
+          data.message ||
+          "We couldn't complete the security check. Please try again later.";
+        stopped = true;
+        connections.hidden = true;
+        return;
+      }
+
+      // Only show account connection buttons after a successful check.
       discordButton.href =
         `${API}/oauth/discord/start/${encodeURIComponent(sessionId)}`;
 
@@ -129,77 +171,101 @@
       }
 
       connections.hidden = false;
-      checkSession();
+
+      await checkSession();
+
+      if (!stopped && !pollingStarted) {
+        pollingStarted = true;
+
+        setInterval(() => {
+          if (!stopped) checkSession();
+        }, 5000);
+      }
+    } catch (error) {
+      statusElement.textContent =
+        "Could not complete the security check. Please refresh and try again later.";
+      stopped = true;
+      connections.hidden = true;
     }
+  }
 
-    async function checkSession() {
-      if (stopped || checking) return;
-      checking = true;
+  async function checkSession() {
+    if (stopped || checking) return;
 
-      try {
-        const response = await fetch(
-          `${API}/api/verification/session/${encodeURIComponent(sessionId)}`
+    checking = true;
+
+    try {
+      const response = await fetch(
+        `${API}/api/verification/session/${encodeURIComponent(sessionId)}`
+      );
+
+      const data = await response.json();
+
+      if (response.status === 404 || response.status === 410) {
+        statusElement.textContent =
+          "Your verification session is unavailable or expired. Start again from Discord.";
+        stopped = true;
+        connections.hidden = true;
+        return;
+      }
+
+      if (!response.ok) {
+        statusElement.textContent =
+          "Unable to check your session. Please refresh this page.";
+        return;
+      }
+
+      if (data.status === "vpn_blocked") {
+        statusElement.textContent =
+          "Verification unsuccessful. Please turn off your VPN or proxy, then try again.";
+        stopped = true;
+        connections.hidden = true;
+        return;
+      }
+
+      if (data.status === "security_check_failed") {
+        statusElement.textContent =
+          "We couldn't complete the security check. Please try again later.";
+        stopped = true;
+        connections.hidden = true;
+        return;
+      }
+
+      const discordDone = data.discord_connected;
+      const kickDone = data.kick_connected;
+
+      if (discordDone && kickDone) {
+        statusElement.textContent =
+          "Both accounts are connected. Your account checks and final verification are still pending.";
+      } else {
+        const connected = [];
+
+        connected.push(
+          discordDone ? "Discord: connected" : "Discord: not connected"
         );
 
-        const data = await response.json();
+        connected.push(
+          kickDone ? "Kick: connected" : "Kick: not connected"
+        );
 
-        if (response.status === 404 || response.status === 410) {
-          statusElement.textContent =
-            "Your verification session is unavailable or expired. Start again from Discord.";
-          stopped = true;
-          connections.hidden = true;
-          return;
-        }
-
-        if (!response.ok) {
-          statusElement.textContent =
-            "Unable to check your session. Please refresh this page.";
-          return;
-        }
-
-        const discordDone = data.discord_connected;
-        const kickDone = data.kick_connected;
-
-        if (discordDone && kickDone) {
-          statusElement.textContent =
-            "Both accounts are connected. Your account checks and final verification are still pending.";
-        } else {
-          const connected = [];
-
-          if (discordDone) {
-            connected.push("Discord: connected");
-          } else {
-            connected.push("Discord: not connected");
-          }
-
-          if (kickDone) {
-            connected.push("Kick: connected");
-          } else {
-            connected.push("Kick: not connected");
-          }
-
-          statusElement.textContent = connected.join(" · ");
-        }
-
-        discordButton.textContent = discordDone
-          ? "Discord Connected"
-          : "Connect Discord";
-
-        kickButton.textContent = kickDone
-          ? "Kick Connected"
-          : "Connect Kick";
-
-      } catch (error) {
-        statusElement.textContent =
-          "Could not reach the verification service. Please refresh and try again.";
-      } finally {
-        checking = false;
+        statusElement.textContent = connected.join(" · ");
       }
-    }
 
-    setInterval(() => {
-      if (!stopped) checkSession();
-    }, 5000);
-  </script>
+      discordButton.textContent = discordDone
+        ? "Discord Connected"
+        : "Connect Discord";
+
+      kickButton.textContent = kickDone
+        ? "Kick Connected"
+        : "Connect Kick";
+    } catch (error) {
+      statusElement.textContent =
+        "Could not reach the verification service. Please refresh and try again.";
+    } finally {
+      checking = false;
+    }
+  }
+</script>
+
 </body>
 </html>
