@@ -223,7 +223,7 @@
         return;
       }
 
-      if (data.status === "security_check_failed") {
+            if (data.status === "security_check_failed") {
         statusElement.textContent =
           "We couldn't complete the security check. Please try again later.";
         stopped = true;
@@ -231,8 +231,69 @@
         return;
       }
 
+      // Handle the final decision from the verification backend.
+      if (data.status === "verified") {
+        statusElement.textContent =
+          "✅ Verification successful! Your Wildlines account is verified.";
+        stopped = true;
+        connections.hidden = true;
+        return;
+      }
+
+      if (data.status === "duplicate_kick") {
+        statusElement.textContent =
+          "Your Kick account is already linked to another Discord account. Please contact a server administrator for assistance.";
+        stopped = true;
+        connections.hidden = true;
+        return;
+      }
+
+      if (data.status === "review_required") {
+        statusElement.textContent =
+          "Your verification needs administrator review. Please wait for the server team to assist you.";
+        stopped = true;
+        connections.hidden = true;
+        return;
+      }
+
+      if (data.status === "rejected") {
+        statusElement.textContent =
+          "Your verification was not approved. Please contact a server administrator if you believe this is a mistake.";
+        stopped = true;
+        connections.hidden = true;
+        return;
+      }
+
       const discordDone = data.discord_connected;
       const kickDone = data.kick_connected;
+
+      if (data.status === "ready_for_bot_review") {
+        statusElement.textContent =
+          "Both accounts are connected. Your verification is waiting for the bot to review it.";
+      } else if (discordDone && kickDone) {
+        statusElement.textContent =
+          "Both accounts are connected. Your account checks are still in progress.";
+      } else {
+        const connected = [];
+
+        connected.push(
+          discordDone ? "Discord: connected" : "Discord: not connected"
+        );
+
+        connected.push(
+          kickDone ? "Kick: connected" : "Kick: not connected"
+        );
+
+        statusElement.textContent = connected.join(" · ");
+      }
+
+      discordButton.textContent = discordDone
+        ? "Discord Connected"
+        : "Connect Discord";
+
+      kickButton.textContent = kickDone
+        ? "Kick Connected"
+        : "Connect Kick";
 
       if (discordDone && kickDone) {
         statusElement.textContent =
