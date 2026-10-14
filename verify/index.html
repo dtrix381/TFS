@@ -63,7 +63,6 @@
         var(--bg);
     }
 
-    /* Retro-futuristic background grid */
     body::before {
       content: "";
       position: fixed;
@@ -142,7 +141,6 @@
       box-shadow: 0 0 16px rgba(0, 240, 255, 0.45);
     }
 
-    /* LOGO: automatically fits without a dotted border */
     .logo-container {
       width: 100%;
       display: flex;
@@ -386,7 +384,7 @@
 
 <body>
   <main>
-    <!-- Put WildLines.png in the same folder as this index.html -->
+    
     <div class="logo-container">
       <img
         src="./WildLines.png"
@@ -679,7 +677,7 @@
         const discordDone = Boolean(data.discord_connected);
         const kickDone = Boolean(data.kick_connected);
 
-        // Update only the text spans so the service logos stay visible.
+        
         setConnectedButton(
           discordButton,
           discordButtonLabel,
